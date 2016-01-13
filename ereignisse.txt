@@ -1,5 +1,19 @@
 2.12.
-nevana, boris meeting:
-	trello board alle sichtbar gemacht und können nun darauf zugreifen (boris)
-	task:
-		javassist in eclipse integrieren + zum Laufen bringen, repository erstellen, tutorial durchgehen, 
+	mirs choffat gave green sheet to oscar
+
+	nevana, boris meeting:
+		trello board alle sichtbar gemacht und können nun darauf zugreifen (boris)
+		
+		tasks:
+			javassist in eclipse integrieren + zum Laufen bringen, repository erstellen, tutorial durchgehen, 
+		
+12.1.16
+
+	created repo: nullpointer-javassist, bachelor-thesis
+		added nevana&boris
+		
+	got the thesis template from git://scg.unibe.ch/scgbib
+	
+13.1.
+
+	javassist works

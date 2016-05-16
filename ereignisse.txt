@@ -14,6 +14,213 @@
 		
 	got the thesis template from git://scg.unibe.ch/scgbib
 	
+	
 13.1.
 
 	javassist works
+	
+	
+went through javassist tutorial
+
+	sometimes forgot the new added methods etc on runtime -> stack overflow, cause instructed methodcalling to it self...
+	tried to go through all methods and added the "stack trace" -> it "worked"
+	one small but nasty problem was to wirte the source as a string with the right syntax.. either forget a ";", "\", ")" or mistakenly swapped the order of these things..
+	
+check if instance var is directly set to null
+
+	had problems with getting the line numbers of instance vars, due to my forgetting about the "javassist.expr.FieldAccess" --> not familiar with javassist yet...
+	after that the problem was to get the right method, where the assignment to an instancevar is within, to instruct some code to print the line number of the assignment
+	
+check if local var is directly set to null
+	
+	after looking at the byte code it became clear that there was an option to access local variables
+	but how to access them was not that easy because the decleration of methods and classes of Javassist are not informative enough
+	there are only very brief explanaions in the internet or none at all..
+	to look for examples is also very hard..
+	
+	I had the right idea how to check local variables, but worked at the beginning with BufferedInputStream to load the ".class" file.
+	I manually copied the ".class" file out of the "bin" folder, so after done some changes in the source code, the copied ".class" file certainly has not changed a bit
+	so I always loaded an old ".class" file, it leads to incomprehension why my (right) idea didn't work..
+	this (stupid) mistake has cost me a lot of time...
+	
+huge class
+
+	trying to get used to javassist everything was coded in only one class to try if it works
+	next to this I gave variables very short names, so that I sometimes didn't know what the names has stood for and many code "out-commented"...
+	therefore it was quite a mess, code refactoring was necessary..
+	
+	
+01.02.16 - 08.02.16
+
+	after showing the mentors what i have done, they told me to implement a way, where only one line of code should be entered if a field or a local variable is stored
+	created "MyClass"
+	to get the field of a class is easy, coz in javassist there are already such a way
+	to get the local variables and their values was very tricky..
+		there is a "LineNumberTable" and a "LocalVariableTable"
+		
+		
+08.02.16 - 16.02.16
+
+	Refactored
+	coded everything in few classes, so the classes was very big -> due to my lack of experience
+		i had no overview at all, if somewhere were broken, i had to look for a long time to get the cause
+	i told a friend that my code is a mess, he gave me a hint to implement or refactor my code to the mvc software architecture pattern, he often uses this.
+	so i did that. the refactoring took me again some time.
+	at the end everything worked fine.
+	
+	i looked for a way to go to subclasses of the main class also for modifying them, for locVars i could get the right class and method, but not for fields...
+	reading through javassist lib classes, i didn't find a good way...
+	
+	
+16.02.16 - 22.02.16
+
+	in the seminar prof. oscar nierstrasz was present this time
+	i told them that i wanted to find out subclasses and modifying them, but i guess i couldn't explain it due to my bad english...
+	afterwards i talked with nevana and boris, i tried again to explain to them what i tried to do, but i was not successful...
+	boris told me to concentrate on one task, not to think to far... he was right..
+	nevana and boris tried to understand my code, but my naming is again bad...
+	we agreed that i should refactor my code and try to explain it to them after the next seminar
+	i started to code-documentation while no solution for modifying subclasses is find yet...
+	
+	managed to find a code, which copies folder from src to dest
+	bin folder could be copied ^-^
+	
+	this week i refactored the whole thing again.. adding javassist.Loader
+	i was lucky that i have read the tutorial again, cause i didn't understand it when i read it the last time.
+	by asking another friend to read the same section and asking him if he understand it the same way as i do, i could start implementing it
+	it was excactely the thing i looked for for going through subclasses and also modifying them.
+	i had to adapt the documentation again, now with a solution for modifying sublasses.
+	everything works: all nulls can be tracked by the links in the console, if no npexception is thrown...
+	
+	the bad thing is, the addCatch() in javassist doesn't work yet, i have to ask nevana.
+	
+	
+22.02.16 - 01.03.16
+
+	testInstrumentator goes through project, modifies it and runs it, so that i can see if things is the way in wanted them to.
+	after the meeting with nevena, boris and mohamed they told me tho reimplement the storing of the variables.
+	last time i missunderstood them. i thought i only have to instrument directly and not storing them. but lucky that i saved my old version of storing the variables.
+	how the project is now, i had to change the way how i stored them. because i had to separate instrumentation part with javassist and runtimesupport part.
+	until now i coded everything intervined.
+	
+	before meeting:	first some of my project was copied to the project which should be modified.
+					runing the classloader to modify the project, everything with javassist, so the to be modified project also had to have the javassist lib
+					
+	after meeting: 	in terminal/console it is able to give 2 args to main: src and dest dir
+					loading the project, modify it and store it in dest dir
+					only copy the runtimesupporter to the to be modified project.
+					create jar out of it
+					rung with [java -jar "pckg.name.class"]
+	
+	i didn't know how a jar worked, so i had to google everything. about the manifest etc.
+	luckily java already had methods to create a jar
+	also i didn't know how te create subfolders within a jar -> google
+	now it works
+	
+
+01.03.16 - 08.03.16
+
+	try to track the nullpointer i had to add new classes, so i again had to restructure the whole project more hierarchical
+	all about the super class ect i forgot, so i had to try out things: 
+		instantiate field in super class (super(cc)) and using/calling it from sub classes (without crating field in sub class, just use cc)
+		abstract: what should be abstract decisions
+	
+	after restructured it, i tried to modify bigger projects, like JHotDraw
+		JHotDraw was completely new to me, so it was not clear how i get the bin dir of it... it doesn't have one...
+		so i copied the src of it to the src fid of my new created testJHotDraw project dir -> eclipse created the bin
+		to load, modify and store project worked only for .class files, so i had to ajust it. the same for creating the jar file.
+		
+	until now i only tried to print the nulls in small projects i've written myself. on bigger projects, there are much more situations i didn'g think of
+
+	!!!!!!!!!!!!! - PIC 1 - !!!!!!!!!!!!!
+	
+	like: try, catch clauses [see pic 1]
+			it stores the local variable out into the 1st slot, the exception object to
+			i have to figure it out, how to separate them
+			
+	mohamed advised me to use ASM in eclipse and print the bytecode in the console
+	console -> txt:   javap -c bla.class > abc.txt
+			
+			
+08.03.16 - 15.03.16
+			
+	managed to print the fields which are instantiated outside method by printing/insturment them in the constructor of each class
+	didn't pushed it yet to repo, somehow the bin folder of the project is deleted...
+	lucky the src dir was still there, so i managed to restore the project and didn't loose any work...
+	--> commit and push more often !!!
+	
+	bachelor project introduction presentation created
+	
+
+15.03.16 - 22.03.16
+
+	worked mostly on the presentation: more pics than texts
+	
+	fields instantiated outside method works only, if they are assigned at the top of the class.
+	so i have to change this method!!!
+	
+	managed to get the right variable name even they have the same slot, by calculating endPc - currentPc. 
+	if its bigger than 0, the variable with the endPc is searched.
+	why have the same slot?
+		local variables have lifespans. if the variable is dead, the slot is useable again.
+		
+	still trying to run my project on JHotDraw, but there are many bugs...
+	- same slot
+	- if assignment use multiple lines -> get the right line number
+	
+	presentation:
+		was ok, i spoke mostly free, some time had to look at the slide to know what i had to say next
+		the public asked many questions.. mostly all about topics i have never heard of it...
+		-> see in bachelor thesis->presentation->22.03.16
+	
+	
+for & while zb for(obj o: ..) -> o hat kein name
+field richtige startPos -> javassist nicht einberechnet, dass nach field assignment bytecode eingefügt werden kann,
+	dh. javassist von anfang an original methodinfo gespeichert und mit iterator durchgehen
+	nach einfügen von bytecode wird zwar method angepasst, aber methodinfo ist in original version gespeichert
+	-> pos in original natürlich nicht angepasst
+alles nur noch bytecode, nicht mehr insertat line
+supercall ignorieren: this.s=bla; super(...) ist falsch -> super ist java-spezifisch
+richtig bytecode zusammensetzen -> field-fälle
+	zusammensetzung bytecode war teils nicht richtig -> this. oder ohne etc.
+jar erstellen -> falsch unterordner erstellt
+wie im terminal jar ausführen, mit oder ohne main-class-manifest, mit welchem befehl etc.
+	externe lib manuel in jar kopieren (?)
+	command: java -jar x.jar (mit main-manifest)
+			 java -cp x.jar mainClassName (ohne main-manifest: beliebig main ausführbar)
+jhotdraw projekt unvollständig -> selber lib im internet suchen (Hilfe von Nevena)
+jhotdraw in eclipse integrieren -> classpath in eclipse ändern, globale variablen hinzufügen
+java update -> eclipse einstellungen updaten -> .launch andere name -> dort ändern gehen
+
+25.4.16
+geschaft, dass jhotdraw im terminal lauft ohne "meine" exceptions
+terminal modified laufen: ok, mit images
+eclipse original laufen: ok, mit images
+eclipse modified laufen: nja, ohne images
+	evtl wegen class loader, findet url nicht
+	
+overhead messen als nächstes ziel; wohl mit tests
+
+26.04.16
+am Meeting geschaft unlöschbaren ordner zu erstellen...
+
+03.05.16
+mit build.xml beide jars erstellen (Hilfe von Boris)
+jhotdraw-original & -instrumented.jar laufen
+mit org.jhotdraw.test.AllTests Zeit gemessen
+	siehe excel in bachelor\jhotdraw60b1
+Meeting nur mit Boris
+	vars speichern in hashmap, da nur letzte var wichtig -> nicht mehr allayList
+	model in nullDisplayer volkommen ändern -> auch byteCodeAdapter viele Anpassungen
+		-> viele Male wieder stackUnderflow etc.
+
+
+
+
+
+
+
+	
+	
+
+	

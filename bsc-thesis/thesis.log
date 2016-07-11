@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  11 JUL 2016 16:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  11 JUL 2016 16:43
 entering extended mode
 **./thesis.tex
 (thesis.tex
@@ -848,8 +848,8 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17.28> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 247.
 
 ! Undefined control sequence.
-l.247     \Large  \thesissubtitle
-                                  \par}
+l.247     \Large \vspace{0.1in} \thesissubtitle
+                                                \par}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -1069,7 +1069,7 @@ Here is how much of TeX's memory you used:
 b8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/tim
 es/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw
 /times/utmr8a.pfb>
-Output written on thesis.pdf (16 pages, 410426 bytes).
+Output written on thesis.pdf (16 pages, 410434 bytes).
 PDF statistics:
  188 PDF objects out of 1000 (max. 8388607)
  37 named destinations out of 1000 (max. 500000)

@@ -76,7 +76,7 @@ huge class
 
 	in the seminar prof. oscar nierstrasz was present this time
 	i told them that i wanted to find out subclasses and modifying them, but i guess i couldn't explain it due to my bad english...
-	afterwards i talked with nevana and boris, i tried again to explain to them what i tried to do, but i was not successful...
+	afterwards i talked with nevena and boris, i tried again to explain to them what i tried to do, but i was not successful...
 	boris told me to concentrate on one task, not to think to far... he was right..
 	nevana and boris tried to understand my code, but my naming is again bad...
 	we agreed that i should refactor my code and try to explain it to them after the next seminar
@@ -92,7 +92,7 @@ huge class
 	i had to adapt the documentation again, now with a solution for modifying sublasses.
 	everything works: all nulls can be tracked by the links in the console, if no npexception is thrown...
 	
-	the bad thing is, the addCatch() in javassist doesn't work yet, i have to ask nevana.
+	the bad thing is, the addCatch() in javassist doesn't work yet, i have to ask nevena.
 	
 	
 22.02.16 - 01.03.16
@@ -215,12 +215,82 @@ Meeting nur mit Boris
 		-> viele Male wieder stackUnderflow etc.
 
 
+17.05.16
+
+agreed to wrap main body witch catch block
+exception obj just provides info like className and lineNr
+-> problem can't get variable-info
+
+idea:
+go through bytecode, save all information about vars on which a method is called on.
+in catch block "abgleichen" hashmaps nullAssignment-info & varMethodCall-info to get the var which caused npe
 
 
+8.6.16
+storeList, external receiverList
+after npe occurs, in main-catchBlock compare those two.
+if there is a match, can get location of nullAssignment from storeList.
+
+problem creating receiverList
+static bytecode analysis
+can't distinguish receiver and parameter in bytecode
+javassist does not support this and asked in stackoverflow, but no answer...
+
+solution:
+whole interval, possibleReceiverList
+start to nested interval, get nested receiver, update list so that the nested invoke interval is like a parameter
 
 
+17.6.16
+get methodreceiver -> if methodinvocation takes multiple line in sourcecode
+solution: check lineNrAttr
 
-	
-	
+x.method(a(), y.b(), c) -> a() problem, x coud be receiver, a 0 param -> x possicle receiver for a() -> wrong!
+can be ignored -> private method: this.invoke, public
 
-	
+
+26.6.16
+multipleLine problem
+in bytecode not visible the pc-interval of methodReceiver
+sometimes lineNrAttr & bytecode of classFile != codeIterator
+129 - 130 -129...
+128 - 129 - 130 - 131 - 129 -> startPc: 128, with diff max-"possibleStartPc"
+128 - 129 - 130 - 131 - 129 - 128 -> startPc: 128, e.g. if, while, for
+e.g. org.jhotdraw.samples.javadraw.JavaDrawApp, line 260-266
+e.g. org.jhotdraw.applet.DrawApplet, line 149-157
+127 - 128 - 127 - 128 -> startPc: 1. 128, endPc: end of 2. 127 
+e.g. org.jhotdraw.standard.ChangeConnectionHandle, line 127-128
+
+outOfBoundsExceptions:
+pc 0, line 31.. org.jhotdraw.samples.minimap.MiniMapDesktop, line 31-32
+
+no source, just bin
+org.jhotdraw.contrib.MDIDesktopManager, method getScrollPane; 2 ifs, nestedMultipleLines
+org.jhotdraw.util.JDOStorageFormat$1, method run; outOfBoundsException, parameCount was wrong -> whole method replaced
+
+mohamed proposed to use abstract syntax tree (ast)
+	using asm & javassist, didn't find anything in internet, nevena also find nothing..
+	decided not to use ast
+
+paramCount
+.../C.../D... -> wrongly counted as param
+L... -> check what comes before L, then decide whether to paramCount++
+vollkommen geändert... getParameterAmount, viel Zeit gebraucht dann doch eine verfügbare methode gefunden..
+-> verschwendete Zeit
+
+finding bug
+going through classFiles very fast -> exception printed in console in the wrong place
+means: have to find right class & method first to fix the bug -> setting breakPoints etc. 
+
+
+28.6.16
+getting csv file -> path \\\\ReceiverData.csv -> \\ReceiverData.csv
+
+4.7.16
+first success tracking null-assignment-location when npe is thrown
+spoke with the mentors: collections can be avoided, just track the root collection?
+summerized array-element as one receiver-elem (aload, iconst, aaload -> 1 receiver, not 3)
+reimplemented multipleLine issue -> more logically not a mess anymore
+storing parameterData
+only track null from same class/method -> npe from parameter -> just say parameter is null, where set to null not tracking
+ignoring collectionElement -> they can contain complex things

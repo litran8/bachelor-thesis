@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  12 MAY 2016 13:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  11 JUL 2016 16:32
 entering extended mode
 **./thesis.tex
 (thesis.tex
@@ -586,12 +586,30 @@ Package: chngpage 2009/10/20 v1.2b change page layout
 \c@cp@cnt=\count160
 \c@cp@tempcnt=\count161
 )
-\c@qcounter=\count162
+("C:\Program Files\MiKTeX 2.9\tex\latex\tools\indentfirst.sty"
+Package: indentfirst 1995/11/23 v1.03 Indent first paragraph (DPC)
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\ltxmisc\parskip.sty"
+Package: parskip 2001/04/09 non-zero parskip adjustments
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\footmisc\footmisc.sty"
+Package: footmisc 2011/06/06 v5.5b a miscellany of footnote facilities
+\FN@temptoken=\toks36
+\footnotemargin=\dimen184
+\c@pp@next@reset=\count162
+Package footmisc Info: Declaring symbol style bringhurst on input line 855.
+Package footmisc Info: Declaring symbol style chicago on input line 863.
+Package footmisc Info: Declaring symbol style wiley on input line 872.
+Package footmisc Info: Declaring symbol style lamport-robust on input line 883.
+Package footmisc Info: Declaring symbol style lamport* on input line 903.
+Package footmisc Info: Declaring symbol style lamport*-robust on input line 924.
+)
+\c@qcounter=\count163
 
 ! Undefined control sequence.
 \reserved@b ...hor }, pdfsubject={\thesissubtitle 
                                                   }, pdfpagelabels}][{}]\noe...
-l.216 
+l.223 
       
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -648,14 +666,14 @@ Package: auxhook 2011/03/04 v1.3 Hooks for auxiliary files (HO)
 ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\kvoptions.sty"
 Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 )
-\@linkdim=\dimen184
-\Hy@linkcounter=\count163
-\Hy@pagecounter=\count164
+\@linkdim=\dimen185
+\Hy@linkcounter=\count164
+\Hy@pagecounter=\count165
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\pd1enc.def"
 File: pd1enc.def 2012/11/06 v6.83m Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count165
+\Hy@SavedSpaceFactor=\count166
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\hyperref.cfg"
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
@@ -672,12 +690,12 @@ Package hyperref Info: Plain pages OFF on input line 4458.
 Package hyperref Info: Backreferencing OFF on input line 4463.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4688.
-\c@Hy@tempcnt=\count166
+\c@Hy@tempcnt=\count167
 LaTeX Info: Redefining \url on input line 5041.
-\XeTeXLinkMargin=\dimen185
-\Fld@menulength=\count167
-\Field@Width=\dimen186
-\Fld@charsize=\dimen187
+\XeTeXLinkMargin=\dimen186
+\Fld@menulength=\count168
+\Field@Width=\dimen187
+\Fld@charsize=\dimen188
 Package hyperref Info: Hyper figures OFF on input line 6295.
 Package hyperref Info: Link nesting OFF on input line 6300.
 Package hyperref Info: Hyper index ON on input line 6303.
@@ -687,17 +705,17 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6320.
 Package hyperref Info: PDF/A mode OFF on input line 6325.
 LaTeX Info: Redefining \ref on input line 6365.
 LaTeX Info: Redefining \pageref on input line 6369.
-\Hy@abspage=\count168
-\c@Item=\count169
-\c@Hfootnote=\count170
+\Hy@abspage=\count169
+\c@Item=\count170
+\c@Hfootnote=\count171
 )
 
 Package hyperref Message: Driver (autodetected): hpdftex.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\hpdftex.def"
 File: hpdftex.def 2012/11/06 v6.83m Hyperref driver for pdfTeX
-\Fld@listcount=\count171
-\c@bookmark@seq@number=\count172
+\Fld@listcount=\count172
+\c@bookmark@seq@number=\count173
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\rerunfilecheck.sty"
 Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)
@@ -707,46 +725,46 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 28
 ) (thesis.aux)
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 224.
-LaTeX Font Info:    ... okay on input line 224.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 224.
-LaTeX Font Info:    ... okay on input line 224.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 224.
-LaTeX Font Info:    ... okay on input line 224.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 224.
-LaTeX Font Info:    ... okay on input line 224.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 224.
-LaTeX Font Info:    ... okay on input line 224.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 224.
-LaTeX Font Info:    ... okay on input line 224.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 224.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 224.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 231.
+LaTeX Font Info:    ... okay on input line 231.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 231.
+LaTeX Font Info:    ... okay on input line 231.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 231.
+LaTeX Font Info:    ... okay on input line 231.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 231.
+LaTeX Font Info:    ... okay on input line 231.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 231.
+LaTeX Font Info:    ... okay on input line 231.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 231.
+LaTeX Font Info:    ... okay on input line 231.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 231.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 231.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 224.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 224.
-LaTeX Font Info:    ... okay on input line 224.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 224.
+LaTeX Font Info:    ... okay on input line 231.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 231.
+LaTeX Font Info:    ... okay on input line 231.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 231.
  ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ot1ptm.fd"
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count173
-\scratchdimen=\dimen188
+\scratchcounter=\count174
+\scratchdimen=\dimen189
 \scratchbox=\box54
-\nofMPsegments=\count174
-\nofMParguments=\count175
-\everyMPshowfont=\toks36
-\MPscratchCnt=\count176
-\MPscratchDim=\dimen189
-\MPnumerator=\count177
-\makeMPintoPDFobject=\count178
-\everyMPtoPDFconversion=\toks37
+\nofMPsegments=\count175
+\nofMParguments=\count176
+\everyMPshowfont=\toks37
+\MPscratchCnt=\count177
+\MPscratchDim=\dimen190
+\MPnumerator=\count178
+\makeMPintoPDFobject=\count179
+\everyMPtoPDFconversion=\toks38
 )
-LaTeX Info: Redefining \microtypecontext on input line 224.
+LaTeX Info: Redefining \microtypecontext on input line 231.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -793,45 +811,45 @@ File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\c@lstlisting=\count179
+\c@lstlisting=\count180
 ("C:\Program Files\MiKTeX 2.9\tex\latex\ucs\ucsencs.def"
 File: ucsencs.def 2011/01/21 Fixes to fontencodings LGR, T3
 )
 \AtBeginShipoutBox=\box55
-Package hyperref Info: Link coloring ON on input line 224.
+Package hyperref Info: Link coloring ON on input line 231.
  ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
 ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count180
+\c@section@level=\count181
 LaTeX Info: Redefining \Ref on input line 513.
 )
-LaTeX Info: Redefining \ref on input line 224.
-LaTeX Info: Redefining \pageref on input line 224.
-LaTeX Info: Redefining \nameref on input line 224.
+LaTeX Info: Redefining \ref on input line 231.
+LaTeX Info: Redefining \pageref on input line 231.
+LaTeX Info: Redefining \nameref on input line 231.
  (thesis.out) (thesis.out)
 \@outlinefile=\write3
 \openout3 = `thesis.out'.
 
-LaTeX Info: Redefining \Ref on input line 224.
+LaTeX Info: Redefining \Ref on input line 231.
 
-<images/logos/UNI_Bern.png, id=31, 258.2448pt x 199.4652pt>
+<images/logos/UNI_Bern.png, id=55, 258.2448pt x 199.4652pt>
 File: images/logos/UNI_Bern.png Graphic file (type png)
  <use images/logos/UNI_Bern.png>
-Package pdftex.def Info: images/logos/UNI_Bern.png used on input line 233.
+Package pdftex.def Info: images/logos/UNI_Bern.png used on input line 240.
 (pdftex.def)             Requested size: 129.12207pt x 99.73235pt.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 239.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 246.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24.88> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 239.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 246.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 240.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 247.
 
 ! Undefined control sequence.
-l.240     \Large \vspace{0.1in} \thesissubtitle
-                                                \par}
+l.247     \Large  \thesissubtitle
+                                  \par}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -839,15 +857,15 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20.74> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 243.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 250.
 [1
 
 
 
-{C:/Users/Lina Tran/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./images/logos/UNI_Bern.png (PNG copy)>])
+{C:/Users/Lina Tran/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./images/logos/UNI_Bern.png (PNG copy)>]
+[2])
 LaTeX Font Info:    Try loading font information for T1+put on input line 8.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\t1put.fd"
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\t1put.fd"
 File: t1put.fd 2001/06/04 font definitions for T1/put.
 )
 Package microtype Info: Loading generic settings for font family
@@ -867,15 +885,43 @@ Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 1.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 2.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 3.
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-cmr.cfg"
+File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 3.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+) ("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-msa.cfg"
+File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 3.
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) ("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-msb.cfg"
+File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
+)
+LaTeX Font Info:    Try loading font information for U+stmry on input line 3.
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\stmaryrd\ustmry.fd")
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 4.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 5.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 6.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 7.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 8.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 9.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 10.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 11.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 12.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 13.
 )
 \tf@toc=\write4
 \openout4 = `thesis.toc'.
 
- [2
+pdfTeX warning (ext4): destination with the same identifier (name{page.ii}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.24 \mainmatter
+                 [2
 
 
 ]
@@ -891,34 +937,106 @@ Missing character: There is no ô in font ptmr7t!
 Chapter 2.
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 40.
 
-Package natbib Warning: Citation `Star89' on page 3 undefined on input line 41.
+Overfull \hbox (4.45871pt too wide) in paragraph at lines 42--43
+[]\OT1/ptm/m/n/12 (-20) This chap-ter pro-vides a short overview of work-s/tech-nolo-gies used in this project. 
+ []
+
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 45.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 45.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 45.
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ot1pcr.fd"
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+Package microtype Info: Loading generic settings for font family
+(microtype)             `pcr' (encoding: OT1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+
+<images/bytecodeModificationLevels.png, id=100, 468.24937pt x 182.93344pt>
+File: images/bytecodeModificationLevels.png Graphic file (type png)
+ <use images/bytecodeModificationLevels.png>
+Package pdftex.def Info: images/bytecodeModificationLevels.png used on input line 49.
+(pdftex.def)             Requested size: 334.60422pt x 130.72942pt.
 
 [3
 
 ]
-Chapter 3.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 43.
-[4
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 54.
+ <images/javassistExample.png, id=109, 963.6pt x 495.35063pt>
+File: images/javassistExample.png Graphic file (type png)
+ <use images/javassistExample.png>
+Package pdftex.def Info: images/javassistExample.png used on input line 60.
+(pdftex.def)             Requested size: 334.60422pt x 172.00723pt.
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ù in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ù in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ù in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ù in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ù in font ptmr7t!
+ [4 <./images/bytecodeModificationLevels.png> <./images/javassistExample.png>]
+<images/javassistModules.png, id=116, 459.21562pt x 242.40562pt>
+File: images/javassistModules.png Graphic file (type png)
+ <use images/javassistModules.png>
+Package pdftex.def Info: images/javassistModules.png used on input line 69.
+(pdftex.def)             Requested size: 334.60422pt x 176.63652pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 74.
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ù in font ptmr7t!
 
-]
+<images/insertionCodeExample.png, id=118, 863.47594pt x 237.13594pt>
+File: images/insertionCodeExample.png Graphic file (type png)
+ <use images/insertionCodeExample.png>
+Package pdftex.def Info: images/insertionCodeExample.png used on input line 78.
+(pdftex.def)             Requested size: 376.42575pt x 103.37762pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 84.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 84.
+ [5 <./images/javassistModules.png> <./images/insertionCodeExample.png>] [6]
+Chapter 3.
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 88.
+[7
+
+] [8]
 Chapter 4.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 46.
-[5
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 103.
+[9
 
 ]
 Chapter 5.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 49.
-[6
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 111.
+[10
 
 ]
 Chapter 6.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 52.
-[7
-
-]
-Chapter 7.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 55.
-(thesis.bbl [8
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 114.
+(thesis.bbl [11
 
 ]
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 1.
@@ -927,35 +1045,33 @@ Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0
 Package natbib Warning: Empty `thebibliography' environment on input line 3.
 
 )
-
-Package natbib Warning: There were undefined citations.
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 65.
-[9
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 124.
+ [12
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 65.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 124.
  (thesis.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 65.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 65.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 124.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 124.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: F14EB3EAA0A03CE185241A4451E227FE;393.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 65.
+(rerunfilecheck)             Checksum: EC5D8E1833FC136A96F8DF0F16EEDE8F;782.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 124.
  ) 
 Here is how much of TeX's memory you used:
- 18767 strings out of 493634
- 317813 string characters out of 3143730
- 421301 words of memory out of 3000000
- 21844 multiletter control sequences out of 15000+200000
- 29512 words of font info for 75 fonts, out of 3000000 for 9000
+ 19218 strings out of 493634
+ 325791 string characters out of 3143730
+ 424268 words of memory out of 3000000
+ 22179 multiletter control sequences out of 15000+200000
+ 43377 words of font info for 136 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 36i,7n,42p,10398b,354s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,8n,42p,10398b,456s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/adobe/utopia/put
-b8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times
-/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb>
-Output written on thesis.pdf (12 pages, 70111 bytes).
+b8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/tim
+es/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw
+/times/utmr8a.pfb>
+Output written on thesis.pdf (16 pages, 410426 bytes).
 PDF statistics:
- 117 PDF objects out of 1000 (max. 8388607)
- 22 named destinations out of 1000 (max. 500000)
- 12862 words of extra memory for PDF output out of 14400 (max. 10000000)
+ 188 PDF objects out of 1000 (max. 8388607)
+ 37 named destinations out of 1000 (max. 500000)
+ 19586 words of extra memory for PDF output out of 20736 (max. 10000000)
 

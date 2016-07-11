@@ -11,14 +11,14 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1226
-NormalPos.bottom=350
+NormalPos.right=1852
+NormalPos.bottom=679
 Class=LaTeXView
 Document=preamble.tex
 
 [Frame0_View0,0]
-TopLine=227
-Cursor=7525
+TopLine=25
+Cursor=1124
 
 [SessionInfo]
 FrameCount=1

@@ -19,36 +19,60 @@
 \@writefile{toc}{\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{cha:introduction}{{1}{1}{Introduction}{chapter.1}{}}
+\newlabel{ch:introduction}{{1}{1}{Introduction}{chapter.1}{}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {2}Technical Background}{3}{chapter.2}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{ch:technicalBackground}{{2}{3}{Technical Background}{chapter.2}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {2.1}Javassist}{3}{section.2.1}}
+\newlabel{sec:javassist}{{2.1}{3}{Javassist}{section.2.1}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces Bytecode modification levels}}{4}{figure.2.1}}
 \newlabel{fig:bytecodeModificationLevels}{{2.1}{4}{Bytecode modification levels}{figure.2.1}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces Javassist example}}{4}{figure.2.2}}
 \newlabel{fig:javassistExample}{{2.2}{4}{Javassist example}{figure.2.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2.3}{\ignorespaces Javassist Modules}}{5}{figure.2.3}}
 \newlabel{fig:javassistModules}{{2.3}{5}{Javassist Modules}{figure.2.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.4}{\ignorespaces Inserting code example}}{5}{figure.2.4}}
-\newlabel{fig:insertionCodeExample}{{2.4}{5}{Inserting code example}{figure.2.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.4}{\ignorespaces Inserting code example}}{6}{figure.2.4}}
+\newlabel{fig:insertionCodeExample}{{2.4}{6}{Inserting code example}{figure.2.4}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {2.2}JAD}{6}{section.2.2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.5}{\ignorespaces Decompile example}}{6}{figure.2.5}}
+\newlabel{fig:bytecodeSourcecode}{{2.5}{6}{Decompile example}{figure.2.5}{}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {3}NullSpy}{7}{chapter.3}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}High level overview}{7}{section.3.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}Low level overview}{7}{section.3.2}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}Challanges}{7}{section.3.3}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.4}Limitations}{8}{section.3.4}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Validation}{9}{chapter.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}High level overview/Rough Scheme}{7}{section.3.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Modification overview}}{8}{figure.3.1}}
+\newlabel{fig:highLevelOverview}{{3.1}{8}{Modification overview}{figure.3.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Low level overview}{8}{section.3.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Method Receiver Data Collection}{9}{subsection.3.2.1}}
+\newlabel{subsec:methodReceiver}{{3.2.1}{9}{Method Receiver Data Collection}{subsection.3.2.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Variable Data Collection}{10}{subsection.3.2.2}}
+\newlabel{subsec:variable}{{3.2.2}{10}{Variable Data Collection}{subsection.3.2.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Local variable creation bytecode\let \reserved@d =[\def \par }}{10}{figure.3.2}}
+\newlabel{fig:localVarCreationBytecode}{{3.2}{10}{Local variable creation bytecode\footnote {\url {http://blog.jamesdbloom.com/images_2013_11_17_17_56/java_local_variable_creation_byte_code.png}}}{figure.3.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Local variable table}}{11}{figure.3.3}}
+\newlabel{fig:localVarTable}{{3.3}{11}{Local variable table}{figure.3.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Local variable table entries with same slot}}{11}{figure.3.4}}
+\newlabel{fig:localVarTableDuplicatedSlot}{{3.4}{11}{Local variable table entries with same slot}{figure.3.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Line number table}}{12}{figure.3.5}}
+\newlabel{fig:lineNrTable}{{3.5}{12}{Line number table}{figure.3.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Challenges}{12}{section.3.3}}
+\newlabel{sec:challenges}{{3.3}{12}{Challenges}{section.3.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Obtaining Method Receiver Data Difficulties}{12}{subsection.3.3.1}}
+\newlabel{subsec:methodReceiverTroubles}{{3.3.1}{12}{Obtaining Method Receiver Data Difficulties}{subsection.3.3.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.2}Obtaining Variable Data Difficulties}{12}{subsection.3.3.2}}
+\newlabel{subsec:variableTroubles}{{3.3.2}{12}{Obtaining Variable Data Difficulties}{subsection.3.3.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Limitations}{13}{section.3.4}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Validation}{14}{chapter.4}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}JHotDraw}{9}{section.4.1}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{10}{chapter.5}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}JHotDraw}{14}{section.4.1}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{15}{chapter.5}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{ch:conclusionsFutureWork}{{5}{15}{Conclusion and Future Work}{chapter.5}{}}
 \bibdata{thesis}
-\@writefile{toc}{\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{11}{chapter.6}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{16}{chapter.6}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \bibstyle{plain}

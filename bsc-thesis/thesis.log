@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  11 JUL 2016 16:43
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  13 JUL 2016 19:45
 entering extended mode
 **./thesis.tex
 (thesis.tex
@@ -835,7 +835,7 @@ LaTeX Info: Redefining \nameref on input line 231.
 
 LaTeX Info: Redefining \Ref on input line 231.
 
-<images/logos/UNI_Bern.png, id=55, 258.2448pt x 199.4652pt>
+<images/logos/UNI_Bern.png, id=71, 258.2448pt x 199.4652pt>
 File: images/logos/UNI_Bern.png Graphic file (type png)
  <use images/logos/UNI_Bern.png>
 Package pdftex.def Info: images/logos/UNI_Bern.png used on input line 240.
@@ -913,6 +913,10 @@ Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 10.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 11.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 12.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 13.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 14.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 15.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 16.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 17.
 )
 \tf@toc=\write4
 \openout4 = `thesis.toc'.
@@ -937,13 +941,13 @@ Missing character: There is no ô in font ptmr7t!
 Chapter 2.
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 40.
 
-Overfull \hbox (4.45871pt too wide) in paragraph at lines 42--43
+Overfull \hbox (4.45871pt too wide) in paragraph at lines 43--44
 []\OT1/ptm/m/n/12 (-20) This chap-ter pro-vides a short overview of work-s/tech-nolo-gies used in this project. 
  []
 
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 45.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 45.
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 45.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 47.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 47.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 47.
 ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ot1pcr.fd"
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
@@ -952,91 +956,174 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-<images/bytecodeModificationLevels.png, id=100, 468.24937pt x 182.93344pt>
+<images/bytecodeModificationLevels.png, id=120, 468.24937pt x 182.93344pt>
 File: images/bytecodeModificationLevels.png Graphic file (type png)
  <use images/bytecodeModificationLevels.png>
-Package pdftex.def Info: images/bytecodeModificationLevels.png used on input line 49.
+Package pdftex.def Info: images/bytecodeModificationLevels.png used on input line 51.
 (pdftex.def)             Requested size: 334.60422pt x 130.72942pt.
 
 [3
 
 ]
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 54.
- <images/javassistExample.png, id=109, 963.6pt x 495.35063pt>
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 56.
+ <images/javassistExample.png, id=129, 963.6pt x 495.35063pt>
 File: images/javassistExample.png Graphic file (type png)
  <use images/javassistExample.png>
-Package pdftex.def Info: images/javassistExample.png used on input line 60.
+Package pdftex.def Info: images/javassistExample.png used on input line 62.
 (pdftex.def)             Requested size: 334.60422pt x 172.00723pt.
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ù in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ù in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ù in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ù in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ù in font ptmr7t!
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 67.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 67.
  [4 <./images/bytecodeModificationLevels.png> <./images/javassistExample.png>]
-<images/javassistModules.png, id=116, 459.21562pt x 242.40562pt>
+<images/javassistModules.png, id=138, 459.21562pt x 242.40562pt>
 File: images/javassistModules.png Graphic file (type png)
  <use images/javassistModules.png>
-Package pdftex.def Info: images/javassistModules.png used on input line 69.
+Package pdftex.def Info: images/javassistModules.png used on input line 71.
 (pdftex.def)             Requested size: 334.60422pt x 176.63652pt.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 74.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 76.
+
+<images/insertionCodeExample.png, id=140, 863.47594pt x 237.13594pt>
+File: images/insertionCodeExample.png Graphic file (type png)
+ <use images/insertionCodeExample.png>
+Package pdftex.def Info: images/insertionCodeExample.png used on input line 80.
+(pdftex.def)             Requested size: 376.42575pt x 103.37762pt.
+ [5 <./images/javassistModules.png>]
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 86.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 86.
+ <images/bytecodeSourcecode.png, id=151, 216.3282pt x 160.4394pt>
+File: images/bytecodeSourcecode.png Graphic file (type png)
+
+<use images/bytecodeSourcecode.png>
+Package pdftex.def Info: images/bytecodeSourcecode.png used on input line 90.
+(pdftex.def)             Requested size: 250.95476pt x 186.13187pt.
+ [6 <./images/insertionCodeExample.png> <./images/bytecodeSourcecode.png>]
+Chapter 3.
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 97.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 98.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 100.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 104.
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ú in font ptmr7t!
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ù in font ptmr7t!
-
-<images/insertionCodeExample.png, id=118, 863.47594pt x 237.13594pt>
-File: images/insertionCodeExample.png Graphic file (type png)
- <use images/insertionCodeExample.png>
-Package pdftex.def Info: images/insertionCodeExample.png used on input line 78.
-(pdftex.def)             Requested size: 376.42575pt x 103.37762pt.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 84.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 84.
- [5 <./images/javassistModules.png> <./images/insertionCodeExample.png>] [6]
-Chapter 3.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 88.
 [7
 
-] [8]
+] <images/highLevelOverview.png, id=168, 582.67688pt x 351.56343pt>
+File: images/highLevelOverview.png Graphic file (type png)
+ <use images/highLevelOverview.png>
+Package pdftex.def Info: images/highLevelOverview.png used on input line 114.
+(pdftex.def)             Requested size: 209.12683pt x 126.17648pt.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 125.
+ [8 <./images/highLevelOverview.png>]
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 144.
+
+Underfull \hbox (badness 10000) in paragraph at lines 129--145
+
+ []
+
+
+Overfull \hbox (12.79999pt too wide) in paragraph at lines 129--145
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 129--145
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 129--145
+
+ []
+
+! Too many }'s.
+<recently read> }
+                 
+l.146 ...hes with the regex \textit{''invoke.*''}}
+                                                  . There are exactly five k...
+You've closed more groups than you opened.
+Such booboos are generally harmless, so keep going.
+
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 146.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 146.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 152.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 152.
+[9]
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 154.
+ <images/localVarCreationBytecode.png, id=193, 1149.5447pt x 1063.72406pt>
+File: images/localVarCreationBytecode.png Graphic file (type png)
+ <use images/localVarCreationBytecode.png>
+Package pdftex.def Info: images/localVarCreationBytecode.png used on input line 160.
+(pdftex.def)             Requested size: 209.12683pt x 193.50719pt.
+
+! Argument of \Hy@tempa has an extra }.
+<inserted text> 
+                \par 
+l.161 ..._local_variable_creation_byte_code.png}}}
+                                                  
+I've run across a `}' that doesn't seem to match anything.
+For example, `\def\a#1{...}' and `\a}' would produce
+this error. If you simply proceed now, the `\par' that
+I've just inserted will cause me to report a runaway
+argument that might be the root of the problem. But if
+your `}' was spurious, just type `2' and it will go away.
+
+Runaway argument?
+\@captype {\@xfootnote }\def \reserved@b {\stepcounter \@mpfn \protected@xdef \ETC.
+! Paragraph ended before \Hy@tempa was complete.
+<to be read again> 
+                   \par 
+l.161 ..._local_variable_creation_byte_code.png}}}
+                                                  
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 161.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 161.
+
+Underfull \hbox (badness 10000) in paragraph at lines 161--161
+[][][][][]$\OT1/pcr/m/n/10 http : / / blog . jamesdbloom . com / images _ 2013 _ 11 _ 17 _ 17 _ 56 / java _ local _
+ []
+
+[10 <./images/localVarCreationBytecode.png>]
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 167.
+ <images/localVarTable.png, id=204, 371.88937pt x 57.96657pt>
+File: images/localVarTable.png Graphic file (type png)
+
+<use images/localVarTable.png>
+Package pdftex.def Info: images/localVarTable.png used on input line 171.
+(pdftex.def)             Requested size: 418.25368pt x 65.1954pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 176.
+ <images/localVarTableDuplicatedSlot.png, id=206, 234.1247pt x 79.79813pt>
+File: images/localVarTableDuplicatedSlot.png Graphic file (type png)
+
+<use images/localVarTableDuplicatedSlot.png>
+Package pdftex.def Info: images/localVarTableDuplicatedSlot.png used on input line 180.
+(pdftex.def)             Requested size: 292.77629pt x 99.80096pt.
+ [11 <./images/localVarTable.png> <./images/localVarTableDuplicatedSlot.png>] <images/lineNrTable.png, id=216, 77.53969p
+t x 58.71938pt>
+File: images/lineNrTable.png Graphic file (type png)
+ <use images/lineNrTable.png>
+Package pdftex.def Info: images/lineNrTable.png used on input line 191.
+(pdftex.def)             Requested size: 125.47737pt x 95.02179pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 196.
+ [12 <./images/lineNrTable.png>] [13]
 Chapter 4.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 103.
-[9
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 217.
+[14
 
 ]
 Chapter 5.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 111.
-[10
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 225.
+[15
 
 ]
 Chapter 6.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 114.
-(thesis.bbl [11
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 229.
+(thesis.bbl [16
 
 ]
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 1.
@@ -1044,34 +1131,59 @@ Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0
 
 Package natbib Warning: Empty `thebibliography' environment on input line 3.
 
-)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 124.
- [12
+) [17
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 124.
- (thesis.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 124.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 124.
+Missing character: There is no ‚ in font ptmr7t!
+Missing character: There is no Ä in font ptmr7t!
+Missing character: There is no ú in font ptmr7t!
+ [18
+
+]
+
+! LaTeX Error: \begin{center} on input line 242 ended by \end{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.249 \end{document}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 249.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 249.
+(thesis.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 249.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 249.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: EC5D8E1833FC136A96F8DF0F16EEDE8F;782.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 124.
- ) 
+(rerunfilecheck)             Checksum: D4D11D5F977389A4B7E0EFA84659D935;1173.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 249.
+ )
+(\end occurred inside a group at level 1)
+
+### semi simple group (level 1) entered at line 242 (\begingroup)
+### bottom level 
 Here is how much of TeX's memory you used:
- 19218 strings out of 493634
- 325791 string characters out of 3143730
- 424268 words of memory out of 3000000
- 22179 multiletter control sequences out of 15000+200000
- 43377 words of font info for 136 fonts, out of 3000000 for 9000
+ 19372 strings out of 493634
+ 328182 string characters out of 3143730
+ 427118 words of memory out of 3000000
+ 22232 multiletter control sequences out of 15000+200000
+ 51125 words of font info for 182 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 36i,8n,42p,10398b,456s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/adobe/utopia/put
-b8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/tim
-es/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw
-/times/utmr8a.pfb>
-Output written on thesis.pdf (16 pages, 410434 bytes).
+ 36i,10n,42p,10398b,472s stack positions out of 5000i,500n,10000p,200000b,50000s
+pdfTeX warning (dest): name{Hfootnote.7} has been referenced but does not exist, replaced by a fixed one
+
+
+{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/adobe/utopia/putb8
+a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times
+/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/t
+imes/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
+Output written on thesis.pdf (22 pages, 689246 bytes).
 PDF statistics:
- 188 PDF objects out of 1000 (max. 8388607)
- 37 named destinations out of 1000 (max. 500000)
- 19586 words of extra memory for PDF output out of 20736 (max. 10000000)
+ 287 PDF objects out of 1000 (max. 8388607)
+ 65 named destinations out of 1000 (max. 500000)
+ 28352 words of extra memory for PDF output out of 29859 (max. 10000000)
 

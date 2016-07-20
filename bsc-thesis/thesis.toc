@@ -7,11 +7,15 @@
 \contentsline {section}{\numberline {3.2}Low level overview}{8}{section.3.2}
 \contentsline {subsection}{\numberline {3.2.1}Method Receiver Data Collection}{9}{subsection.3.2.1}
 \contentsline {subsection}{\numberline {3.2.2}Variable Data Collection}{10}{subsection.3.2.2}
-\contentsline {section}{\numberline {3.3}Challenges}{12}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Obtaining Method Receiver Data Difficulties}{12}{subsection.3.3.1}
-\contentsline {subsection}{\numberline {3.3.2}Obtaining Variable Data Difficulties}{12}{subsection.3.3.2}
-\contentsline {section}{\numberline {3.4}Limitations}{13}{section.3.4}
-\contentsline {chapter}{\numberline {4}Validation}{14}{chapter.4}
-\contentsline {section}{\numberline {4.1}JHotDraw}{14}{section.4.1}
-\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{15}{chapter.5}
-\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{16}{chapter.6}
+\contentsline {subsubsection}{\numberline {3.2.2.1}Local Variable}{10}{subsubsection.3.2.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2.2}Instance and Class/Static variables (Fields)}{13}{subsubsection.3.2.2.2}
+\contentsline {subsection}{\numberline {3.2.3}Bytecode Adaptation}{15}{subsection.3.2.3}
+\contentsline {section}{\numberline {3.3}Challenges}{16}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Obtaining Method Receiver Data Difficulties}{16}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}Obtaining Variable Data Difficulties - Fields}{22}{subsection.3.3.2}
+\contentsline {subsection}{\numberline {3.3.3}Bytecode Adaptation Difficulties}{22}{subsection.3.3.3}
+\contentsline {section}{\numberline {3.4}Limitations}{23}{section.3.4}
+\contentsline {chapter}{\numberline {4}Validation}{24}{chapter.4}
+\contentsline {section}{\numberline {4.1}JHotDraw}{24}{section.4.1}
+\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{25}{chapter.5}
+\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{26}{chapter.6}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  13 JUL 2016 19:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  20 JUL 2016 22:23
 entering extended mode
 **./thesis.tex
 (thesis.tex
@@ -835,7 +835,7 @@ LaTeX Info: Redefining \nameref on input line 231.
 
 LaTeX Info: Redefining \Ref on input line 231.
 
-<images/logos/UNI_Bern.png, id=71, 258.2448pt x 199.4652pt>
+<images/logos/UNI_Bern.png, id=87, 258.2448pt x 199.4652pt>
 File: images/logos/UNI_Bern.png Graphic file (type png)
  <use images/logos/UNI_Bern.png>
 Package pdftex.def Info: images/logos/UNI_Bern.png used on input line 240.
@@ -917,6 +917,10 @@ Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 14.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 15.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 16.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 17.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 18.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 19.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 20.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 21.
 )
 \tf@toc=\write4
 \openout4 = `thesis.toc'.
@@ -956,7 +960,7 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-<images/bytecodeModificationLevels.png, id=120, 468.24937pt x 182.93344pt>
+<images/bytecodeModificationLevels.png, id=140, 468.24937pt x 182.93344pt>
 File: images/bytecodeModificationLevels.png Graphic file (type png)
  <use images/bytecodeModificationLevels.png>
 Package pdftex.def Info: images/bytecodeModificationLevels.png used on input line 51.
@@ -966,7 +970,7 @@ Package pdftex.def Info: images/bytecodeModificationLevels.png used on input lin
 
 ]
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 56.
- <images/javassistExample.png, id=129, 963.6pt x 495.35063pt>
+ <images/javassistExample.png, id=149, 963.6pt x 495.35063pt>
 File: images/javassistExample.png Graphic file (type png)
  <use images/javassistExample.png>
 Package pdftex.def Info: images/javassistExample.png used on input line 62.
@@ -974,14 +978,14 @@ Package pdftex.def Info: images/javassistExample.png used on input line 62.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 67.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 67.
  [4 <./images/bytecodeModificationLevels.png> <./images/javassistExample.png>]
-<images/javassistModules.png, id=138, 459.21562pt x 242.40562pt>
+<images/javassistModules.png, id=158, 459.21562pt x 242.40562pt>
 File: images/javassistModules.png Graphic file (type png)
  <use images/javassistModules.png>
 Package pdftex.def Info: images/javassistModules.png used on input line 71.
 (pdftex.def)             Requested size: 334.60422pt x 176.63652pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 76.
 
-<images/insertionCodeExample.png, id=140, 863.47594pt x 237.13594pt>
+<images/insertionCodeExample.png, id=160, 863.47594pt x 237.13594pt>
 File: images/insertionCodeExample.png Graphic file (type png)
  <use images/insertionCodeExample.png>
 Package pdftex.def Info: images/insertionCodeExample.png used on input line 80.
@@ -989,7 +993,7 @@ Package pdftex.def Info: images/insertionCodeExample.png used on input line 80.
  [5 <./images/javassistModules.png>]
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 86.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 86.
- <images/bytecodeSourcecode.png, id=151, 216.3282pt x 160.4394pt>
+ <images/bytecodeSourcecode.png, id=171, 216.3282pt x 160.4394pt>
 File: images/bytecodeSourcecode.png Graphic file (type png)
 
 <use images/bytecodeSourcecode.png>
@@ -1000,7 +1004,7 @@ Chapter 3.
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 97.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 98.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 100.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 104.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 105.
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ú in font ptmr7t!
@@ -1009,59 +1013,59 @@ Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ù in font ptmr7t!
 [7
 
-] <images/highLevelOverview.png, id=168, 582.67688pt x 351.56343pt>
+] <images/highLevelOverview.png, id=188, 582.67688pt x 351.56343pt>
 File: images/highLevelOverview.png Graphic file (type png)
  <use images/highLevelOverview.png>
-Package pdftex.def Info: images/highLevelOverview.png used on input line 114.
+Package pdftex.def Info: images/highLevelOverview.png used on input line 117.
 (pdftex.def)             Requested size: 209.12683pt x 126.17648pt.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 125.
  [8 <./images/highLevelOverview.png>]
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 144.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 130.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 150.
 
-Underfull \hbox (badness 10000) in paragraph at lines 129--145
+Underfull \hbox (badness 10000) in paragraph at lines 134--151
 
  []
 
 
-Overfull \hbox (12.79999pt too wide) in paragraph at lines 129--145
+Overfull \hbox (12.79999pt too wide) in paragraph at lines 134--151
 [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 129--145
+Underfull \hbox (badness 10000) in paragraph at lines 134--151
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 129--145
+Underfull \hbox (badness 10000) in paragraph at lines 134--151
 
  []
 
 ! Too many }'s.
 <recently read> }
                  
-l.146 ...hes with the regex \textit{''invoke.*''}}
+l.152 ...hes with the regex \textit{''invoke.*''}}
                                                   . There are exactly five k...
 You've closed more groups than you opened.
 Such booboos are generally harmless, so keep going.
 
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 146.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 146.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 152.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 152.
 [9]
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 154.
- <images/localVarCreationBytecode.png, id=193, 1149.5447pt x 1063.72406pt>
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 158.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 158.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 160.
+ <images/localVarCreationBytecode.png, id=211, 1149.5447pt x 1063.72406pt>
 File: images/localVarCreationBytecode.png Graphic file (type png)
  <use images/localVarCreationBytecode.png>
-Package pdftex.def Info: images/localVarCreationBytecode.png used on input line 160.
+Package pdftex.def Info: images/localVarCreationBytecode.png used on input line 168.
 (pdftex.def)             Requested size: 209.12683pt x 193.50719pt.
 
 ! Argument of \Hy@tempa has an extra }.
 <inserted text> 
                 \par 
-l.161 ..._local_variable_creation_byte_code.png}}}
+l.169 ..._local_variable_creation_byte_code.png}}}
                                                   
 I've run across a `}' that doesn't seem to match anything.
 For example, `\def\a#1{...}' and `\a}' would produce
@@ -1075,55 +1079,376 @@ Runaway argument?
 ! Paragraph ended before \Hy@tempa was complete.
 <to be read again> 
                    \par 
-l.161 ..._local_variable_creation_byte_code.png}}}
+l.169 ..._local_variable_creation_byte_code.png}}}
                                                   
 I suspect you've forgotten a `}', causing me to apply this
 control sequence to too much text. How can we recover?
 My plan is to forget the whole thing and hope for the best.
 
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 161.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 161.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 169.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 169.
 
-Underfull \hbox (badness 10000) in paragraph at lines 161--161
+Underfull \hbox (badness 10000) in paragraph at lines 169--169
 [][][][][]$\OT1/pcr/m/n/10 http : / / blog . jamesdbloom . com / images _ 2013 _ 11 _ 17 _ 17 _ 56 / java _ local _
  []
 
-[10 <./images/localVarCreationBytecode.png>]
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 167.
- <images/localVarTable.png, id=204, 371.88937pt x 57.96657pt>
+[10]
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 175.
+ <images/localVarTable.png, id=222, 371.88937pt x 57.96657pt>
 File: images/localVarTable.png Graphic file (type png)
-
-<use images/localVarTable.png>
-Package pdftex.def Info: images/localVarTable.png used on input line 171.
+ <use images/localVarTable.png>
+Package pdftex.def Info: images/localVarTable.png used on input line 179.
 (pdftex.def)             Requested size: 418.25368pt x 65.1954pt.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 176.
- <images/localVarTableDuplicatedSlot.png, id=206, 234.1247pt x 79.79813pt>
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 184.
+ [11 <./images/localVarCreationBytecode.png> <./images/localVarTable.png>]
+<images/localVarTableDuplicatedSlot.png, id=232, 234.1247pt x 79.79813pt>
 File: images/localVarTableDuplicatedSlot.png Graphic file (type png)
-
-<use images/localVarTableDuplicatedSlot.png>
-Package pdftex.def Info: images/localVarTableDuplicatedSlot.png used on input line 180.
+ <use images/localVarTableDuplicatedSlot.png>
+Package pdftex.def Info: images/localVarTableDuplicatedSlot.png used on input line 188.
 (pdftex.def)             Requested size: 292.77629pt x 99.80096pt.
- [11 <./images/localVarTable.png> <./images/localVarTableDuplicatedSlot.png>] <images/lineNrTable.png, id=216, 77.53969p
-t x 58.71938pt>
+
+<images/lineNrTable.png, id=233, 77.53969pt x 58.71938pt>
 File: images/lineNrTable.png Graphic file (type png)
  <use images/lineNrTable.png>
-Package pdftex.def Info: images/lineNrTable.png used on input line 191.
+Package pdftex.def Info: images/lineNrTable.png used on input line 199.
 (pdftex.def)             Requested size: 125.47737pt x 95.02179pt.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 196.
- [12 <./images/lineNrTable.png>] [13]
+ [12 <./images/localVarTableDuplicatedSlot.png> <./images/lineNrTable.png>]
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 221.
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
+File: omsptm.fd 
+)
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <12> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 221.
+
+Underfull \hbox (badness 10000) in paragraph at lines 208--222
+
+ []
+
+
+Overfull \hbox (42.79999pt too wide) in paragraph at lines 208--222
+[] 
+ []
+
+LaTeX Font Info:    Try loading font information for TS1+ptm on input line 242.
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ts1ptm.fd"
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+Underfull \hbox (badness 10000) in paragraph at lines 223--244
+
+ []
+
+
+Overfull \hbox (12.79999pt too wide) in paragraph at lines 223--244
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 223--244
+
+ []
+
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 245--262
+
+ []
+
+
+Overfull \hbox (42.79999pt too wide) in paragraph at lines 245--262
+[] 
+ []
+
+[14] ("C:\Program Files\MiKTeX 2.9\tex\latex\listings\lstlang1.sty"
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
+ (code/Fields.java
+LaTeX Font Info:    Font shape `OT1/pcr/bx/n' in size <10> not available
+(Font)              Font shape `OT1/pcr/b/n' tried instead on input line 1.
+LaTeX Font Info:    Font shape `OT1/pcr/m/it' in size <10> not available
+(Font)              Font shape `OT1/pcr/m/sl' tried instead on input line 8.
+)
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 265.
+ [15]
+Overfull \hbox (118.71779pt too wide) in paragraph at lines 271--272
+[]\OT1/ptm/m/n/12 (-20) The added byte-code rep-re-sents a static method of a class named \OT1/ptm/m/it/12 (-20) ch.scg.
+nullSpy.runtimeSupporter.VariableTester
+ []
+
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 273.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 275.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 284.
+<images/multipleLine/pic4-1.png, id=305, 587.94656pt x 35.38219pt>
+File: images/multipleLine/pic4-1.png Graphic file (type png)
+ <use images/multipleLine/pic4-1.png>
+Package pdftex.def Info: images/multipleLine/pic4-1.png used on input line 288.
+(pdftex.def)             Requested size: 418.25368pt x 25.1701pt.
+
+<images/multipleLine/pic4-2.png, id=306, 497.60907pt x 80.55093pt>
+File: images/multipleLine/pic4-2.png Graphic file (type png)
+ <use images/multipleLine/pic4-2.png>
+Package pdftex.def Info: images/multipleLine/pic4-2.png used on input line 295.
+(pdftex.def)             Requested size: 418.25368pt x 67.70656pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 296.
+ [16 <./images/multipleLine/pic4-1.png>] <images/multipleLine/pic4-3.png, id=314, 70.76437pt x 54.2025pt>
+File: images/multipleLine/pic4-3.png Graphic file (type png)
+
+<use images/multipleLine/pic4-3.png>
+Package pdftex.def Info: images/multipleLine/pic4-3.png used on input line 302.
+(pdftex.def)             Requested size: 125.47737pt x 96.1187pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 303.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 307.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 307.
+
+
+! LaTeX Error: There's no line here to end.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.309 \newline
+              \newline
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: There's no line here to end.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.309 \newline\newline
+                      
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.322 }
+       
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+
+! LaTeX Error: Command \item invalid in math mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.322 }
+       
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.322 }
+       
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.322 }
+       
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Command \item invalid in math mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.322 }
+       
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.322 }
+       
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.322 }
+       
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Extra }, or forgotten \endgroup.
+\par ...m \@noitemerr {\@@par }\fi \else {\@@par }
+                                                  \fi 
+l.322 }
+       
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+
+Overfull \hbox (60.4248pt too wide) in paragraph at lines 322--323
+[][] 
+ []
+
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 324.
+[17 <./images/multipleLine/pic4-2.png> <./images/multipleLine/pic4-3.png>]
+<images/multipleLine/pic3-1.png, id=334, 678.28406pt x 37.64063pt>
+File: images/multipleLine/pic3-1.png Graphic file (type png)
+ <use images/multipleLine/pic3-1.png>
+Package pdftex.def Info: images/multipleLine/pic3-1.png used on input line 328.
+(pdftex.def)             Requested size: 418.25368pt x 23.20999pt.
+
+<images/multipleLine/pic3-2.png, id=335, 570.63188pt x 57.21375pt>
+File: images/multipleLine/pic3-2.png Graphic file (type png)
+ <use images/multipleLine/pic3-2.png>
+Package pdftex.def Info: images/multipleLine/pic3-2.png used on input line 335.
+(pdftex.def)             Requested size: 418.25368pt x 41.93591pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 336.
+
+<images/multipleLine/pic3-3.png, id=337, 75.28125pt x 80.55093pt>
+File: images/multipleLine/pic3-3.png Graphic file (type png)
+ <use images/multipleLine/pic3-3.png>
+Package pdftex.def Info: images/multipleLine/pic3-3.png used on input line 342.
+(pdftex.def)             Requested size: 125.47737pt x 134.27376pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 343.
+
+<images/multipleLine/pic2-1.png, id=339, 478.03593pt x 161.85469pt>
+File: images/multipleLine/pic2-1.png Graphic file (type png)
+ <use images/multipleLine/pic2-1.png>
+Package pdftex.def Info: images/multipleLine/pic2-1.png used on input line 351.
+(pdftex.def)             Requested size: 418.25368pt x 141.61261pt.
+ [18 <./images/multipleLine/pic3-1.png> <./images/multipleLine/pic3-2.png> <./images/multipleLine/pic3-3.png>]
+<images/multipleLine/pic2-2.png, id=350, 790.45313pt x 204.765pt>
+File: images/multipleLine/pic2-2.png Graphic file (type png)
+ <use images/multipleLine/pic2-2.png>
+Package pdftex.def Info: images/multipleLine/pic2-2.png used on input line 358.
+(pdftex.def)             Requested size: 418.25368pt x 108.34682pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 359.
+
+<images/multipleLine/pic2-3.png, id=352, 78.2925pt x 137.01187pt>
+File: images/multipleLine/pic2-3.png Graphic file (type png)
+ <use images/multipleLine/pic2-3.png>
+Package pdftex.def Info: images/multipleLine/pic2-3.png used on input line 365.
+(pdftex.def)             Requested size: 125.47737pt x 219.5935pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 366.
+ [19 <./images/multipleLine/pic2-1.png> <./images/multipleLine/pic2-2.png>]
+<images/multipleLine/pic5-1.png, id=362, 532.99126pt x 91.09032pt>
+File: images/multipleLine/pic5-1.png Graphic file (type png)
+ <use images/multipleLine/pic5-1.png>
+Package pdftex.def Info: images/multipleLine/pic5-1.png used on input line 374.
+(pdftex.def)             Requested size: 418.25368pt x 71.4838pt.
+
+<images/multipleLine/pic5-2.png, id=363, 607.51968pt x 103.13531pt>
+File: images/multipleLine/pic5-2.png Graphic file (type png)
+ <use images/multipleLine/pic5-2.png>
+Package pdftex.def Info: images/multipleLine/pic5-2.png used on input line 381.
+(pdftex.def)             Requested size: 418.25368pt x 71.00606pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 382.
+
+<images/multipleLine/pic5-3.png, id=365, 70.01157pt x 113.67468pt>
+File: images/multipleLine/pic5-3.png Graphic file (type png)
+ <use images/multipleLine/pic5-3.png>
+Package pdftex.def Info: images/multipleLine/pic5-3.png used on input line 388.
+(pdftex.def)             Requested size: 125.47737pt x 203.74178pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 389.
+ [20 <./images/multipleLine/pic2-3.png> <./images/multipleLine/pic5-1.png> <./images/multipleLine/pic5-2.png>]
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
+
+(code/MultipleLinePseudoCode.java
+Overfull \hbox (91.74632pt too wide) in paragraph at lines 9--10
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+)
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
+
+Overfull \hbox (74.07211pt too wide) in paragraph at lines 397--398
+\OT1/ptm/m/n/12 (-20) ta-tion of the class \OT1/ptm/m/it/12 (-20) ch.unibe.scg.nullSpy.instrumentator.controller.methodI
+nvocation.MultipleLineManager
+ []
+
+
+Overfull \hbox (65.15204pt too wide) in paragraph at lines 397--398
+\OT1/ptm/m/n/12 (-20) and \OT1/ptm/m/it/12 (-20) ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation.MethodI
+nvocationAnalyzer\OT1/ptm/m/n/12 (-20) . 
+ []
+
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 401.
+[21 <./images/multipleLine/pic5-3.png>]
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 403.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 409.
+LaTeX Font Info:    Font shape `OMS/ptm/m/it' in size <12> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 411.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 411.
+ <images/bytecodeAdaptionExample_1.png, id=405, 274.77657pt x 118.19156pt>
+File: images/bytecodeAdaptionExample_1.png Graphic file (type png)
+
+<use images/bytecodeAdaptionExample_1.png>
+Package pdftex.def Info: images/bytecodeAdaptionExample_1.png used on input line 415.
+(pdftex.def)             Requested size: 292.77629pt x 125.94432pt.
+ [22]
+<images/bytecodeAdaptionExample_2.png, id=410, 1004.25188pt x 134.00063pt>
+File: images/bytecodeAdaptionExample_2.png Graphic file (type png)
+ <use images/bytecodeAdaptionExample_2.png>
+Package pdftex.def Info: images/bytecodeAdaptionExample_2.png used on input line 422.
+(pdftex.def)             Requested size: 292.77629pt x 39.06569pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 423.
+
+[23 <./images/bytecodeAdaptionExample_1.png> <./images/bytecodeAdaptionExample_2.png>]
 Chapter 4.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 217.
-[14
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 434.
+[24
 
 ]
 Chapter 5.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 225.
-[15
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 442.
+[25
 
 ]
 Chapter 6.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 229.
-(thesis.bbl [16
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 446.
+(thesis.bbl [26
 
 ]
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 1.
@@ -1131,59 +1456,62 @@ Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0
 
 Package natbib Warning: Empty `thebibliography' environment on input line 3.
 
-) [17
+) [27
 
 ]
 Missing character: There is no ‚ in font ptmr7t!
 Missing character: There is no Ä in font ptmr7t!
 Missing character: There is no ú in font ptmr7t!
- [18
+ [28
 
 ]
 
-! LaTeX Error: \begin{center} on input line 242 ended by \end{document}.
+! LaTeX Error: \begin{center} on input line 459 ended by \end{document}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.249 \end{document}
+l.466 \end{document}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 249.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 249.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 466.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 466.
 (thesis.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 249.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 249.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 466.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 466.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: D4D11D5F977389A4B7E0EFA84659D935;1173.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 249.
+(rerunfilecheck)             Checksum: 64F0D158FD54E599A565032776FCC7A1;1561.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 466.
  )
 (\end occurred inside a group at level 1)
 
-### semi simple group (level 1) entered at line 242 (\begingroup)
+### semi simple group (level 1) entered at line 459 (\begingroup)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 19372 strings out of 493634
- 328182 string characters out of 3143730
- 427118 words of memory out of 3000000
- 22232 multiletter control sequences out of 15000+200000
- 51125 words of font info for 182 fonts, out of 3000000 for 9000
+ 19794 strings out of 493634
+ 334960 string characters out of 3143730
+ 471812 words of memory out of 3000000
+ 22489 multiletter control sequences out of 15000+200000
+ 54734 words of font info for 210 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 36i,10n,42p,10398b,472s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,10n,43p,10398b,1103s stack positions out of 5000i,500n,10000p,200000b,50000s
 pdfTeX warning (dest): name{Hfootnote.7} has been referenced but does not exist, replaced by a fixed one
 
 
-{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/adobe/utopia/putb8
-a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times
-/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/t
-imes/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (22 pages, 689246 bytes).
+{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
+/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
+e1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/adobe/utopia/putb8a.pfb><C:/Program Files/MiKT
+eX 2.9/fonts/type1/urw/courier/ucrb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Fi
+les/MiKTeX 2.9/fonts/type1/urw/courier/ucrro8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Pro
+gram Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:
+/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
+Output written on thesis.pdf (32 pages, 873732 bytes).
 PDF statistics:
- 287 PDF objects out of 1000 (max. 8388607)
- 65 named destinations out of 1000 (max. 500000)
- 28352 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 513 PDF objects out of 1000 (max. 8388607)
+ 157 named destinations out of 1000 (max. 500000)
+ 29990 words of extra memory for PDF output out of 35830 (max. 10000000)
 

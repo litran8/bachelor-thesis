@@ -7,11 +7,15 @@
 \BOOKMARK [1][-]{section.3.2}{3.2 Low level overview}{chapter.3}% 7
 \BOOKMARK [2][-]{subsection.3.2.1}{3.2.1 Method Receiver Data Collection}{section.3.2}% 8
 \BOOKMARK [2][-]{subsection.3.2.2}{3.2.2 Variable Data Collection}{section.3.2}% 9
-\BOOKMARK [1][-]{section.3.3}{3.3 Challenges}{chapter.3}% 10
-\BOOKMARK [2][-]{subsection.3.3.1}{3.3.1 Obtaining Method Receiver Data Difficulties}{section.3.3}% 11
-\BOOKMARK [2][-]{subsection.3.3.2}{3.3.2 Obtaining Variable Data Difficulties}{section.3.3}% 12
-\BOOKMARK [1][-]{section.3.4}{3.4 Limitations}{chapter.3}% 13
-\BOOKMARK [0][-]{chapter.4}{4 Validation}{}% 14
-\BOOKMARK [1][-]{section.4.1}{4.1 JHotDraw}{chapter.4}% 15
-\BOOKMARK [0][-]{chapter.5}{5 Conclusion and Future Work}{}% 16
-\BOOKMARK [0][-]{chapter.6}{6 Anleitung zu wissenschaftlichen Arbeiten}{}% 17
+\BOOKMARK [3][-]{subsubsection.3.2.2.1}{3.2.2.1 Local Variable}{subsection.3.2.2}% 10
+\BOOKMARK [3][-]{subsubsection.3.2.2.2}{3.2.2.2 Instance and Class/Static variables \(Fields\)}{subsection.3.2.2}% 11
+\BOOKMARK [2][-]{subsection.3.2.3}{3.2.3 Bytecode Adaptation}{section.3.2}% 12
+\BOOKMARK [1][-]{section.3.3}{3.3 Challenges}{chapter.3}% 13
+\BOOKMARK [2][-]{subsection.3.3.1}{3.3.1 Obtaining Method Receiver Data Difficulties}{section.3.3}% 14
+\BOOKMARK [2][-]{subsection.3.3.2}{3.3.2 Obtaining Variable Data Difficulties - Fields}{section.3.3}% 15
+\BOOKMARK [2][-]{subsection.3.3.3}{3.3.3 Bytecode Adaptation Difficulties}{section.3.3}% 16
+\BOOKMARK [1][-]{section.3.4}{3.4 Limitations}{chapter.3}% 17
+\BOOKMARK [0][-]{chapter.4}{4 Validation}{}% 18
+\BOOKMARK [1][-]{section.4.1}{4.1 JHotDraw}{chapter.4}% 19
+\BOOKMARK [0][-]{chapter.5}{5 Conclusion and Future Work}{}% 20
+\BOOKMARK [0][-]{chapter.6}{6 Anleitung zu wissenschaftlichen Arbeiten}{}% 21

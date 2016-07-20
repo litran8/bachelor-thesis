@@ -101,11 +101,14 @@ This is the main chapter of the thesis. Here we would like to give you a short i
 
 
 \section{High level overview/Rough Scheme}
+\label{sec:highLevelOverview}
 The general approach of NullSpy is to statically analyze and add additional bytecode to a project. After reading the section Javassist (\ref{sec:javassist}) you should be more familiar with how bytecode manipulation with Javassist works.
 
 What NullSpy first does is loading the project you want it to be able to track the null assignment if a NullPointerException is thrown. By loading the project to NullSpy, the compiled class files of the project are addressed only, which means the project itself does not have to be imported to the programming environment, e.g. Eclipse. Simultaneously at load time each class file is modified with help of Javassist; In what way will be discussed in the following section “Low level overview”.
 
 Once the project modification is done it is stored in a destination folder that the user has chosen before. This means after the changes there will be another version of the project which can do additional stuff like tracking the null assignment. Because only the class files are accessed previously, the result which is stored in the destination folder is as expected only the modified bytecode.
+
+The reason why we store the modified project in another directory than overwriting the existing one is because we would like to only involve Javassist library in the loading and editing part. This means the execution of the altered project does not include Javassist. This way the user does not have to download Javassist and integrate it to the project.
 
 How do we check whether the instrumentation worked and the project really tracks the null assignment? The answer is wrapping the modified project into a jar file with which the modified project can be executed in the terminal or in Eclipse.
 
@@ -118,9 +121,11 @@ How do we check whether the instrumentation worked and the project really tracks
 
 
 \section{Low level overview}
-So we first load the project which should be modified and then go through all class files of it. A NullPointerException can only be thrown if a method call was performed on a method receiver which is null. That means we have to gather information about the method receiver. To know the exact location of the null assignment of course we also have to collect information about the variable assignments.
+NullSpy only handles the unhandled NullPointerException, meaning the main method of a project is wrapped with a \textit{''catchBlock''} where the NPE is treated. The idea in this \textit{''catchBlock''} is to load the data about the assignments and about the method receiver to compare them with each other. With the stacktrace the line number and the name of the Java class of where the NPE occured can be figured out. We look them up in the method receiver information and get some hold points with which we look up in the assignment information. If there is a match we provide the user with an additional stacktrace next to the usual one. Thanks to that link that points directly to the NPE root, debugging will be easier or it can even be skipped or avoided completely. To be able to provide this function data about the method receiver and variable assignment have to be collected initially. 
 
-The main idea behind NullSpy actually is to get information about method receivers and information about the variables on one side and comparing those together if a NullPointerException occurs on the other side. If there is a hit on the matching the null assignment location can be obtained easily.
+So we first load the project which should be modified and then go through all class files of it. A NullPointerException can only be thrown if a method call was performed on a method receiver which is null. That means we have to gather information about the method receiver. Next to this also information about the variable assignments has to be collected to know the exact location of the null assignment. The main idea behind NullSpy actually is to get information comparing those together when a NullPointerException occurs and if there is a hit during the comparison the  location of the null assignment can be obtained easily.
+
+The implementation behind the NullSpy concept will be explained more fully.
 
 \subsection{Method Receiver Data Collection}
 \label{subsec:methodReceiver}
@@ -128,6 +133,7 @@ Unfortunately, Javassist does not provide the function to directly get the metho
 
 The algorithm contains following steps (abstract):\newline\newline
 \fbox{
+\label{alg:methodReceiverAlg}
 \begin{minipage}{\linewidth}
 \begin{enumerate}
 \itemsep8pt
@@ -141,11 +147,11 @@ The algorithm contains following steps (abstract):\newline\newline
 	\end{minipage}
 	}
 \newline\newline\newline
-In step 1 we had big troubles getting the right interval of the method receiver because only by statically analyzing the bytecode it is unapparent where the method receiver is situated exactly. But more about the challenges you will learn more in chapter \ref{subsec:methodReceiverTroubles}.
+In step 1 we had big troubles getting the right interval of the method receiver because only by statically analyzing the bytecode it is unapparent where the method receiver is situated exactly. But more about the challenges you will learn more in chapter \ref{subsec:methodReceiverDifficulties}.
 
 Statically analyzing bytecode for method receiver means looking for certain opcodes which matches all opcodes that matches with the regex \textit{''invoke.*''}}. There are exactly five kinds of bytecode instruction: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode invokedynamic facilitates the dynamic-typed languages\footnote{Language whose type checking is usually performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports the static-typed language\footnote{Language whose type checking is performed at compile time.} Java.
 
-In case of the \textit{invokestatic} instruction we do not have a method receiver. That is why NullSpy treats it extraordinary like ignoring it completely or wrap it as a possible method receiver when it is actually a parameter of a method invocation. In all other cases we normally use the algorithm to get the method receiver.
+In case of the \textit{invokestatic} instruction we do not have a method receiver. That is why NullSpy treats it extraordinary like ignoring it completely or wrap it as a possible method receiver when it is actually a parameter of a method invocation. In all other cases we normally use the algorithm to get the method receiver. The gathered data about method receivers are stored in an external \textit{csv} file due to performance and overhead minimization.
 
 \subsection{Variable Data Collection}
 \label{subsec:variable}
@@ -153,6 +159,8 @@ While going through the bytecode attention is paid to some opcodes\footnote{Oper
 
 What kind of opcodes were NullSpy looking for? For instance or class/static variables the bytecode instruction \textit{getfield} and \textit{getstatic} were essential, for local variables the important opcodes were those which matches the regex \textit{''aload.*''}. Due to different types of variables and the limitation of Javassist gathering information about them was performed differently. Again getting the necessary data about the variables we encountered many difficulties which will be discussed in the subsection \ref{sec:challenges}.
 
+\subsubsection{Local Variable}
+\label{subsubsec:localVariable}
 Unfortunately, Javassist does not provide any support for gaining information about local variables that is why getting the needed data we had to understand how bytecode is constructed. At this point we would like to give you a small bytecode introduction.
 
 \begin{figure}[H]
@@ -173,7 +181,7 @@ With this short introduction understanding the local variable table should be ea
   \label{fig:localVarTable}
 \end{figure}
 
-We had to pay attention to be sure to get the right local variable. Every time when we bumped into the opcode ''.*store.*'' we could only get its slot and the pc\footnote{Program counter/instruction pointer: A processor register that indicates where a computer is in its program sequence.} where it is situated in the bytecode sequence. In the earlier paragraph the lifespan of the local variable was mentioned, the importance behind this is as soon as the lifespan of one ends, the slot can be reused by the next instantiated local variable. This way, the local variable table could contain multiple entries with the same local variable slot.
+We had to pay attention to be sure to get the right local variable. Every time when we bumped into the opcode \textit{''.*store.*''} we could only get its slot and the pc\footnote{Program counter/instruction pointer: A processor register that indicates where a computer is in its program sequence.} where it is situated in the bytecode sequence. In the earlier paragraph the lifespan of the local variable was mentioned, the importance behind this is as soon as the lifespan of one ends, the slot can be reused by the next instantiated local variable. This way, the local variable table could contain multiple entries with the same local variable slot.
 
 \begin{figure}[H]
 \centering
@@ -193,24 +201,233 @@ Next to the local variable table each methods of a class file also holds another
   \label{fig:lineNrTable}
 \end{figure}
 
-There was a big problem about inserting additional source code after assignments in certain situations. It is mainly caused by the limitation of the class library Javassist (see \ref{subsec:variableTroubles}).
+\subsubsection{Instance and Class/Static variables (Fields)}
+\label{subsec:fields}
+Although Javassist does not support the access to local variable it provides a way for fields. Javassist allows modifying an expression in a method body with the class \textit{Javassist.expt.ExprEditor}. In our case we only want to extract some information about the fields instead of any modification, nevertheless this class can be used appropriately. What it does is to scan the bytecodes on instructions like \textit{''putfield''} or \textit{''putstatic''}.
+
+There are only two instructions that indicates an access to a field, but there are actually many different types. To get the meaning of different types see the following list:\newline\newline
+\fbox{
+\begin{minipage}{\linewidth}
+(\textbar\dots\textbar: put value on operand stack for assigning to a field)
+\begin{enumerate}
+\itemsep8pt
+      \item aload\_0, \textbar\dots\textbar, putfield
+      \item \textbar\dots\textbar, putstatic
+			\item aload.*, \textbar\dots\textbar, putfield
+			\item aload\_0, (getfield)+, \textbar\dots\textbar, putfield
+			\item getstatic, (getfield)*, \textbar\dots\textbar, putfield
+   \end{enumerate}
+	\end{minipage}
+	}
+	
+Depending on the category the field belongs, different kind of information is stored. For fields 1-2 following information is needed and stored:\newline\newline
+\fbox{
+\begin{minipage}{\linewidth}
+\begin{itemize}
+\itemsep8pt
+      \item fieldID (which is field or localVar)
+\item fieldname
+\item fieldType
+\item fieldDeclaringClassName (in which class it is instantiated)
+\item isFieldStatic
+\item fieldLineNumber
+\item startPosition (nonstatic: this; static: value loading bytecode for assigning to the field)
+\item storePosistion (putfield/putstatic)
+\item afterStorePosition (right before this pos additional bytecode is inserted)
+\item classWhereFieldIsAccessed (in this case the same as fieldDeclaringClassName)
+\item behavior (method where it is accessed)
+\item indirectVariable (null - explained immediately)
+   \end{itemize}
+	\end{minipage}
+	}
+\newline
+
+In NullSpy we call these fields \textit{''directFields''}. After reading \textit{''direct''} you surely think of there must be something like \textit{''indirectFields''}, and that is right. As \textit{''indirectFields''} the fields 3-4 are numbered among. Everything before the instruction \textit{putfield} is termed as \textit{''indirectVariable''}. For those fields more data are needed to store for their identification. Nearly the same as above, except: \newline\newline
+\fbox{
+\begin{minipage}{\linewidth}
+\begin{itemize}
+\itemsep8pt
+      \item classWhereFieldIsAccessed (can be differend than fieldDeclaringClassName)
+\item indirectVariable:
+\begin{itemize}
+\item indirectVariableName
+\item indirectVariableType
+\item indirectVariableDeclaringClassName
+\item isIndirectVariableStatic
+\item indirectVariableOpcode (to distinguisch if it is a localVariable or a field)
+\end{itemize}
+   \end{itemize}
+	\end{minipage}
+	}
+\newpage
+\lstinputlisting[language=java]{code/Fields.java}
+
+Once included more bytecode, getting the data of fields needed some adaptation (see \ref{subsec:variableDifficulties}).
+
+\subsection{Bytecode Adaptation}
+\label{bytecodeAdaptation}
+Each time encountering a variable assignment we first extract the needed data and directly after this we adapt the class file by adding extra bytecode right after the assignment bytecode to check whether the variable is null or not. If it is null, the information collected before is stored either into the \textit{''localVariableMap''} or into a \textit{''fieldMap''} which are HashMaps.
+
+The added bytecode represents a static method of a class named \textit{ch.scg.nullSpy.runtimeSupporter.VariableTester} which will be added to the modified project after class file modification is done. Depending on the kind of variable analyzed at the moment different bytecode is constructed, meaning different method with different parameter/variable data is added.
+
+There were again some challenges we had to get over, like getting the wanted data after an instrumentation and entering the additional code in the right position of the bytecode sequence (\ref{subsec:bytecodeAdaptationDifficulties}).
+
+Once we have gone through the bytecode of a Java class, the modified class files are stored in a destination directory as mentioned in \ref{sec:highLevelOverview}. Next to the instrumentation supplementary supporter classes are added to the project. The most important ones are \textit{ch.unibe.scg.nullSpy.runtimeSupporter.VariableTester} which tests whether a variable is null or not and \textit{ch.unibe.scg.nullSpy.runtimeSupporter.NullDisplayer} which matches data and prints the location of a null assignment when a NullPointerException is thrown.
 
 
 \section{Challenges}
 \label{sec:challenges}
-..
+In this section we could like to give you an understanding of few difficulties occurred during the implementation of NullSpy.
 
 \subsection{Obtaining Method Receiver Data Difficulties}
-\label{subsec:methodReceiverTroubles}
-bla bla
+\label{subsec:methodReceiverDifficulties}
+Aforementioned in subsection \textit{Method Receiver Data Collection} \ref{subsec:methodReceiver} we were encountered with a persistent problem, namely getting the pc-interval of the method receiver when the interval covers multiple lines in source code. In many development environment the written code can be formatted automatically and as well manually. See following figures:
 
-...
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{multipleLine/pic4-1}
+\caption{Method invocation split in two lines example}
+  \label{fig:pic4-1}
+\end{figure}
 
-\subsection{Obtaining Variable Data Difficulties}
-\label{subsec:variableTroubles}
-bla bla
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{multipleLine/pic4-2}
+\caption{Bytecode to figure \ref{fig:pic4-1}}
+  \label{fig:pic4-2}
+\end{figure}
 
-...
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.3\linewidth]{multipleLine/pic4-3}
+\caption{Line number table/interval to figure \ref{fig:pic4-1}}
+  \label{fig:pic4-3}
+\end{figure}
+
+Figure shows a normal method invocation which is split into two lines in source code. This cannot be figured out by just looking at the bytecode therefore the line number attribute (\ref{fig:lineNrTable}) has to be consulted too. There is no method receiver in the figure because the method receiver would contain a method invocation itself (\textit{''Iconkit.instance()''}, what is not supported in NullSpy. Another method receivers NullSpy does not support are elements of collections due to complex structures that can be stored in the collections. But still it is a good example to show you how the bytecode and the line number attribute for this looks like. Applying the algorithm (\ref{alg:methodReceiverAlg}) for gathering data about method receivers in this situation looks as follows:
+
+\newline\newline
+\fbox{
+	\begin{minipage}{\linewidth}
+		\begin{enumerate}
+			\itemsep8pt
+			\item pc-interval: \newline 0-11 (cut everything off what has nothing to do with the method invocation)
+			\item ArrayList: \newline [0,[3,4],[7,8]]
+			\item Number of parameters: \newline 2
+			\item Traversing back the amount of parameters: \newline [7,8] (1) \rightarrow [3,4] (2)
+			\item Result: \newline 0 (invokestatic) = possible method receiver
+			\item Not storing it because NullSpy does not support this kind of method receiver
+		\end{enumerate}
+	\end{minipage}
+}
+
+So how did we get the pc-interval? Just looking at bytecode is not enough, so we are looking at the line number attribute. Line number \textit{31} (\ref{fig:pic4-3}) is listed twice, this indicates that the method invocation is split into multiple line in source code. The former declares the starting point of the interval and the latter the end of it. How to get the pc-interval will be presented shortly. But first take a look at more examples:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{multipleLine/pic3-1}
+\caption{Alternating line number example}
+  \label{fig:pic3-1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{multipleLine/pic3-2}
+\caption{Bytecode to figure \ref{fig:pic3-1}}
+  \label{fig:pic3-2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.3\linewidth]{multipleLine/pic3-3}
+\caption{Line number table/interval to figure \ref{fig:pic3-1}}
+  \label{fig:pic3-3}
+\end{figure}
+
+Special about this example is that the multiple line interval does not start with the smaller line number and end with the bigger one, apart from that it is alternated stored in the line number attribute.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{multipleLine/pic2-1}
+\caption{Nested interval example}
+  \label{fig:pic2-1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{multipleLine/pic2-2}
+\caption{Bytecode to figure \ref{fig:pic2-1}}
+  \label{fig:pic2-2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.3\linewidth]{multipleLine/pic2-3}
+\caption{Line number table/interval to figure \ref{fig:pic2-1}}
+  \label{fig:pic2-3}
+\end{figure}
+
+Neither in bytecode nor in line number attribute we can extract the exact interval of method invocations. Generally, we cannot distinguish if the interval represents a method invocation or a loop. Another interesting thing is that in the figure multiple corresponding pcs are included.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{multipleLine/pic5-1}
+\caption{Uncomplete interval example}
+  \label{fig:pic5-1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{multipleLine/pic5-2}
+\caption{Bytecode to figure \ref{fig:pic5-1}}
+  \label{fig:pic5-2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.3\linewidth]{multipleLine/pic5-3}
+\caption{Line number table/interval to figure \ref{fig:pic5-1}}
+  \label{fig:pic5-3}
+\end{figure}
+
+By using the algorithm we only get the interval from pc 19-32, but actually pc 18 also belongs to the interval. That the missing pc is missing will be detected in step 4\&5 when traversing back the ArrayList by the number of parameters. If it is not a static method invocation and there is not enough possible method receivers stored in that ArrayList to traverse back, the missing pc is added in retrospect.
+
+	\lstinputlisting[language=java]{code/MultipleLinePseudoCode.java}
+
+This pseudocode will give you the main or a very rough idea how the invocation interval can be gained. If you are interested in knowing the exact way, please see the implementation of the class \textit{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation.MultipleLineManager} and \textit{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation.MethodInvocationAnalyzer}.
+
+\subsection{Obtaining Variable Data Difficulties - Fields}
+\label{subsec:variableDifficulties}
+We previously mentioned that NullSpy first collects data about fields and we met some difficulties regarding this. By using the method \textit{loopBody()} from class \textit{Javassist.expt.ExprEditor} (\ref{subsec:fields}) for gathering information caused those troubles because it loops through the GIVEN \textit{methodInfo} which contains the bytecode sequence of a method. Even after finding a field assignment and adding some additional bytecode to it, the method still iterates through the unchanged \textit{methodInfo} it got as parameter without the additional bytecode. Getting the right startPc of a field assignment is not a straight forward process as it may seem.
+
+After entered extra instructions the method \textit{loopBody} iterates onwards until it finds a key which indicates an access to a field. Normally, Javassist provides a method with which the starting pc of the field access can be find out easily, but in our case not due to bytecode alternation. This method returns the starting pc of the field as if there was no changes, however it actually has to return a bigger starting pc than it does. The starting pc is needed to distinguish in what category the field has to be assigned to (\ref{subsec:fields}).
+
+To find the right starting pc of the field assignment we compare the starting pc which a method of Javassist returns with the \textit{afterStorePc} of the previously found field assignment. Every time an assignment is found we store it as a reference for obtaining right data. Even for the storing pc of an assignment (\textit{''put.* ''} the last found field is essential. If there is more interest how those pcs are obtained, please see the class \textit{ch.unibe.scg.nullSpy.instrumentator.controller.FieldAnalyzer}.
+
+\subsection{Bytecode Adaptation Difficulties}
+\label{subsec:bytecodeAdaptationDifficulties}
+The reason why we decided to use Javassist for our NullSpy project is because the thought of only using the source-level API \ref{fig:bytecodeModificationLevels} to implement everything. It would have been much easier to only operate at source-level instead of learning how to read bytecode or extract data from it or enter extra code into it, yet at the end we still had to do everything at bytecode-level.
+
+One big problem encountered while inserting the test method between an assignment and a closing bracket \textit{''\}''}. We tried to insert additional code as shown in figure \ref{fig:insertionCodeExample} by specifying the exact line number where it should be entered in source code. Unfortunately Javassist first checks the specified line whether it contains some code (only symbols excluded). If there is no code at that line it computes the next line that contains some and inserts the test method right before it. Please visualize a situation where for example a local variable is created/instantiated at the end of a \textit{if-body}. In this situation Javassist adds the extra code right before the next code line which is outside the existing scope of the local variable.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\linewidth]{bytecodeAdaptionExample_1}
+\caption{Bytecode adaptation example}
+  \label{bytecodeAdaptationExample_1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\linewidth]{bytecodeAdaptionExample_2}
+\caption{Wrong Adaptation to \ref{bytecodeAdaptationExample_1}}
+  \label{bytecodeAdaptionExample_2}
+\end{figure}
+
+That is why changed the way to insert the test method at bytecode-level. Like this we first have to build up the bytecode sequence and then enter it before a specific pc. Please take a look at the class \textit{ch.unibe.scg.nullSpy.instrumentator.controller.ByteCodeAdapter} how the bytecode sequence is created.
+
+There are of course many other small problems during the implementation of NullSpy but these mentioned are the most troublesome ones.
+
 \section{Limitations}
 ...
 

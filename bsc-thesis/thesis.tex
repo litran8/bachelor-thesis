@@ -149,7 +149,7 @@ The algorithm contains following steps (abstract):\newline\newline
 \newline\newline\newline
 In step 1 we had big troubles getting the right interval of the method receiver because only by statically analyzing the bytecode it is unapparent where the method receiver is situated exactly. But more about the challenges you will learn more in chapter \ref{subsec:methodReceiverDifficulties}.
 
-Statically analyzing bytecode for method receiver means looking for certain opcodes which matches all opcodes that matches with the regex \textit{''invoke.*''}}. There are exactly five kinds of bytecode instruction: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode invokedynamic facilitates the dynamic-typed languages\footnote{Language whose type checking is usually performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports the static-typed language\footnote{Language whose type checking is performed at compile time.} Java.
+Statically analyzing bytecode for method receiver means looking for certain opcodes which matches all opcodes that matches with the regex \textit{''invoke.*''}. There are exactly five kinds of bytecode instruction: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode invokedynamic facilitates the dynamic-typed languages\footnote{Language whose type checking is usually performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports the static-typed language\footnote{Language whose type checking is performed at compile time.} Java.
 
 In case of the \textit{invokestatic} instruction we do not have a method receiver. That is why NullSpy treats it extraordinary like ignoring it completely or wrap it as a possible method receiver when it is actually a parameter of a method invocation. In all other cases we normally use the algorithm to get the method receiver. The gathered data about method receivers are stored in an external \textit{csv} file due to performance and overhead minimization.
 
@@ -166,7 +166,7 @@ Unfortunately, Javassist does not provide any support for gaining information ab
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\linewidth]{localVarCreationBytecode}
-\caption{Local variable creation bytecode\footnote{\url{http://blog.jamesdbloom.com/images_2013_11_17_17_56/java_local_variable_creation_byte_code.png}}}
+\caption{Local variable creation bytecode\protect\footnote{\protect\url{http://blog.jamesdbloom.com/images_2013_11_17_17_56/java_local_variable_creation_byte_code.png}}}
   \label{fig:localVarCreationBytecode}
 \end{figure}
 
@@ -306,7 +306,6 @@ Aforementioned in subsection \textit{Method Receiver Data Collection} \ref{subse
 
 Figure shows a normal method invocation which is split into two lines in source code. This cannot be figured out by just looking at the bytecode therefore the line number attribute (\ref{fig:lineNrTable}) has to be consulted too. There is no method receiver in the figure because the method receiver would contain a method invocation itself (\textit{''Iconkit.instance()''}, what is not supported in NullSpy. Another method receivers NullSpy does not support are elements of collections due to complex structures that can be stored in the collections. But still it is a good example to show you how the bytecode and the line number attribute for this looks like. Applying the algorithm (\ref{alg:methodReceiverAlg}) for gathering data about method receivers in this situation looks as follows:
 
-\newline\newline
 \fbox{
 	\begin{minipage}{\linewidth}
 		\begin{enumerate}
@@ -314,7 +313,7 @@ Figure shows a normal method invocation which is split into two lines in source 
 			\item pc-interval: \newline 0-11 (cut everything off what has nothing to do with the method invocation)
 			\item ArrayList: \newline [0,[3,4],[7,8]]
 			\item Number of parameters: \newline 2
-			\item Traversing back the amount of parameters: \newline [7,8] (1) \rightarrow [3,4] (2)
+			\item Traversing back the amount of parameters: \newline [7,8] (1) ; [3,4] (2)
 			\item Result: \newline 0 (invokestatic) = possible method receiver
 			\item Not storing it because NullSpy does not support this kind of method receiver
 		\end{enumerate}
@@ -429,20 +428,22 @@ That is why changed the way to insert the test method at bytecode-level. Like th
 There are of course many other small problems during the implementation of NullSpy but these mentioned are the most troublesome ones.
 
 \section{Limitations}
+\label{sec:limitations}
 During the implementation of NullSpy we had to change the concept few times due to limitations or an overhead that could have grown immense.
+
 Our first idea of how NullSpy could track the NullPointerExceptions is to gather information about variable assignment, which is the case now, and also inject another test method right before each method invocations. In small projects this way could have worked fine but in larger projects which could contain hundreds of classes with a lot of method invocations the execution time would be strongly influenced.
 
-Being able to collect data about variables we still are not able to avoid injecting bytecode even it affects the runtime. Related to this issue a limitation about Javassist is mentioned before namely inserting bytecode right before a closing bracket [REFERENCE]. Because of this it highly depends on the location where additional code should be inserted whether using the source-level API is possible or not. Avoiding checking all the location where something new should be added it is more secure to do this on bytecode-level. But in cases like entering something at the beginning or at the end of a method body the source-level is just fine.
+Being able to collect data about variables we still are not able to avoid injecting bytecode even it affects the runtime. Related to this issue a limitation about Javassist is mentioned before namely inserting bytecode right before a closing bracket (\ref{subsec:bytecodeAdaptationDifficulties}). Because of this it highly depends on the location where additional code should be inserted whether using the source-level API is possible or not. Avoiding checking all the location where something new should be added it is more secure to do this on bytecode-level. But in cases like entering something at the beginning or at the end of a method body the source-level is just fine.
 
-Another limitation of Javassist to mention is that it does not provide anything to get information about method receivers. It only allows one to extract information about local variables, fields and method invocations itself. The programming language Java also does not provide any information about the method receiver, since the exception object or the stack trace element just contains the class, file, method name and the line number. Nonetheless making possible to gather data about them the algorithm discussed before [REFERENCE] fulfils the missing task.
+Another limitation of Javassist to mention is that it does not provide anything to get information about method receivers. It only allows one to extract information about local variables, fields and method invocations itself. The programming language Java also does not provide any information about the method receiver, since the exception object or the stack trace element just contains the class, file, method name and the line number. Nonetheless making possible to gather data about them the algorithm discussed before (see \ref{alg:methodReceiverAlg}) fulfills the missing task.
 
-The last limitation we want to discuss here is that unfortunately NullSpy is not capable to track the root of NullPointerExceptions that are originated in a null which was returned of a method call or in an element of a collection. Why those situations are not supported in NullSpy is because of the impossibility way to store them, e.g. imagine a nested ArrayList or a HashMap and a never ending return value of method invocations. So we lack something tangible to compare with each other, get a hit and read the location out of the hit [REFERENCE TO FUTURE WORK].
+The last limitation we want to discuss here is that unfortunately NullSpy is not capable to track the root of NullPointerExceptions that are originated in a null which was returned of a method call or in an element of a collection. Why those situations are not supported in NullSpy is because of the impossibility way to store them, e.g. imagine a nested ArrayList or a HashMap and a never ending return value of method invocations. So we lack something tangible to compare with each other, get a hit and read the location out of the hit (\ref{sec:futureWork}).
 
 \chapter{Validation}
 \label{ch:validation}
 This chapter will provide some numbers to compare the execution time each project takes, the original and the instrumented one. To get the numbers we instrumented the example project JHotDraw. 
 
-\section{JHotDraw\footnote{\url{http://www.jhotdraw.org/}}}
+\section{JHotDraw\protect\footnote{\protect\url{http://www.jhotdraw.org/}}}
 \label{sec:jhotdraw}
 This project also served to check whether the logic of the bytecode manipulation behind NullSpy is working as desired. JHotDraw is an open-source Java GUI framework for technical and structured Graphics. It is big enough to get reliable numbers and it provides many different cases we had to take care of in NullSpy. Also thanks to Nevena Milojkovi\'{c} and her experience with the combination Javassist and JHotDraw we as well decided to test NullSpy on it.
 
@@ -505,7 +506,7 @@ How did we get the numbers? First of all, of course another executable jar file 
 The runtime of the modified project takes 0.362734s longer than the original one, this means after adding additional code to the project results in approximately \textbf{5\%} overhead. This small overhead is quite negligible. But this numbers have to be interpreted with caution because the overhead is only measured on JHotDraw. It only has few variable assignments but how much would it go up if there are tons of them?
 
 \chapter {Conclusion and Future Work}
-\label{ch:conclusionsFutureWork}
+\label{ch:conclusionFutureWork}
 Now we have come so far to retrospect (step back and have a critical loot at) the entire project for summarizing what goals we have achieved so far and for proposing further aims that could be completed in the future. In a small section we also want to tell you about the gained experience during the whole project.
 
 \section{NullSpy}
@@ -513,7 +514,7 @@ Now we have come so far to retrospect (step back and have a critical loot at) th
 Happily, we could say here that we successfully managed to meet the main purpose we have set at the beginning of the project. NullSpy is now capable to tracking the NullPointerExceptions to its root and provide the user with more information about its origin without spending much time on finding it. The most important steps which lead to the success of NullSpy are listed below:
 
 \begin{enumerate}
-\item Extract and gather information about all method receivers because method invocations on these causes NullPointerExcetptions. To achieve this, we developed an algorithm [REFERENCE] with the function of finding method receivers and extracting data from it by only doing static bytecode analysis. The information about it is then stored as an external csv file. It is needed for a comparison in in a later step.
+\item Extract and gather information about all method receivers because method invocations on these causes NullPointerExcetptions. To achieve this, we developed an algorithm (\ref{alg:methodReceiverAlg}) with the function of finding method receivers and extracting data from it by only doing static bytecode analysis. The information about it is then stored as an external csv file. It is needed for a comparison in in a later step.
 
 \item Again collecting data, but this time about variable assignments namely local variables and fields. Here next to the static bytecode analysis additional instructions are inserted to the class files to check right after the assignment if the variable is assigned to the special value \textit{null}. If this is the case everything about the variable is stored in a HashMap which serves for a comparison too. It is stored in a HashMap because if a variable is assigned to another object than null, it will be deleted from the HashMap.
 
@@ -524,7 +525,20 @@ Happily, we could say here that we successfully managed to meet the main purpose
 
 During the implementation we were encountered with many difficulties. Some of those we were able to solve and some not unfortunately. Those unsolved ones could be proposed as goals of future work. The next section will list some of them.
 
+\section{Future Work}
+\label{sec:futureWork}
+\subsection{Support unsupported method receivers and variable assignments}
+As you have read earlier (\ref{sec:limitations}), if the cause of a NullPointerException lies in an element of a collection or in an object that is returned by a method invocation, it cannot be tracked to its assignment location. Come up with a way to extract and store information could be a future aim. Of course gathering information about the method receivers has to be improved too.
 
+\subsection{Track NullPointerException root for all projects}
+As now our goal in this project was tracking null assignments of JHotDraw. First of all, we had to make sure that building JHotDraw works properly with the additional classes. To fulfil this task manual changes on the build.xml was necessary. If this can be done automatically by NullSpy it would be much better.
+
+Next to this we only looked at the assignment and method receiver types which appear in JHotDraw itself. There could be other types that are not covered in NullSpy depending on projects. In case NullSpy is used on projects that contain not supported issues improving it to cover them can be added to the toDo list.
+
+\subsection{Plug-in for Eclipse}
+Last target for future work to mention here is transform NullSpy into an Eclipse compatible plug-in project. After integrated it with Eclipse the null tracking can be started without any expenses on how to manipulate the build.xml if there is one or even bother to create an executable jar file out of it.
+
+For now, we can only think of these future work that could improve NullSpy to give it more value.
 
 \chapter {Anleitung zu wissenschaftlichen Arbeiten}
 This consists of additional documentation, e.g. a tutorial, user guide etc.
@@ -543,6 +557,7 @@ Required by the Informatik regulation.
 ''Ich erkl\"are hiermit, dass ich diese Arbeit selbstst\"andig verfasst und  keine  anderen  als  die  angegebenen  Quellen  benutzt  habe. 
 Alle Stellen, die w\"ortlich oder sinngem\"ass aus Quellen entnommen  wurden,  habe  ich  als  solche  gekennzeichnet.  Mir  ist  bekannt,  dass  andernfalls  der  Senat  gem\"ass  Artikel 36  Absatz 1 Buchstabe 
 r  des  Gesetzes  vom  5. September 1996  \"uber  die  Universit\"at zum Entzug des auf  Grund dieser Arbeit verliehenen Titels berechtigt ist.“
+\end{center}
 \vfill
 \clearpage
 

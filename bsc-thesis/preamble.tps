@@ -11,14 +11,14 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=876
-NormalPos.bottom=814
+NormalPos.right=1840
+NormalPos.bottom=568
 Class=LaTeXView
 Document=thesis.tex
 
 [Frame0_View0,0]
-TopLine=795
-Cursor=39878
+TopLine=192
+Cursor=16200
 
 [Frame1]
 Flags=0
@@ -29,14 +29,14 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=876
-NormalPos.bottom=814
+NormalPos.right=1840
+NormalPos.bottom=568
 Class=LaTeXView
 Document=preamble.tex
 
 [Frame1_View0,0]
-TopLine=25
-Cursor=1309
+TopLine=226
+Cursor=7460
 
 [SessionInfo]
 FrameCount=2

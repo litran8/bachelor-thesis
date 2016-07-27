@@ -20,4 +20,8 @@
 \BOOKMARK [1][-]{section.4.2}{4.2 Execution Time Difference}{chapter.4}% 20
 \BOOKMARK [0][-]{chapter.5}{5 Conclusion and Future Work}{}% 21
 \BOOKMARK [1][-]{section.5.1}{5.1 NullSpy}{chapter.5}% 22
-\BOOKMARK [0][-]{chapter.6}{6 Anleitung zu wissenschaftlichen Arbeiten}{}% 23
+\BOOKMARK [1][-]{section.5.2}{5.2 Future Work}{chapter.5}% 23
+\BOOKMARK [2][-]{subsection.5.2.1}{5.2.1 Support unsupported method receivers and variable assignments}{section.5.2}% 24
+\BOOKMARK [2][-]{subsection.5.2.2}{5.2.2 Track NullPointerException root for all projects}{section.5.2}% 25
+\BOOKMARK [2][-]{subsection.5.2.3}{5.2.3 Plug-in for Eclipse}{section.5.2}% 26
+\BOOKMARK [0][-]{chapter.6}{6 Anleitung zu wissenschaftlichen Arbeiten}{}% 27

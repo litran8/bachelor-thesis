@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  26 JUL 2016 23:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  27 JUL 2016 18:27
 entering extended mode
 **./thesis.tex
 (thesis.tex
@@ -802,17 +802,6 @@ Package: translator 2010/06/12 ver 1.10
 ("C:\Program Files\MiKTeX 2.9\tex\latex\beamer\base\translator\translator-language-mappings.tex")))
 \c@qcounter=\count181
 
-! Undefined control sequence.
-\reserved@b ...hor }, pdfsubject={\thesissubtitle 
-                                                  }, pdfpagelabels}][{}]\noe...
-l.229 
-      
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\hyperref.sty"
 Package: hyperref 2012/11/06 v6.83m Hypertext links for LaTeX
 
@@ -1036,37 +1025,13 @@ LaTeX Info: Redefining \Ref on input line 513.
 LaTeX Info: Redefining \ref on input line 237.
 LaTeX Info: Redefining \pageref on input line 237.
 LaTeX Info: Redefining \nameref on input line 237.
- (thesis.out)
-Runaway argument?
-{4.1 JHotDraw` `\045\BOOKMARK [1][-]{section.4.2}{4.2 Execution Time \ETC.
-! File ended while scanning use of \@@BOOKMARK.
-<inserted text> 
-                \par 
-l.237 \begin{document}
-                      
-I suspect you have forgotten a `}', causing me
-to read past where you wanted me to stop.
-I'll try to recover; but if the error is serious,
-you'd better type `E' or `X' now and fix your file.
-
-(thesis.out)
-Runaway argument?
-{4.1 JHotDraw` `\045\BOOKMARK [1][-]{section.4.2}{4.2 Execution Time \ETC.
-! File ended while scanning use of \@@BOOKMARK.
-<inserted text> 
-                \par 
-l.237 \begin{document}
-                      
-I suspect you have forgotten a `}', causing me
-to read past where you wanted me to stop.
-I'll try to recover; but if the error is serious,
-you'd better type `E' or `X' now and fix your file.
-
+ (thesis.out) (thesis.out)
 \@outlinefile=\write3
 \openout3 = `thesis.out'.
 
 LaTeX Info: Redefining \Ref on input line 237.
 \c__siunitx_mathsf_int=\count266
+
 ("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-cmr.cfg"
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
 )
@@ -1095,7 +1060,7 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-<images/logos/UNI_Bern.png, id=75, 258.2448pt x 199.4652pt>
+<images/logos/UNI_Bern.png, id=111, 258.2448pt x 199.4652pt>
 File: images/logos/UNI_Bern.png Graphic file (type png)
  <use images/logos/UNI_Bern.png>
 Package pdftex.def Info: images/logos/UNI_Bern.png used on input line 246.
@@ -1106,26 +1071,16 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 252.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 253.
-
-! Undefined control sequence.
-l.253     \Large \vspace{0.1in} \thesissubtitle
-                                                \par}
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <20.74> not available
 (Font)              Font shape `T1/ptm/b/n' tried instead on input line 256.
-[1
+ [1
 
 
 
-{C:/Users/Lina Tran/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./images/logos/UNI_Bern.png (PNG copy)>]
-[2])
+{C:/Users/Lina Tran/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./images/logos/UNI_Bern.png (PNG copy)>] [2])
 LaTeX Font Info:    Try loading font information for T1+put on input line 8.
- ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\t1put.fd"
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\t1put.fd"
 File: t1put.fd 2001/06/04 font definitions for T1/put.
 )
 Package microtype Info: Loading generic settings for font family
@@ -1160,42 +1115,27 @@ Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 15.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 16.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 17.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 18.
-
-Runaway argument?
-{\numberline {4.1}JHotDraw\let \reserved@d =[\def 
-! Paragraph ended before \contentsline was complete.
-<to be read again> 
-                   \par 
-l.19 ... {4.1}JHotDraw\let \reserved@d =[\def \par
-                                                   }{25}{section.4.1}
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
-! Extra }, or forgotten \endgroup.
-l.19 ...4.1}JHotDraw\let \reserved@d =[\def \par }
-                                                  {25}{section.4.1}
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 19.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 20.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 21.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 22.
-)
-\tf@toc=\write4
-\openout4 = `thesis.toc'.
-
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 23.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 24.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 25.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 26.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 27.
 pdfTeX warning (ext4): destination with the same identifier (name{page.ii}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.24 \mainmatter
-                 [2
+l.27 ...issenschaftlichen Arbeiten}{31}{chapter.6}
+                                                   [2
 
 
-]
+])
+\tf@toc=\write4
+\openout4 = `thesis.toc'.
+
+ [3]
 Chapter 1.
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 28.
 [1
@@ -1220,7 +1160,7 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-<images/bytecodeModificationLevels.png, id=132, 468.24937pt x 182.93344pt>
+<images/bytecodeModificationLevels.png, id=176, 468.24937pt x 182.93344pt>
 File: images/bytecodeModificationLevels.png Graphic file (type png)
  <use images/bytecodeModificationLevels.png>
 Package pdftex.def Info: images/bytecodeModificationLevels.png used on input line 51.
@@ -1230,7 +1170,7 @@ Package pdftex.def Info: images/bytecodeModificationLevels.png used on input lin
 
 ]
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 56.
- <images/javassistExample.png, id=141, 963.6pt x 495.35063pt>
+ <images/javassistExample.png, id=184, 963.6pt x 495.35063pt>
 File: images/javassistExample.png Graphic file (type png)
  <use images/javassistExample.png>
 Package pdftex.def Info: images/javassistExample.png used on input line 62.
@@ -1238,14 +1178,14 @@ Package pdftex.def Info: images/javassistExample.png used on input line 62.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 67.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 67.
  [4 <./images/bytecodeModificationLevels.png> <./images/javassistExample.png>]
-<images/javassistModules.png, id=150, 459.21562pt x 242.40562pt>
+<images/javassistModules.png, id=193, 459.21562pt x 242.40562pt>
 File: images/javassistModules.png Graphic file (type png)
  <use images/javassistModules.png>
 Package pdftex.def Info: images/javassistModules.png used on input line 71.
 (pdftex.def)             Requested size: 334.60422pt x 176.63652pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 76.
 
-<images/insertionCodeExample.png, id=152, 863.47594pt x 237.13594pt>
+<images/insertionCodeExample.png, id=195, 863.47594pt x 237.13594pt>
 File: images/insertionCodeExample.png Graphic file (type png)
  <use images/insertionCodeExample.png>
 Package pdftex.def Info: images/insertionCodeExample.png used on input line 80.
@@ -1253,7 +1193,7 @@ Package pdftex.def Info: images/insertionCodeExample.png used on input line 80.
  [5 <./images/javassistModules.png>]
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 86.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 86.
- <images/bytecodeSourcecode.png, id=163, 216.3282pt x 160.4394pt>
+ <images/bytecodeSourcecode.png, id=206, 216.3282pt x 160.4394pt>
 File: images/bytecodeSourcecode.png Graphic file (type png)
 
 <use images/bytecodeSourcecode.png>
@@ -1263,11 +1203,13 @@ Package pdftex.def Info: images/bytecodeSourcecode.png used on input line 90.
 Chapter 3.
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 97.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 98.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 100.
+
+LaTeX Warning: Reference `ch:conclusionsFutureWork' on page 7 undefined on input line 100.
+
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 105.
 [7
 
-] <images/highLevelOverview.png, id=180, 582.67688pt x 351.56343pt>
+] <images/highLevelOverview.png, id=222, 582.67688pt x 351.56343pt>
 File: images/highLevelOverview.png Graphic file (type png)
  <use images/highLevelOverview.png>
 Package pdftex.def Info: images/highLevelOverview.png used on input line 117.
@@ -1296,49 +1238,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 134--151
 
  []
 
-! Too many }'s.
-<recently read> }
-                 
-l.152 ...hes with the regex \textit{''invoke.*''}}
-                                                  . There are exactly five k...
-You've closed more groups than you opened.
-Such booboos are generally harmless, so keep going.
-
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 152.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 152.
 [9]
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 158.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 158.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 160.
- <images/localVarCreationBytecode.png, id=203, 1149.5447pt x 1063.72406pt>
+ <images/localVarCreationBytecode.png, id=245, 1149.5447pt x 1063.72406pt>
 File: images/localVarCreationBytecode.png Graphic file (type png)
  <use images/localVarCreationBytecode.png>
 Package pdftex.def Info: images/localVarCreationBytecode.png used on input line 168.
 (pdftex.def)             Requested size: 209.12683pt x 193.50719pt.
-
-! Argument of \caption@ydblarg has an extra }.
-<inserted text> 
-                \par 
-l.169 ..._local_variable_creation_byte_code.png}}}
-                                                  
-I've run across a `}' that doesn't seem to match anything.
-For example, `\def\a#1{...}' and `\a}' would produce
-this error. If you simply proceed now, the `\par' that
-I've just inserted will cause me to report a runaway
-argument that might be the root of the problem. But if
-your `}' was spurious, just type `2' and it will go away.
-
-Runaway argument?
-{\@caption \@captype }{\@xfootnote }\def \reserved@b {\stepcounter \@mpfn \ETC.
-! Paragraph ended before \caption@ydblarg was complete.
-<to be read again> 
-                   \par 
-l.169 ..._local_variable_creation_byte_code.png}}}
-                                                  
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
-
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 169.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 169.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 169.
@@ -1349,20 +1259,20 @@ Underfull \hbox (badness 10000) in paragraph at lines 169--169
 
 [10]
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 175.
- <images/localVarTable.png, id=215, 371.88937pt x 57.96657pt>
+ <images/localVarTable.png, id=257, 371.88937pt x 57.96657pt>
 File: images/localVarTable.png Graphic file (type png)
  <use images/localVarTable.png>
 Package pdftex.def Info: images/localVarTable.png used on input line 179.
 (pdftex.def)             Requested size: 418.25368pt x 65.1954pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 184.
  [11 <./images/localVarCreationBytecode.png> <./images/localVarTable.png>]
-<images/localVarTableDuplicatedSlot.png, id=225, 234.1247pt x 79.79813pt>
+<images/localVarTableDuplicatedSlot.png, id=267, 234.1247pt x 79.79813pt>
 File: images/localVarTableDuplicatedSlot.png Graphic file (type png)
  <use images/localVarTableDuplicatedSlot.png>
 Package pdftex.def Info: images/localVarTableDuplicatedSlot.png used on input line 188.
 (pdftex.def)             Requested size: 292.77629pt x 99.80096pt.
 
-<images/lineNrTable.png, id=226, 77.53969pt x 58.71938pt>
+<images/lineNrTable.png, id=268, 77.53969pt x 58.71938pt>
 File: images/lineNrTable.png Graphic file (type png)
  <use images/lineNrTable.png>
 Package pdftex.def Info: images/lineNrTable.png used on input line 199.
@@ -1433,20 +1343,20 @@ llSpy.runtimeSupporter.VariableTester
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 273.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 275.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 284.
-<images/multipleLine/pic4-1.png, id=297, 587.94656pt x 35.38219pt>
+<images/multipleLine/pic4-1.png, id=339, 587.94656pt x 35.38219pt>
 File: images/multipleLine/pic4-1.png Graphic file (type png)
  <use images/multipleLine/pic4-1.png>
 Package pdftex.def Info: images/multipleLine/pic4-1.png used on input line 288.
 (pdftex.def)             Requested size: 418.25368pt x 25.1701pt.
 
-<images/multipleLine/pic4-2.png, id=298, 497.60907pt x 80.55093pt>
+<images/multipleLine/pic4-2.png, id=340, 497.60907pt x 80.55093pt>
 File: images/multipleLine/pic4-2.png Graphic file (type png)
  <use images/multipleLine/pic4-2.png>
 Package pdftex.def Info: images/multipleLine/pic4-2.png used on input line 295.
 (pdftex.def)             Requested size: 418.25368pt x 67.70656pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 296.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 296.
- [16 <./images/multipleLine/pic4-1.png>] <images/multipleLine/pic4-3.png, id=307, 70.76437pt x 54.2025pt>
+ [16 <./images/multipleLine/pic4-1.png>] <images/multipleLine/pic4-3.png, id=349, 70.76437pt x 54.2025pt>
 File: images/multipleLine/pic4-3.png Graphic file (type png)
 
 <use images/multipleLine/pic4-3.png>
@@ -1457,198 +1367,85 @@ Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 303.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 307.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 307.
 
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.309 \newline
-              \newline
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-! LaTeX Error: There's no line here to end.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.309 \newline\newline
-                      
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-! Missing $ inserted.
-<inserted text> 
-                $
-l.322 }
-       
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-
-! LaTeX Error: Command \item invalid in math mode.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.322 }
-       
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-! LaTeX Error: Something's wrong--perhaps a missing \item.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.322 }
-       
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-! LaTeX Error: Something's wrong--perhaps a missing \item.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.322 }
-       
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-! LaTeX Error: Command \item invalid in math mode.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.322 }
-       
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-! Missing $ inserted.
-<inserted text> 
-                $
-l.322 }
-       
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-! Missing } inserted.
-<inserted text> 
-                }
-l.322 }
-       
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-! Extra }, or forgotten \endgroup.
-\par ...m \@noitemerr {\@@par }\fi \else {\@@par }
-                                                  \fi 
-l.322 }
-       
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
-
-Overfull \hbox (60.42068pt too wide) in paragraph at lines 322--323
+Overfull \hbox (60.42068pt too wide) in paragraph at lines 321--322
 [][] 
  []
 
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 324.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 323.
 [17 <./images/multipleLine/pic4-2.png> <./images/multipleLine/pic4-3.png>]
-<images/multipleLine/pic3-1.png, id=329, 678.28406pt x 37.64063pt>
+<images/multipleLine/pic3-1.png, id=369, 678.28406pt x 37.64063pt>
 File: images/multipleLine/pic3-1.png Graphic file (type png)
  <use images/multipleLine/pic3-1.png>
-Package pdftex.def Info: images/multipleLine/pic3-1.png used on input line 328.
+Package pdftex.def Info: images/multipleLine/pic3-1.png used on input line 327.
 (pdftex.def)             Requested size: 418.25368pt x 23.20999pt.
 
-<images/multipleLine/pic3-2.png, id=330, 570.63188pt x 57.21375pt>
+<images/multipleLine/pic3-2.png, id=370, 570.63188pt x 57.21375pt>
 File: images/multipleLine/pic3-2.png Graphic file (type png)
  <use images/multipleLine/pic3-2.png>
-Package pdftex.def Info: images/multipleLine/pic3-2.png used on input line 335.
+Package pdftex.def Info: images/multipleLine/pic3-2.png used on input line 334.
 (pdftex.def)             Requested size: 418.25368pt x 41.93591pt.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 336.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 336.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 335.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 335.
 
-<images/multipleLine/pic3-3.png, id=333, 75.28125pt x 80.55093pt>
+<images/multipleLine/pic3-3.png, id=373, 75.28125pt x 80.55093pt>
 File: images/multipleLine/pic3-3.png Graphic file (type png)
  <use images/multipleLine/pic3-3.png>
-Package pdftex.def Info: images/multipleLine/pic3-3.png used on input line 342.
+Package pdftex.def Info: images/multipleLine/pic3-3.png used on input line 341.
 (pdftex.def)             Requested size: 125.47737pt x 134.27376pt.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 343.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 343.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 342.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 342.
 
-<images/multipleLine/pic2-1.png, id=336, 478.03593pt x 161.85469pt>
+<images/multipleLine/pic2-1.png, id=376, 478.03593pt x 161.85469pt>
 File: images/multipleLine/pic2-1.png Graphic file (type png)
  <use images/multipleLine/pic2-1.png>
-Package pdftex.def Info: images/multipleLine/pic2-1.png used on input line 351.
+Package pdftex.def Info: images/multipleLine/pic2-1.png used on input line 350.
 (pdftex.def)             Requested size: 418.25368pt x 141.61261pt.
  [18 <./images/multipleLine/pic3-1.png> <./images/multipleLine/pic3-2.png> <./images/multipleLine/pic3-3.png>]
-<images/multipleLine/pic2-2.png, id=347, 790.45313pt x 204.765pt>
+<images/multipleLine/pic2-2.png, id=387, 790.45313pt x 204.765pt>
 File: images/multipleLine/pic2-2.png Graphic file (type png)
  <use images/multipleLine/pic2-2.png>
-Package pdftex.def Info: images/multipleLine/pic2-2.png used on input line 358.
+Package pdftex.def Info: images/multipleLine/pic2-2.png used on input line 357.
 (pdftex.def)             Requested size: 418.25368pt x 108.34682pt.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 359.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 359.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 358.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 358.
 
-<images/multipleLine/pic2-3.png, id=350, 78.2925pt x 137.01187pt>
+<images/multipleLine/pic2-3.png, id=390, 78.2925pt x 137.01187pt>
 File: images/multipleLine/pic2-3.png Graphic file (type png)
  <use images/multipleLine/pic2-3.png>
-Package pdftex.def Info: images/multipleLine/pic2-3.png used on input line 365.
+Package pdftex.def Info: images/multipleLine/pic2-3.png used on input line 364.
 (pdftex.def)             Requested size: 125.47737pt x 219.5935pt.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 366.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 366.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 365.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 365.
  [19 <./images/multipleLine/pic2-1.png> <./images/multipleLine/pic2-2.png> <./images/multipleLine/pic2-3.png>]
-<images/multipleLine/pic5-1.png, id=363, 532.99126pt x 91.09032pt>
+<images/multipleLine/pic5-1.png, id=403, 532.99126pt x 91.09032pt>
 File: images/multipleLine/pic5-1.png Graphic file (type png)
  <use images/multipleLine/pic5-1.png>
-Package pdftex.def Info: images/multipleLine/pic5-1.png used on input line 374.
+Package pdftex.def Info: images/multipleLine/pic5-1.png used on input line 373.
 (pdftex.def)             Requested size: 418.25368pt x 71.4838pt.
 
-<images/multipleLine/pic5-2.png, id=364, 607.51968pt x 103.13531pt>
+<images/multipleLine/pic5-2.png, id=404, 607.51968pt x 103.13531pt>
 File: images/multipleLine/pic5-2.png Graphic file (type png)
  <use images/multipleLine/pic5-2.png>
-Package pdftex.def Info: images/multipleLine/pic5-2.png used on input line 381.
+Package pdftex.def Info: images/multipleLine/pic5-2.png used on input line 380.
 (pdftex.def)             Requested size: 418.25368pt x 71.00606pt.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 382.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 382.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 381.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 381.
 
-<images/multipleLine/pic5-3.png, id=367, 70.01157pt x 113.67468pt>
+<images/multipleLine/pic5-3.png, id=407, 70.01157pt x 113.67468pt>
 File: images/multipleLine/pic5-3.png Graphic file (type png)
  <use images/multipleLine/pic5-3.png>
-Package pdftex.def Info: images/multipleLine/pic5-3.png used on input line 388.
+Package pdftex.def Info: images/multipleLine/pic5-3.png used on input line 387.
 (pdftex.def)             Requested size: 125.47737pt x 203.74178pt.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 389.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 389.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 388.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 388.
  [20 <./images/multipleLine/pic5-1.png> <./images/multipleLine/pic5-2.png> <./images/multipleLine/pic5-3.png>]
-Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
-Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
-Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
-Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
-Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
-Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
-Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 394.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 394.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 394.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 394.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 394.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 394.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 394.
 
 (code/MultipleLinePseudoCode.java
 Overfull \hbox (91.74632pt too wide) in paragraph at lines 9--10
@@ -1656,258 +1453,242 @@ Overfull \hbox (91.74632pt too wide) in paragraph at lines 9--10
  []
 
 )
-Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
-Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 394.
+Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 394.
 
-Overfull \hbox (74.07211pt too wide) in paragraph at lines 397--398
+Overfull \hbox (74.07211pt too wide) in paragraph at lines 396--397
 \T1/ptm/m/n/12 (-20) ta-tion of the class \T1/ptm/m/it/12 (-20) ch.unibe.scg.nullSpy.instrumentator.controller.methodInv
 ocation.MultipleLineManager
  []
 
 
-Overfull \hbox (65.15204pt too wide) in paragraph at lines 397--398
+Overfull \hbox (65.15204pt too wide) in paragraph at lines 396--397
 \T1/ptm/m/n/12 (-20) and \T1/ptm/m/it/12 (-20) ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation.MethodInv
 ocationAnalyzer\T1/ptm/m/n/12 (-20) . 
  []
 
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 401.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 403.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 400.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 402.
 [21]
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 409.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 411.
- <images/bytecodeAdaptionExample_1.png, id=406, 274.77657pt x 118.19156pt>
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 408.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 410.
+ <images/bytecodeAdaptionExample_1.png, id=446, 274.77657pt x 118.19156pt>
 File: images/bytecodeAdaptionExample_1.png Graphic file (type png)
 
 <use images/bytecodeAdaptionExample_1.png>
-Package pdftex.def Info: images/bytecodeAdaptionExample_1.png used on input line 415.
+Package pdftex.def Info: images/bytecodeAdaptionExample_1.png used on input line 414.
 (pdftex.def)             Requested size: 292.77629pt x 125.94432pt.
- <images/bytecodeAdaptionExample_2.png, id=407, 1004.25188pt x 134.00063pt>
+ <images/bytecodeAdaptionExample_2.png, id=447, 1004.25188pt x 134.00063pt>
 File: images/bytecodeAdaptionExample_2.png Graphic file (type png)
 
 <use images/bytecodeAdaptionExample_2.png>
-Package pdftex.def Info: images/bytecodeAdaptionExample_2.png used on input line 422.
+Package pdftex.def Info: images/bytecodeAdaptionExample_2.png used on input line 421.
 (pdftex.def)             Requested size: 292.77629pt x 39.06569pt.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 423.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 423.
- [22 <./images/bytecodeAdaptionExample_1.png>] [23 <./images/bytecodeAdaptionExample_2.png>] [24]
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 422.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 422.
+ [22 <./images/bytecodeAdaptionExample_1.png>]
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 436.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 438.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 440.
+ [23 <./images/bytecodeAdaptionExample_2.png>] [24]
 Chapter 4.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 441.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 445.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 445.
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 442.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 446.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 446.
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\@ifnextchar' on input line 445.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\begingroup' on input line 445.
+(hyperref)                removing `\@ifnextchar' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\catcode' on input line 445.
+(hyperref)                removing `\begingroup' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\active' on input line 445.
+(hyperref)                removing `\catcode' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 445.
+(hyperref)                removing `\active' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\csname\endcsname' on input line 445.
+(hyperref)                removing `\<def>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\catcode' on input line 445.
+(hyperref)                removing `\csname\endcsname' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\active' on input line 445.
+(hyperref)                removing `\catcode' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<let>-command' on input line 445.
+(hyperref)                removing `\active' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\csname\endcsname' on input line 445.
+(hyperref)                removing `\<let>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<let>-command' on input line 445.
+(hyperref)                removing `\csname\endcsname' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\%' on input line 445.
+(hyperref)                removing `\<let>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\catcode' on input line 445.
+(hyperref)                removing `\%' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\active' on input line 445.
+(hyperref)                removing `\catcode' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 445.
+(hyperref)                removing `\active' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\csname\endcsname' on input line 445.
+(hyperref)                removing `\<def>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 445.
+(hyperref)                removing `\csname\endcsname' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\#' on input line 445.
+(hyperref)                removing `\<def>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\catcode' on input line 445.
+(hyperref)                removing `\#' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 445.
+(hyperref)                removing `\catcode' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\csname\endcsname' on input line 445.
+(hyperref)                removing `\<def>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 445.
+(hyperref)                removing `\csname\endcsname' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\&' on input line 445.
+(hyperref)                removing `\<def>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 445.
+(hyperref)                removing `\&' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\textunderscore' on input line 445.
+(hyperref)                removing `\<def>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<let>-command' on input line 445.
+(hyperref)                removing `\textunderscore' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\_' on input line 445.
+(hyperref)                removing `\<let>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\catcode' on input line 445.
+(hyperref)                removing `\_' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\active' on input line 445.
+(hyperref)                removing `\catcode' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<let>-command' on input line 445.
+(hyperref)                removing `\active' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\csname\endcsname' on input line 445.
+(hyperref)                removing `\<let>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<let>-command' on input line 445.
+(hyperref)                removing `\csname\endcsname' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\csname\endcsname' on input line 445.
+(hyperref)                removing `\<let>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<let>-command' on input line 445.
+(hyperref)                removing `\csname\endcsname' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\~' on input line 445.
+(hyperref)                removing `\<let>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<let>-command' on input line 445.
+(hyperref)                removing `\~' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\textasciitilde' on input line 445.
+(hyperref)                removing `\<let>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<let>-command' on input line 445.
+(hyperref)                removing `\textasciitilde' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\\' on input line 445.
+(hyperref)                removing `\<let>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 445.
+(hyperref)                removing `\\' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\csname\endcsname' on input line 445.
+(hyperref)                removing `\<def>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 445.
+(hyperref)                removing `\csname\endcsname' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\Hy@tempa' on input line 445.
+(hyperref)                removing `\<def>-command' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\<def>-command' on input line 445.
+(hyperref)                removing `\Hy@tempa' on input line 446.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `\Hy@tempa' on input line 445.
+(hyperref)                removing `\<def>-command' on input line 446.
 
-! Argument of \@sect has an extra }.
-<inserted text> 
-                \par 
-l.445 ...footnote{\url{http://www.jhotdraw.org/}}}
-                                                  
-I've run across a `}' that doesn't seem to match anything.
-For example, `\def\a#1{...}' and `\a}' would produce
-this error. If you simply proceed now, the `\par' that
-I've just inserted will cause me to report a runaway
-argument that might be the root of the problem. But if
-your `}' was spurious, just type `2' and it will go away.
 
-Runaway argument?
-{\normalfont \Large \bfseries }{\@xfootnote }\def \reserved@b {\stepcounter \ETC.
-! Paragraph ended before \@sect was complete.
-<to be read again> 
-                   \par 
-l.445 ...footnote{\url{http://www.jhotdraw.org/}}}
-                                                  
-I suspect you've forgotten a `}', causing me to apply this
-control sequence to too much text. How can we recover?
-My plan is to forget the whole thing and hope for the best.
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\Hy@tempa' on input line 446.
 
 [25
 
 ] [26] [27] [28]
 Chapter 5.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 507.
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 508.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 517.
 [29
 
-] [30]
+]
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 531.
+ [30] [31]
 Chapter 6.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 529.
-(thesis.bbl [31
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 543.
+(thesis.bbl [32
 
 ]
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 1.
@@ -1915,29 +1696,16 @@ Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0
 
 Package natbib Warning: Empty `thebibliography' environment on input line 3.
 
-) [32
+) [33
 
-] [33
+] [34
 
 ]
-
-! LaTeX Error: \begin{center} on input line 542 ended by \end{document}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.549 \end{document}
-                    
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 549.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 549.
-(thesis.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 549.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 549.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 564.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 564.
+ (thesis.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 564.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 564.
 
 
 Package rerunfilecheck Warning: File `thesis.out' has changed.
@@ -1945,38 +1713,35 @@ Package rerunfilecheck Warning: File `thesis.out' has changed.
 (rerunfilecheck)                or use package `bookmark'.
 
 Package rerunfilecheck Info: Checksums for `thesis.out':
-(rerunfilecheck)             Before: EC31173C3B4D758C2805F613BCD7CBB4;1687
-(rerunfilecheck)             After:  6B97D606F47D5E007D4079666275C828;1746.
+(rerunfilecheck)             Before: CD5326F464FC1C163D2281C11ED9F8B7;2071
+(rerunfilecheck)             After:  379997F222EDCC14125FA957EAD94B36;2120.
+
+LaTeX Warning: There were undefined references.
+
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 549.
- )
-(\end occurred inside a group at level 1)
-
-### semi simple group (level 1) entered at line 542 (\begingroup)
-### bottom level 
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 564.
+ ) 
 Here is how much of TeX's memory you used:
- 23197 strings out of 493634
- 423290 string characters out of 3143730
- 532819 words of memory out of 3000000
- 25840 multiletter control sequences out of 15000+200000
+ 23216 strings out of 493634
+ 423557 string characters out of 3143730
+ 533252 words of memory out of 3000000
+ 25852 multiletter control sequences out of 15000+200000
  78810 words of font info for 230 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  38i,13n,43p,10398b,1102s stack positions out of 5000i,500n,10000p,200000b,50000s
 pdfTeX warning (dest): name{Hfootnote.7} has been referenced but does not exist, replaced by a fixed one
 
-
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
 /cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
-e1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/adobe/utopia/putb8a.pfb><C:/Program Files/MiKT
-eX 2.9/fonts/type1/urw/courier/ucrb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Fi
-les/MiKTeX 2.9/fonts/type1/urw/courier/ucrro8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Pro
-gram Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:
-/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (37 pages, 899384 bytes).
+e1/adobe/utopia/putb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/courier/ucrb8a.pfb><C:/Program Files/MiKTeX 2.9/
+fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/courier/ucrro8a.pfb><C:/Program Files/Mi
+KTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program File
+s/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
+Output written on thesis.pdf (39 pages, 910036 bytes).
 PDF statistics:
- 551 PDF objects out of 1000 (max. 8388607)
- 172 named destinations out of 1000 (max. 500000)
- 37646 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 598 PDF objects out of 1000 (max. 8388607)
+ 179 named destinations out of 1000 (max. 500000)
+ 37718 words of extra memory for PDF output out of 42996 (max. 10000000)
 

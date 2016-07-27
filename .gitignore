@@ -1,4 +1,12 @@
-*
 !.gitignore
-!bachelor-thesis/
-!*/
+
+picturesOfEreignisse/
+presentation/
+scgbib/
+thesis_examples/
+time/
+ereignisse.txt
+seminar.txt
+structure.docx
+thesisText.docx
+Time.csv

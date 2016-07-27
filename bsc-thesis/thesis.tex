@@ -540,6 +540,19 @@ Last target for future work to mention here is transform NullSpy into an Eclipse
 
 For now, we can only think of these future work that could improve NullSpy to give it more value.
 
+\section{Personal Experience}
+At the beginning, after reading the description of the project I had no clue how to approach its goal at all. Since this is my first big project on my own but with help from two experienced research assistants I learned a lot, especially in the matter of programming.
+
+As the project is all about manipulating class files, here with Javassist, we first had to learn how bytecode is constructed and get familiar with Javassist. Luckily there is a very good tutorial that teaches one how to use it. This class library however does not cover everything we needed. Thanks to this we had to deal with the lack extensively and learned quite a lot about working on bytecode-level.
+
+Next to getting familiar with bytecode we also had to invent algorithms like that of extracting method receivers from the bytecode or that of getting the pc interval of a method receiver. It was quite interesting to invent those as these are the first ones that fulfill more complex tasks.
+
+Debugging: It is not as easy as it seems. Sometimes it took hours to find the cause of a small bug, and after fixing it another occurs. The reason why it took that long to debug is because along with checking whether the logic of our code was right we also had to find the right bytecode position to ensure the implementation does what it is created for.
+
+Coding beautifully the way so that it will not smell was another challenge due to lack of experience. Sometimes I tended to put everything in one class instead of abiding by the single responsibility principle. Therefore, refactoring the whole project multiple times was necessarily which also took some time. Best before starting to code is to clearly thinking through what is needed, how the structure should look like and what kind of responsibility each class of the project should take for gaining time for other things.
+
+We also came in contact with the building XML file and the jar file. Concerning the XML file, we gained experience by learning a new language by modifying it that it also creates a jar file out of the modified project. 
+
 \chapter {Anleitung zu wissenschaftlichen Arbeiten}
 This consists of additional documentation, e.g. a tutorial, user guide etc.
 Required by the Informatik regulation.

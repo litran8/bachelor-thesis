@@ -429,19 +429,102 @@ That is why changed the way to insert the test method at bytecode-level. Like th
 There are of course many other small problems during the implementation of NullSpy but these mentioned are the most troublesome ones.
 
 \section{Limitations}
-...
+During the implementation of NullSpy we had to change the concept few times due to limitations or an overhead that could have grown immense.
+Our first idea of how NullSpy could track the NullPointerExceptions is to gather information about variable assignment, which is the case now, and also inject another test method right before each method invocations. In small projects this way could have worked fine but in larger projects which could contain hundreds of classes with a lot of method invocations the execution time would be strongly influenced.
+
+Being able to collect data about variables we still are not able to avoid injecting bytecode even it affects the runtime. Related to this issue a limitation about Javassist is mentioned before namely inserting bytecode right before a closing bracket [REFERENCE]. Because of this it highly depends on the location where additional code should be inserted whether using the source-level API is possible or not. Avoiding checking all the location where something new should be added it is more secure to do this on bytecode-level. But in cases like entering something at the beginning or at the end of a method body the source-level is just fine.
+
+Another limitation of Javassist to mention is that it does not provide anything to get information about method receivers. It only allows one to extract information about local variables, fields and method invocations itself. The programming language Java also does not provide any information about the method receiver, since the exception object or the stack trace element just contains the class, file, method name and the line number. Nonetheless making possible to gather data about them the algorithm discussed before [REFERENCE] fulfils the missing task.
+
+The last limitation we want to discuss here is that unfortunately NullSpy is not capable to track the root of NullPointerExceptions that are originated in a null which was returned of a method call or in an element of a collection. Why those situations are not supported in NullSpy is because of the impossibility way to store them, e.g. imagine a nested ArrayList or a HashMap and a never ending return value of method invocations. So we lack something tangible to compare with each other, get a hit and read the location out of the hit [REFERENCE TO FUTURE WORK].
 
 \chapter{Validation}
-In which you show how well the solution works.
+\label{ch:validation}
+This chapter will provide some numbers to compare the execution time each project takes, the original and the instrumented one. To get the numbers we instrumented the example project JHotDraw. 
 
-\section{JHotDraw}
-JHotDraw
-To check whether the logic of the bytecode manipulation in this project NullSpy is working as desired, we had to perform them on a large working project. Thanks to Nevena Milojkovi\'{c} and her experience with the combination Javassist and JHotDraw we as well decided to test NullSpy on the project JHotDraw.
-It is an open-source Java GUI framework for technical and structured Graphics. Its original authors have been Erich Gamma and Thomas Eggenschwiler. 
+\section{JHotDraw\footnote{\url{http://www.jhotdraw.org/}}}
+\label{sec:jhotdraw}
+This project also served to check whether the logic of the bytecode manipulation behind NullSpy is working as desired. JHotDraw is an open-source Java GUI framework for technical and structured Graphics. It is big enough to get reliable numbers and it provides many different cases we had to take care of in NullSpy. Also thanks to Nevena Milojkovi\'{c} and her experience with the combination Javassist and JHotDraw we as well decided to test NullSpy on it.
+
+\section{Execution Time Difference}
+\label{sec:execTimeDiff}
+How did we get the numbers? First of all, of course another executable jar file of the modified project has to be created. The steps to it are followings: load project, modify project, store modified project, build project that creates an executable jar file of the original project and one of the modified one. We then simulate the terminal with a Java class to run each jar thirty times and calculate the average. The next table lists each execution time and the average:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ l | S[table-format=1.3] | S[table-format=1.3]|}
+\cline{2-3}	  &\textbf{Original project} & \textbf{Modified project}\\ \cline{2-3}
+	1	& 7.223	& 7.442	\\ \cline{2-3}
+	2	& 7.427	& 7.738	\\ \cline{2-3}
+	3	& 7.171	& 7.893	\\ \cline{2-3}
+	4	& 7.035	& 7.379	\\ \cline{2-3}
+	5	& 7.488	& 7.458	\\ \cline{2-3}
+	6	& 7.194	& 7.691	\\ \cline{2-3}
+	7	& 6.849	& 7.472	\\ \cline{2-3}
+	8	& 7.286	& 8.068	\\ \cline{2-3}
+	9	& 7.083	& 7.519	\\ \cline{2-3}
+	10 & 7.27	& 7.55	\\ \cline{2-3}
+	11 & 7.16	& 7.177 \\ \cline{2-3}
+	12 & 7.161  & 7.55	\\ \cline{2-3}
+	13 & 7.225	& 7.223	\\ \cline{2-3}
+	14 & 7.037	& 7.316	\\ \cline{2-3}
+	15 & 7.067	& 7.54	\\ \cline{2-3}
+	16 & 6.975	& 7.77	\\ \cline{2-3}
+	17 & 7.287	& 7.117	\\ \cline{2-3}
+	18 & 7.52	  & 7.488	\\ \cline{2-3}
+	19 & 7.303	& 7.35	\\ \cline{2-3}
+	20 & 6.942	& 7.307	\\ \cline{2-3}
+	21 & 7.147	& 7.535	\\ \cline{2-3}
+	22 & 7.222	& 7.644	\\ \cline{2-3}
+	23 & 7.145	& 7.32	\\ \cline{2-3}
+	24 & 7.334	& 8.187	\\ \cline{2-3}
+	25 & 7.364	&7.488	\\ \cline{2-3}
+	26 & 7.269	&7.942	\\ \cline{2-3}
+	27 & 7.441	&7.943	\\ \cline{2-3}
+	28 & 7.223	&7.467	\\ \cline{2-3}
+	29 & 6.912	&7.647	\\ \cline{2-3}
+	30 & 7.363	&7.784	\\ \cline{2-3}
+	\cline{2-3}
+	\end{tabular}
+	\caption{Execution time}
+	\label{tab:executionTime}
+\end{table}
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{ | S[table-format=1.4] | S[table-format=1.6] |}
+		\hline	
+		\textbf{Original project} & \textbf{Modified project}\\ \hline
+		7.2041	&	7.566834 \\
+		\hline
+	\end{tabular}
+	\caption{Average time}
+	\label{tab:averageTime}
+\end{table}
+
+The runtime of the modified project takes 0.362734s longer than the original one, this means after adding additional code to the project results in approximately \textbf{5\%} overhead. This small overhead is quite negligible. But this numbers have to be interpreted with caution because the overhead is only measured on JHotDraw. It only has few variable assignments but how much would it go up if there are tons of them?
 
 \chapter {Conclusion and Future Work}
 \label{ch:conclusionsFutureWork}
-In which we step back, have a critical look at the entire work, then conclude, and learn what lays beyond this thesis.
+Now we have come so far to retrospect (step back and have a critical loot at) the entire project for summarizing what goals we have achieved so far and for proposing further aims that could be completed in the future. In a small section we also want to tell you about the gained experience during the whole project.
+
+\section{NullSpy}
+\label{sec:nullSpy}
+Happily, we could say here that we successfully managed to meet the main purpose we have set at the beginning of the project. NullSpy is now capable to tracking the NullPointerExceptions to its root and provide the user with more information about its origin without spending much time on finding it. The most important steps which lead to the success of NullSpy are listed below:
+
+\begin{enumerate}
+\item Extract and gather information about all method receivers because method invocations on these causes NullPointerExcetptions. To achieve this, we developed an algorithm [REFERENCE] with the function of finding method receivers and extracting data from it by only doing static bytecode analysis. The information about it is then stored as an external csv file. It is needed for a comparison in in a later step.
+
+\item Again collecting data, but this time about variable assignments namely local variables and fields. Here next to the static bytecode analysis additional instructions are inserted to the class files to check right after the assignment if the variable is assigned to the special value \textit{null}. If this is the case everything about the variable is stored in a HashMap which serves for a comparison too. It is stored in a HashMap because if a variable is assigned to another object than null, it will be deleted from the HashMap.
+
+\item NullSpy does only handle the uncaught NullPointerException which means we can wrap up the main method with a catch block. In this catch block the class name and the line number where the NullPointerException occurred is extracted from the stack trace. This information is passed to a method in which the parameter helps to find the guilty method receiver. With the hit the exact location where that variable was set to null can be derived from the HashMap.
+
+\item All the additional needed classes are added to the project after it is modified and stored in a folder the user has chosen. Being able to run the modified project of course a jar file is created. In our case JHotDraw already provides a \textit{build.xml} which we had to alternate a little bit.
+\end{enumerate}
+
+During the implementation we were encountered with many difficulties. Some of those we were able to solve and some not unfortunately. Those unsolved ones could be proposed as goals of future work. The next section will list some of them.
+
+
 
 \chapter {Anleitung zu wissenschaftlichen Arbeiten}
 This consists of additional documentation, e.g. a tutorial, user guide etc.

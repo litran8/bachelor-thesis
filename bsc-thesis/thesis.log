@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  20 JUL 2016 22:23
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  26 JUL 2016 23:19
 entering extended mode
 **./thesis.tex
 (thesis.tex
@@ -603,13 +603,209 @@ Package footmisc Info: Declaring symbol style wiley on input line 872.
 Package footmisc Info: Declaring symbol style lamport-robust on input line 883.
 Package footmisc Info: Declaring symbol style lamport* on input line 903.
 Package footmisc Info: Declaring symbol style lamport*-robust on input line 924.
+) ("C:\Program Files\MiKTeX 2.9\tex\latex\base\fontenc.sty"
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\base\t1enc.def"
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
+)) ("C:\Program Files\MiKTeX 2.9\tex\latex\caption\caption.sty"
+Package: caption 2015/09/17 v3.3-111 Customizing captions (AR)
+("C:\Program Files\MiKTeX 2.9\tex\latex\caption\caption3.sty"
+Package: caption3 2015/09/20 v1.7-115 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
+\captionmargin=\dimen185
+\captionmargin@=\dimen186
+\captionwidth=\dimen187
+\caption@tempdima=\dimen188
+\caption@indent=\dimen189
+\caption@parindent=\dimen190
+\caption@hangindent=\dimen191
 )
-\c@qcounter=\count163
+\c@ContinuedFloat=\count163
+Package caption Info: float package is loaded.
+Package caption Info: listings package is loaded.
+Package caption Info: rotating package is loaded.
+Package caption Info: subfigure package is loaded.
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\siunitx\siunitx.sty"
+Package: siunitx 2016/01/05 v2.6o A comprehensive (SI) units package
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\tools\array.sty"
+Package: array 2014/10/28 v2.4c Tabular extension package (FMi)
+\col@sep=\dimen192
+\extrarowheight=\dimen193
+\NC@list=\toks37
+\extratabsurround=\skip68
+\backup@length=\skip69
+)
+\l__siunitx_tmp_box=\box54
+\l__siunitx_tmp_dim=\dimen194
+\l__siunitx_tmp_int=\count164
+\l__siunitx_number_mantissa_length_int=\count165
+\l__siunitx_number_uncert_length_int=\count166
+\l__siunitx_round_int=\count167
+\l__siunitx_process_decimal_int=\count168
+\l__siunitx_process_uncertainty_int=\count169
+\l__siunitx_process_fixed_int=\count170
+\l__siunitx_process_integer_min_int=\count171
+\l__siunitx_process_precision_int=\count172
+\l__siunitx_group_min_int=\count173
+\l__siunitx_angle_marker_box=\box55
+\l__siunitx_angle_unit_box=\box56
+\l__siunitx_angle_marker_dim=\dimen195
+\l__siunitx_angle_unit_dim=\dimen196
+\l__siunitx_unit_int=\count174
+\l__siunitx_unit_denominator_int=\count175
+\l__siunitx_unit_numerator_int=\count176
+\l__siunitx_unit_prefix_int=\count177
+\l__siunitx_unit_prefix_base_int=\count178
+\l__siunitx_unit_prefix_gram_int=\count179
+\l__siunitx_number_product_int=\count180
+\c__siunitx_one_fill_skip=\skip70
+\l__siunitx_table_unit_align_skip=\skip71
+\l__siunitx_table_exponent_dim=\dimen197
+\l__siunitx_table_integer_dim=\dimen198
+\l__siunitx_table_mantissa_dim=\dimen199
+\l__siunitx_table_marker_dim=\dimen256
+\l__siunitx_table_result_dim=\dimen257
+\l__siunitx_table_uncert_dim=\dimen258
+\l__siunitx_table_fill_pre_dim=\dimen259
+\l__siunitx_table_fill_post_dim=\dimen260
+\l__siunitx_table_fill_mid_dim=\dimen261
+\l__siunitx_table_pre_box=\box57
+\l__siunitx_table_post_box=\box58
+\l__siunitx_table_mantissa_box=\box59
+\l__siunitx_table_result_box=\box60
+\l__siunitx_table_number_align_skip=\skip72
+\l__siunitx_table_text_align_skip=\skip73
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \DeclareBinaryPrefix with sig. 'mmm' on line 7213.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \DeclareSIPostPower with sig. 'mm' on line 7216.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \DeclareSIPrefix with sig. 'mmm' on line 7219.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \DeclareSIPrePower with sig. 'mm' on line 7222.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \DeclareSIQualifier with sig. 'mm' on line 7225.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \DeclareSIUnit with sig. 'O{}mm' on line 7228.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \DeclareSIUnitWithOptions with sig. 'mmm' on line 7231.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \ang with sig. 'o>{\SplitArgument {2}{;}}m' on line 7246.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \num with sig. 'om' on line 7254.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \numlist with sig. 'o>{\SplitList {;}}m' on line 7262.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \numrange with sig. 'omm' on line 7270.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \SIlist with sig. 'o>{\SplitList {;}}mm' on line 7281.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \SIrange with sig. 'ommm' on line 7292.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \SI with sig. 'omom' on line 7303.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \sisetup with sig. 'm' on line 7306.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \tablenum with sig. 'om' on line 7318.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \si with sig. 'om' on line 7329.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \__siunitx_bookmark_num:w with sig. 'om' on line 7376.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \__siunitx_bookmark_numrange:w with sig. 'omm' on line
+. 7378.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \__siunitx_bookmark_SI:w with sig. 'omom' on line 7380.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \__siunitx_bookmark_SIlist:w with sig. 'omm' on line 7382.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \__siunitx_bookmark_SIrange:w with sig. 'ommm' on line
+. 7384.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \__siunitx_bookmark_si:w with sig. 'om' on line 7385.
+.................................................
+\g__file_internal_ior=\read1
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\beamer\base\translator\translator.sty"
+Package: translator 2010/06/12 ver 1.10
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\beamer\base\translator\translator-language-mappings.tex")))
+\c@qcounter=\count181
 
 ! Undefined control sequence.
 \reserved@b ...hor }, pdfsubject={\thesissubtitle 
                                                   }, pdfpagelabels}][{}]\noe...
-l.223 
+l.229 
       
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -666,14 +862,14 @@ Package: auxhook 2011/03/04 v1.3 Hooks for auxiliary files (HO)
 ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\kvoptions.sty"
 Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 )
-\@linkdim=\dimen185
-\Hy@linkcounter=\count164
-\Hy@pagecounter=\count165
+\@linkdim=\dimen262
+\Hy@linkcounter=\count182
+\Hy@pagecounter=\count183
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\pd1enc.def"
 File: pd1enc.def 2012/11/06 v6.83m Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count166
+\Hy@SavedSpaceFactor=\count184
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\hyperref.cfg"
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
@@ -690,12 +886,12 @@ Package hyperref Info: Plain pages OFF on input line 4458.
 Package hyperref Info: Backreferencing OFF on input line 4463.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4688.
-\c@Hy@tempcnt=\count167
+\c@Hy@tempcnt=\count185
 LaTeX Info: Redefining \url on input line 5041.
-\XeTeXLinkMargin=\dimen186
-\Fld@menulength=\count168
-\Field@Width=\dimen187
-\Fld@charsize=\dimen188
+\XeTeXLinkMargin=\dimen263
+\Fld@menulength=\count186
+\Field@Width=\dimen264
+\Fld@charsize=\dimen265
 Package hyperref Info: Hyper figures OFF on input line 6295.
 Package hyperref Info: Link nesting OFF on input line 6300.
 Package hyperref Info: Hyper index ON on input line 6303.
@@ -705,66 +901,66 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6320.
 Package hyperref Info: PDF/A mode OFF on input line 6325.
 LaTeX Info: Redefining \ref on input line 6365.
 LaTeX Info: Redefining \pageref on input line 6369.
-\Hy@abspage=\count169
-\c@Item=\count170
-\c@Hfootnote=\count171
+\Hy@abspage=\count187
+\c@Item=\count188
+\c@Hfootnote=\count189
 )
 
 Package hyperref Message: Driver (autodetected): hpdftex.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\hpdftex.def"
 File: hpdftex.def 2012/11/06 v6.83m Hyperref driver for pdfTeX
-\Fld@listcount=\count172
-\c@bookmark@seq@number=\count173
+\Fld@listcount=\count190
+\c@bookmark@seq@number=\count191
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\rerunfilecheck.sty"
 Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 282.
 )
-\Hy@SectionHShift=\skip68
+\Hy@SectionHShift=\skip74
 ) (thesis.aux)
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 231.
-LaTeX Font Info:    ... okay on input line 231.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 231.
-LaTeX Font Info:    ... okay on input line 231.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 231.
-LaTeX Font Info:    ... okay on input line 231.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 231.
-LaTeX Font Info:    ... okay on input line 231.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 231.
-LaTeX Font Info:    ... okay on input line 231.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 231.
-LaTeX Font Info:    ... okay on input line 231.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 231.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 231.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 237.
+LaTeX Font Info:    ... okay on input line 237.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 237.
+LaTeX Font Info:    ... okay on input line 237.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 237.
+LaTeX Font Info:    ... okay on input line 237.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 237.
+LaTeX Font Info:    ... okay on input line 237.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 237.
+LaTeX Font Info:    ... okay on input line 237.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 237.
+LaTeX Font Info:    ... okay on input line 237.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 237.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 237.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 231.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 231.
-LaTeX Font Info:    ... okay on input line 231.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 231.
- ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ot1ptm.fd"
-File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+LaTeX Font Info:    ... okay on input line 237.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 237.
+LaTeX Font Info:    ... okay on input line 237.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 237.
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\t1ptm.fd"
+File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
 ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count174
-\scratchdimen=\dimen189
-\scratchbox=\box54
-\nofMPsegments=\count175
-\nofMParguments=\count176
-\everyMPshowfont=\toks37
-\MPscratchCnt=\count177
-\MPscratchDim=\dimen190
-\MPnumerator=\count178
-\makeMPintoPDFobject=\count179
-\everyMPtoPDFconversion=\toks38
+\scratchcounter=\count192
+\scratchdimen=\dimen266
+\scratchbox=\box61
+\nofMPsegments=\count193
+\nofMParguments=\count194
+\everyMPshowfont=\toks38
+\MPscratchCnt=\count195
+\MPscratchDim=\dimen267
+\MPnumerator=\count196
+\makeMPintoPDFobject=\count197
+\everyMPtoPDFconversion=\toks39
 )
-LaTeX Info: Redefining \microtypecontext on input line 231.
+LaTeX Info: Redefining \microtypecontext on input line 237.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -811,44 +1007,108 @@ File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\c@lstlisting=\count180
+\c@lstlisting=\count198
 ("C:\Program Files\MiKTeX 2.9\tex\latex\ucs\ucsencs.def"
 File: ucsencs.def 2011/01/21 Fixes to fontencodings LGR, T3
 )
-\AtBeginShipoutBox=\box55
-Package hyperref Info: Link coloring ON on input line 231.
- ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: hyperref package is loaded.
+Package caption Info: End \AtBeginDocument code.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\beamer\base\translator\dicts\translator-basic-dictionary\translator-basic-dictio
+nary-English.dict"
+Dictionary: translator-basic-dictionary, Language: English 
+) ("C:\Program Files\MiKTeX 2.9\tex\latex\siunitx\siunitx-abbreviations.cfg"
+File: siunitx-abbreviations.cfg 2016/01/05 v2.6o siunitx: Abbreviated units
+)
+\AtBeginShipoutBox=\box62
+Package hyperref Info: Link coloring ON on input line 237.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
 ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count181
+\c@section@level=\count199
 LaTeX Info: Redefining \Ref on input line 513.
 )
-LaTeX Info: Redefining \ref on input line 231.
-LaTeX Info: Redefining \pageref on input line 231.
-LaTeX Info: Redefining \nameref on input line 231.
- (thesis.out) (thesis.out)
+LaTeX Info: Redefining \ref on input line 237.
+LaTeX Info: Redefining \pageref on input line 237.
+LaTeX Info: Redefining \nameref on input line 237.
+ (thesis.out)
+Runaway argument?
+{4.1 JHotDraw` `\045\BOOKMARK [1][-]{section.4.2}{4.2 Execution Time \ETC.
+! File ended while scanning use of \@@BOOKMARK.
+<inserted text> 
+                \par 
+l.237 \begin{document}
+                      
+I suspect you have forgotten a `}', causing me
+to read past where you wanted me to stop.
+I'll try to recover; but if the error is serious,
+you'd better type `E' or `X' now and fix your file.
+
+(thesis.out)
+Runaway argument?
+{4.1 JHotDraw` `\045\BOOKMARK [1][-]{section.4.2}{4.2 Execution Time \ETC.
+! File ended while scanning use of \@@BOOKMARK.
+<inserted text> 
+                \par 
+l.237 \begin{document}
+                      
+I suspect you have forgotten a `}', causing me
+to read past where you wanted me to stop.
+I'll try to recover; but if the error is serious,
+you'd better type `E' or `X' now and fix your file.
+
 \@outlinefile=\write3
 \openout3 = `thesis.out'.
 
-LaTeX Info: Redefining \Ref on input line 231.
+LaTeX Info: Redefining \Ref on input line 237.
+\c__siunitx_mathsf_int=\count266
+("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-cmr.cfg"
+File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 237.
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+) ("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-msa.cfg"
+File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 237.
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) ("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-msb.cfg"
+File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
+)
+LaTeX Font Info:    Try loading font information for U+stmry on input line 237.
 
-<images/logos/UNI_Bern.png, id=87, 258.2448pt x 199.4652pt>
+("C:\Program Files\MiKTeX 2.9\tex\latex\stmaryrd\ustmry.fd")
+Package microtype Info: Loading generic settings for font family
+(microtype)             `cmss' (encoding: OT1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+\c__siunitx_mathtt_int=\count267
+Package microtype Info: Loading generic settings for font family
+(microtype)             `cmtt' (encoding: OT1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+
+<images/logos/UNI_Bern.png, id=75, 258.2448pt x 199.4652pt>
 File: images/logos/UNI_Bern.png Graphic file (type png)
  <use images/logos/UNI_Bern.png>
-Package pdftex.def Info: images/logos/UNI_Bern.png used on input line 240.
+Package pdftex.def Info: images/logos/UNI_Bern.png used on input line 246.
 (pdftex.def)             Requested size: 129.12207pt x 99.73235pt.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 246.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24.88> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 246.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17.28> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 247.
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 252.
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <24.88> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 252.
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <17.28> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 253.
 
 ! Undefined control sequence.
-l.247     \Large \vspace{0.1in} \thesissubtitle
+l.253     \Large \vspace{0.1in} \thesissubtitle
                                                 \par}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -856,8 +1116,8 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20.74> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 250.
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <20.74> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 256.
 [1
 
 
@@ -885,24 +1145,6 @@ Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 1.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 2.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 3.
- ("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-cmr.cfg"
-File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
-)
-LaTeX Font Info:    Try loading font information for U+msa on input line 3.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-) ("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-msa.cfg"
-File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
-)
-LaTeX Font Info:    Try loading font information for U+msb on input line 3.
- ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) ("C:\Program Files\MiKTeX 2.9\tex\latex\microtype\mt-msb.cfg"
-File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-)
-LaTeX Font Info:    Try loading font information for U+stmry on input line 3.
- ("C:\Program Files\MiKTeX 2.9\tex\latex\stmaryrd\ustmry.fd")
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 4.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 5.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 6.
@@ -918,9 +1160,30 @@ Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 15.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 16.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 17.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 18.
-Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 19.
+
+Runaway argument?
+{\numberline {4.1}JHotDraw\let \reserved@d =[\def 
+! Paragraph ended before \contentsline was complete.
+<to be read again> 
+                   \par 
+l.19 ... {4.1}JHotDraw\let \reserved@d =[\def \par
+                                                   }{25}{section.4.1}
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
+! Extra }, or forgotten \endgroup.
+l.19 ...4.1}JHotDraw\let \reserved@d =[\def \par }
+                                                  {25}{section.4.1}
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 20.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 21.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 22.
 )
 \tf@toc=\write4
 \openout4 = `thesis.toc'.
@@ -935,9 +1198,6 @@ l.24 \mainmatter
 ]
 Chapter 1.
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 28.
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ô in font ptmr7t!
 [1
 
 
@@ -945,22 +1205,22 @@ Missing character: There is no ô in font ptmr7t!
 Chapter 2.
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 40.
 
-Overfull \hbox (4.45871pt too wide) in paragraph at lines 43--44
-[]\OT1/ptm/m/n/12 (-20) This chap-ter pro-vides a short overview of work-s/tech-nolo-gies used in this project. 
+Overfull \hbox (4.45459pt too wide) in paragraph at lines 43--44
+[]\T1/ptm/m/n/12 (-20) This chap-ter pro-vides a short overview of work-s/tech-nolo-gies used in this project. 
  []
 
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 47.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 47.
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 47.
-("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ot1pcr.fd"
-File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 47.
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\t1pcr.fd"
+File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
 Package microtype Info: Loading generic settings for font family
-(microtype)             `pcr' (encoding: OT1).
+(microtype)             `pcr' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-<images/bytecodeModificationLevels.png, id=140, 468.24937pt x 182.93344pt>
+<images/bytecodeModificationLevels.png, id=132, 468.24937pt x 182.93344pt>
 File: images/bytecodeModificationLevels.png Graphic file (type png)
  <use images/bytecodeModificationLevels.png>
 Package pdftex.def Info: images/bytecodeModificationLevels.png used on input line 51.
@@ -970,7 +1230,7 @@ Package pdftex.def Info: images/bytecodeModificationLevels.png used on input lin
 
 ]
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 56.
- <images/javassistExample.png, id=149, 963.6pt x 495.35063pt>
+ <images/javassistExample.png, id=141, 963.6pt x 495.35063pt>
 File: images/javassistExample.png Graphic file (type png)
  <use images/javassistExample.png>
 Package pdftex.def Info: images/javassistExample.png used on input line 62.
@@ -978,14 +1238,14 @@ Package pdftex.def Info: images/javassistExample.png used on input line 62.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 67.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 67.
  [4 <./images/bytecodeModificationLevels.png> <./images/javassistExample.png>]
-<images/javassistModules.png, id=158, 459.21562pt x 242.40562pt>
+<images/javassistModules.png, id=150, 459.21562pt x 242.40562pt>
 File: images/javassistModules.png Graphic file (type png)
  <use images/javassistModules.png>
 Package pdftex.def Info: images/javassistModules.png used on input line 71.
 (pdftex.def)             Requested size: 334.60422pt x 176.63652pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 76.
 
-<images/insertionCodeExample.png, id=160, 863.47594pt x 237.13594pt>
+<images/insertionCodeExample.png, id=152, 863.47594pt x 237.13594pt>
 File: images/insertionCodeExample.png Graphic file (type png)
  <use images/insertionCodeExample.png>
 Package pdftex.def Info: images/insertionCodeExample.png used on input line 80.
@@ -993,7 +1253,7 @@ Package pdftex.def Info: images/insertionCodeExample.png used on input line 80.
  [5 <./images/javassistModules.png>]
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 86.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 86.
- <images/bytecodeSourcecode.png, id=171, 216.3282pt x 160.4394pt>
+ <images/bytecodeSourcecode.png, id=163, 216.3282pt x 160.4394pt>
 File: images/bytecodeSourcecode.png Graphic file (type png)
 
 <use images/bytecodeSourcecode.png>
@@ -1005,22 +1265,16 @@ Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 98.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 100.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 105.
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ù in font ptmr7t!
 [7
 
-] <images/highLevelOverview.png, id=188, 582.67688pt x 351.56343pt>
+] <images/highLevelOverview.png, id=180, 582.67688pt x 351.56343pt>
 File: images/highLevelOverview.png Graphic file (type png)
  <use images/highLevelOverview.png>
 Package pdftex.def Info: images/highLevelOverview.png used on input line 117.
 (pdftex.def)             Requested size: 209.12683pt x 126.17648pt.
  [8 <./images/highLevelOverview.png>]
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 130.
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 130.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 150.
 
 Underfull \hbox (badness 10000) in paragraph at lines 134--151
@@ -1056,13 +1310,13 @@ Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 152.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 158.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 158.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 160.
- <images/localVarCreationBytecode.png, id=211, 1149.5447pt x 1063.72406pt>
+ <images/localVarCreationBytecode.png, id=203, 1149.5447pt x 1063.72406pt>
 File: images/localVarCreationBytecode.png Graphic file (type png)
  <use images/localVarCreationBytecode.png>
 Package pdftex.def Info: images/localVarCreationBytecode.png used on input line 168.
 (pdftex.def)             Requested size: 209.12683pt x 193.50719pt.
 
-! Argument of \Hy@tempa has an extra }.
+! Argument of \caption@ydblarg has an extra }.
 <inserted text> 
                 \par 
 l.169 ..._local_variable_creation_byte_code.png}}}
@@ -1075,8 +1329,8 @@ argument that might be the root of the problem. But if
 your `}' was spurious, just type `2' and it will go away.
 
 Runaway argument?
-\@captype {\@xfootnote }\def \reserved@b {\stepcounter \@mpfn \protected@xdef \ETC.
-! Paragraph ended before \Hy@tempa was complete.
+{\@caption \@captype }{\@xfootnote }\def \reserved@b {\stepcounter \@mpfn \ETC.
+! Paragraph ended before \caption@ydblarg was complete.
 <to be read again> 
                    \par 
 l.169 ..._local_variable_creation_byte_code.png}}}
@@ -1087,39 +1341,33 @@ My plan is to forget the whole thing and hope for the best.
 
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 169.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 169.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 169.
 
 Underfull \hbox (badness 10000) in paragraph at lines 169--169
-[][][][][]$\OT1/pcr/m/n/10 http : / / blog . jamesdbloom . com / images _ 2013 _ 11 _ 17 _ 17 _ 56 / java _ local _
+[][][][][]$\T1/pcr/m/n/10 http : / / blog . jamesdbloom . com / images _ 2013 _ 11 _ 17 _ 17 _ 56 / java _ local _
  []
 
 [10]
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 175.
- <images/localVarTable.png, id=222, 371.88937pt x 57.96657pt>
+ <images/localVarTable.png, id=215, 371.88937pt x 57.96657pt>
 File: images/localVarTable.png Graphic file (type png)
  <use images/localVarTable.png>
 Package pdftex.def Info: images/localVarTable.png used on input line 179.
 (pdftex.def)             Requested size: 418.25368pt x 65.1954pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 184.
  [11 <./images/localVarCreationBytecode.png> <./images/localVarTable.png>]
-<images/localVarTableDuplicatedSlot.png, id=232, 234.1247pt x 79.79813pt>
+<images/localVarTableDuplicatedSlot.png, id=225, 234.1247pt x 79.79813pt>
 File: images/localVarTableDuplicatedSlot.png Graphic file (type png)
  <use images/localVarTableDuplicatedSlot.png>
 Package pdftex.def Info: images/localVarTableDuplicatedSlot.png used on input line 188.
 (pdftex.def)             Requested size: 292.77629pt x 99.80096pt.
 
-<images/lineNrTable.png, id=233, 77.53969pt x 58.71938pt>
+<images/lineNrTable.png, id=226, 77.53969pt x 58.71938pt>
 File: images/lineNrTable.png Graphic file (type png)
  <use images/lineNrTable.png>
 Package pdftex.def Info: images/lineNrTable.png used on input line 199.
 (pdftex.def)             Requested size: 125.47737pt x 95.02179pt.
  [12 <./images/localVarTableDuplicatedSlot.png> <./images/lineNrTable.png>]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 221.
- ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
-File: omsptm.fd 
-)
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 221.
-
 Underfull \hbox (badness 10000) in paragraph at lines 208--222
 
  []
@@ -1168,41 +1416,43 @@ Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 26
 Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
 Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
  (code/Fields.java
-LaTeX Font Info:    Font shape `OT1/pcr/bx/n' in size <10> not available
-(Font)              Font shape `OT1/pcr/b/n' tried instead on input line 1.
-LaTeX Font Info:    Font shape `OT1/pcr/m/it' in size <10> not available
-(Font)              Font shape `OT1/pcr/m/sl' tried instead on input line 8.
+LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <10> not available
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 1.
+LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <10> not available
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 8.
 )
 Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
 Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 263.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 265.
  [15]
-Overfull \hbox (118.71779pt too wide) in paragraph at lines 271--272
-[]\OT1/ptm/m/n/12 (-20) The added byte-code rep-re-sents a static method of a class named \OT1/ptm/m/it/12 (-20) ch.scg.
-nullSpy.runtimeSupporter.VariableTester
+Overfull \hbox (118.71367pt too wide) in paragraph at lines 271--272
+[]\T1/ptm/m/n/12 (-20) The added byte-code rep-re-sents a static method of a class named \T1/ptm/m/it/12 (-20) ch.scg.nu
+llSpy.runtimeSupporter.VariableTester
  []
 
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 273.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 275.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 284.
-<images/multipleLine/pic4-1.png, id=305, 587.94656pt x 35.38219pt>
+<images/multipleLine/pic4-1.png, id=297, 587.94656pt x 35.38219pt>
 File: images/multipleLine/pic4-1.png Graphic file (type png)
  <use images/multipleLine/pic4-1.png>
 Package pdftex.def Info: images/multipleLine/pic4-1.png used on input line 288.
 (pdftex.def)             Requested size: 418.25368pt x 25.1701pt.
 
-<images/multipleLine/pic4-2.png, id=306, 497.60907pt x 80.55093pt>
+<images/multipleLine/pic4-2.png, id=298, 497.60907pt x 80.55093pt>
 File: images/multipleLine/pic4-2.png Graphic file (type png)
  <use images/multipleLine/pic4-2.png>
 Package pdftex.def Info: images/multipleLine/pic4-2.png used on input line 295.
 (pdftex.def)             Requested size: 418.25368pt x 67.70656pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 296.
- [16 <./images/multipleLine/pic4-1.png>] <images/multipleLine/pic4-3.png, id=314, 70.76437pt x 54.2025pt>
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 296.
+ [16 <./images/multipleLine/pic4-1.png>] <images/multipleLine/pic4-3.png, id=307, 70.76437pt x 54.2025pt>
 File: images/multipleLine/pic4-3.png Graphic file (type png)
 
 <use images/multipleLine/pic4-3.png>
 Package pdftex.def Info: images/multipleLine/pic4-3.png used on input line 302.
 (pdftex.def)             Requested size: 125.47737pt x 96.1187pt.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 303.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 303.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 307.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 307.
@@ -1320,72 +1570,78 @@ the way to recover is to insert both the forgotten and the
 deleted material, e.g., by typing `I$}'.
 
 
-Overfull \hbox (60.4248pt too wide) in paragraph at lines 322--323
+Overfull \hbox (60.42068pt too wide) in paragraph at lines 322--323
 [][] 
  []
 
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 324.
 [17 <./images/multipleLine/pic4-2.png> <./images/multipleLine/pic4-3.png>]
-<images/multipleLine/pic3-1.png, id=334, 678.28406pt x 37.64063pt>
+<images/multipleLine/pic3-1.png, id=329, 678.28406pt x 37.64063pt>
 File: images/multipleLine/pic3-1.png Graphic file (type png)
  <use images/multipleLine/pic3-1.png>
 Package pdftex.def Info: images/multipleLine/pic3-1.png used on input line 328.
 (pdftex.def)             Requested size: 418.25368pt x 23.20999pt.
 
-<images/multipleLine/pic3-2.png, id=335, 570.63188pt x 57.21375pt>
+<images/multipleLine/pic3-2.png, id=330, 570.63188pt x 57.21375pt>
 File: images/multipleLine/pic3-2.png Graphic file (type png)
  <use images/multipleLine/pic3-2.png>
 Package pdftex.def Info: images/multipleLine/pic3-2.png used on input line 335.
 (pdftex.def)             Requested size: 418.25368pt x 41.93591pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 336.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 336.
 
-<images/multipleLine/pic3-3.png, id=337, 75.28125pt x 80.55093pt>
+<images/multipleLine/pic3-3.png, id=333, 75.28125pt x 80.55093pt>
 File: images/multipleLine/pic3-3.png Graphic file (type png)
  <use images/multipleLine/pic3-3.png>
 Package pdftex.def Info: images/multipleLine/pic3-3.png used on input line 342.
 (pdftex.def)             Requested size: 125.47737pt x 134.27376pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 343.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 343.
 
-<images/multipleLine/pic2-1.png, id=339, 478.03593pt x 161.85469pt>
+<images/multipleLine/pic2-1.png, id=336, 478.03593pt x 161.85469pt>
 File: images/multipleLine/pic2-1.png Graphic file (type png)
  <use images/multipleLine/pic2-1.png>
 Package pdftex.def Info: images/multipleLine/pic2-1.png used on input line 351.
 (pdftex.def)             Requested size: 418.25368pt x 141.61261pt.
  [18 <./images/multipleLine/pic3-1.png> <./images/multipleLine/pic3-2.png> <./images/multipleLine/pic3-3.png>]
-<images/multipleLine/pic2-2.png, id=350, 790.45313pt x 204.765pt>
+<images/multipleLine/pic2-2.png, id=347, 790.45313pt x 204.765pt>
 File: images/multipleLine/pic2-2.png Graphic file (type png)
  <use images/multipleLine/pic2-2.png>
 Package pdftex.def Info: images/multipleLine/pic2-2.png used on input line 358.
 (pdftex.def)             Requested size: 418.25368pt x 108.34682pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 359.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 359.
 
-<images/multipleLine/pic2-3.png, id=352, 78.2925pt x 137.01187pt>
+<images/multipleLine/pic2-3.png, id=350, 78.2925pt x 137.01187pt>
 File: images/multipleLine/pic2-3.png Graphic file (type png)
  <use images/multipleLine/pic2-3.png>
 Package pdftex.def Info: images/multipleLine/pic2-3.png used on input line 365.
 (pdftex.def)             Requested size: 125.47737pt x 219.5935pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 366.
- [19 <./images/multipleLine/pic2-1.png> <./images/multipleLine/pic2-2.png>]
-<images/multipleLine/pic5-1.png, id=362, 532.99126pt x 91.09032pt>
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 366.
+ [19 <./images/multipleLine/pic2-1.png> <./images/multipleLine/pic2-2.png> <./images/multipleLine/pic2-3.png>]
+<images/multipleLine/pic5-1.png, id=363, 532.99126pt x 91.09032pt>
 File: images/multipleLine/pic5-1.png Graphic file (type png)
  <use images/multipleLine/pic5-1.png>
 Package pdftex.def Info: images/multipleLine/pic5-1.png used on input line 374.
 (pdftex.def)             Requested size: 418.25368pt x 71.4838pt.
 
-<images/multipleLine/pic5-2.png, id=363, 607.51968pt x 103.13531pt>
+<images/multipleLine/pic5-2.png, id=364, 607.51968pt x 103.13531pt>
 File: images/multipleLine/pic5-2.png Graphic file (type png)
  <use images/multipleLine/pic5-2.png>
 Package pdftex.def Info: images/multipleLine/pic5-2.png used on input line 381.
 (pdftex.def)             Requested size: 418.25368pt x 71.00606pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 382.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 382.
 
-<images/multipleLine/pic5-3.png, id=365, 70.01157pt x 113.67468pt>
+<images/multipleLine/pic5-3.png, id=367, 70.01157pt x 113.67468pt>
 File: images/multipleLine/pic5-3.png Graphic file (type png)
  <use images/multipleLine/pic5-3.png>
 Package pdftex.def Info: images/multipleLine/pic5-3.png used on input line 388.
 (pdftex.def)             Requested size: 125.47737pt x 203.74178pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 389.
- [20 <./images/multipleLine/pic2-3.png> <./images/multipleLine/pic5-1.png> <./images/multipleLine/pic5-2.png>]
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 389.
+ [20 <./images/multipleLine/pic5-1.png> <./images/multipleLine/pic5-2.png> <./images/multipleLine/pic5-3.png>]
 Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
 Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
 Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
@@ -1404,51 +1660,254 @@ Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 39
 Package xcolor Info: Setting color `{}{0.9 g 0.9 G}{gray}{0.9}' on input line 395.
 
 Overfull \hbox (74.07211pt too wide) in paragraph at lines 397--398
-\OT1/ptm/m/n/12 (-20) ta-tion of the class \OT1/ptm/m/it/12 (-20) ch.unibe.scg.nullSpy.instrumentator.controller.methodI
-nvocation.MultipleLineManager
+\T1/ptm/m/n/12 (-20) ta-tion of the class \T1/ptm/m/it/12 (-20) ch.unibe.scg.nullSpy.instrumentator.controller.methodInv
+ocation.MultipleLineManager
  []
 
 
 Overfull \hbox (65.15204pt too wide) in paragraph at lines 397--398
-\OT1/ptm/m/n/12 (-20) and \OT1/ptm/m/it/12 (-20) ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation.MethodI
-nvocationAnalyzer\OT1/ptm/m/n/12 (-20) . 
+\T1/ptm/m/n/12 (-20) and \T1/ptm/m/it/12 (-20) ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation.MethodInv
+ocationAnalyzer\T1/ptm/m/n/12 (-20) . 
  []
 
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 401.
-[21 <./images/multipleLine/pic5-3.png>]
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 403.
+[21]
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 409.
-LaTeX Font Info:    Font shape `OMS/ptm/m/it' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 411.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 411.
- <images/bytecodeAdaptionExample_1.png, id=405, 274.77657pt x 118.19156pt>
+ <images/bytecodeAdaptionExample_1.png, id=406, 274.77657pt x 118.19156pt>
 File: images/bytecodeAdaptionExample_1.png Graphic file (type png)
 
 <use images/bytecodeAdaptionExample_1.png>
 Package pdftex.def Info: images/bytecodeAdaptionExample_1.png used on input line 415.
 (pdftex.def)             Requested size: 292.77629pt x 125.94432pt.
- [22]
-<images/bytecodeAdaptionExample_2.png, id=410, 1004.25188pt x 134.00063pt>
+ <images/bytecodeAdaptionExample_2.png, id=407, 1004.25188pt x 134.00063pt>
 File: images/bytecodeAdaptionExample_2.png Graphic file (type png)
- <use images/bytecodeAdaptionExample_2.png>
+
+<use images/bytecodeAdaptionExample_2.png>
 Package pdftex.def Info: images/bytecodeAdaptionExample_2.png used on input line 422.
 (pdftex.def)             Requested size: 292.77629pt x 39.06569pt.
 Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 423.
-
-[23 <./images/bytecodeAdaptionExample_1.png> <./images/bytecodeAdaptionExample_2.png>]
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 423.
+ [22 <./images/bytecodeAdaptionExample_1.png>] [23 <./images/bytecodeAdaptionExample_2.png>] [24]
 Chapter 4.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 434.
-[24
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 441.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 445.
+Package xcolor Info: Setting color `{}{0 g 0 G}{gray}{0}' on input line 445.
 
-]
-Chapter 5.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 442.
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\@ifnextchar' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\begingroup' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\catcode' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\active' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<def>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\csname\endcsname' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\catcode' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\active' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<let>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\csname\endcsname' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<let>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\%' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\catcode' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\active' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<def>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\csname\endcsname' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<def>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\#' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\catcode' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<def>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\csname\endcsname' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<def>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\&' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<def>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\textunderscore' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<let>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\_' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\catcode' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\active' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<let>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\csname\endcsname' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<let>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\csname\endcsname' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<let>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\~' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<let>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\textasciitilde' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<let>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\\' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<def>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\csname\endcsname' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<def>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\Hy@tempa' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\<def>-command' on input line 445.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `\Hy@tempa' on input line 445.
+
+! Argument of \@sect has an extra }.
+<inserted text> 
+                \par 
+l.445 ...footnote{\url{http://www.jhotdraw.org/}}}
+                                                  
+I've run across a `}' that doesn't seem to match anything.
+For example, `\def\a#1{...}' and `\a}' would produce
+this error. If you simply proceed now, the `\par' that
+I've just inserted will cause me to report a runaway
+argument that might be the root of the problem. But if
+your `}' was spurious, just type `2' and it will go away.
+
+Runaway argument?
+{\normalfont \Large \bfseries }{\@xfootnote }\def \reserved@b {\stepcounter \ETC.
+! Paragraph ended before \@sect was complete.
+<to be read again> 
+                   \par 
+l.445 ...footnote{\url{http://www.jhotdraw.org/}}}
+                                                  
+I suspect you've forgotten a `}', causing me to apply this
+control sequence to too much text. How can we recover?
+My plan is to forget the whole thing and hope for the best.
+
 [25
 
-]
+] [26] [27] [28]
+Chapter 5.
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 507.
+[29
+
+] [30]
 Chapter 6.
-Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 446.
-(thesis.bbl [26
+Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 529.
+(thesis.bbl [31
 
 ]
 Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0.6,0.6}' on input line 1.
@@ -1456,49 +1915,55 @@ Package xcolor Info: Setting color `{}{0.6 0.6 0.6 rg 0.6 0.6 0.6 RG}{rgb}{0.6,0
 
 Package natbib Warning: Empty `thebibliography' environment on input line 3.
 
-) [27
+) [32
 
-]
-Missing character: There is no ‚ in font ptmr7t!
-Missing character: There is no Ä in font ptmr7t!
-Missing character: There is no ú in font ptmr7t!
- [28
+] [33
 
 ]
 
-! LaTeX Error: \begin{center} on input line 459 ended by \end{document}.
+! LaTeX Error: \begin{center} on input line 542 ended by \end{document}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.466 \end{document}
+l.549 \end{document}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 466.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 466.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 549.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 549.
 (thesis.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 466.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 466.
-Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 64F0D158FD54E599A565032776FCC7A1;1561.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 466.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 549.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 549.
+
+
+Package rerunfilecheck Warning: File `thesis.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `thesis.out':
+(rerunfilecheck)             Before: EC31173C3B4D758C2805F613BCD7CBB4;1687
+(rerunfilecheck)             After:  6B97D606F47D5E007D4079666275C828;1746.
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 549.
  )
 (\end occurred inside a group at level 1)
 
-### semi simple group (level 1) entered at line 459 (\begingroup)
+### semi simple group (level 1) entered at line 542 (\begingroup)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 19794 strings out of 493634
- 334960 string characters out of 3143730
- 471812 words of memory out of 3000000
- 22489 multiletter control sequences out of 15000+200000
- 54734 words of font info for 210 fonts, out of 3000000 for 9000
+ 23197 strings out of 493634
+ 423290 string characters out of 3143730
+ 532819 words of memory out of 3000000
+ 25840 multiletter control sequences out of 15000+200000
+ 78810 words of font info for 230 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 36i,10n,43p,10398b,1103s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 38i,13n,43p,10398b,1102s stack positions out of 5000i,500n,10000p,200000b,50000s
 pdfTeX warning (dest): name{Hfootnote.7} has been referenced but does not exist, replaced by a fixed one
 
 
@@ -1509,9 +1974,9 @@ eX 2.9/fonts/type1/urw/courier/ucrb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
 les/MiKTeX 2.9/fonts/type1/urw/courier/ucrro8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Pro
 gram Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:
 /Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (32 pages, 873732 bytes).
+Output written on thesis.pdf (37 pages, 899384 bytes).
 PDF statistics:
- 513 PDF objects out of 1000 (max. 8388607)
- 157 named destinations out of 1000 (max. 500000)
- 29990 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 551 PDF objects out of 1000 (max. 8388607)
+ 172 named destinations out of 1000 (max. 500000)
+ 37646 words of extra memory for PDF output out of 42996 (max. 10000000)
 

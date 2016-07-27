@@ -12,10 +12,12 @@
 \contentsline {subsection}{\numberline {3.2.3}Bytecode Adaptation}{15}{subsection.3.2.3}
 \contentsline {section}{\numberline {3.3}Challenges}{16}{section.3.3}
 \contentsline {subsection}{\numberline {3.3.1}Obtaining Method Receiver Data Difficulties}{16}{subsection.3.3.1}
-\contentsline {subsection}{\numberline {3.3.2}Obtaining Variable Data Difficulties - Fields}{22}{subsection.3.3.2}
+\contentsline {subsection}{\numberline {3.3.2}Obtaining Variable Data Difficulties - Fields}{21}{subsection.3.3.2}
 \contentsline {subsection}{\numberline {3.3.3}Bytecode Adaptation Difficulties}{22}{subsection.3.3.3}
 \contentsline {section}{\numberline {3.4}Limitations}{23}{section.3.4}
-\contentsline {chapter}{\numberline {4}Validation}{24}{chapter.4}
-\contentsline {section}{\numberline {4.1}JHotDraw}{24}{section.4.1}
-\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{25}{chapter.5}
-\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{26}{chapter.6}
+\contentsline {chapter}{\numberline {4}Validation}{25}{chapter.4}
+\contentsline {section}{\numberline {4.1}JHotDraw\let \reserved@d =[\def \par }{25}{section.4.1}
+\contentsline {section}{\numberline {4.2}Execution Time Difference}{26}{section.4.2}
+\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{29}{chapter.5}
+\contentsline {section}{\numberline {5.1}NullSpy}{29}{section.5.1}
+\contentsline {chapter}{\numberline {6}Anleitung zu wissenschaftlichen Arbeiten}{31}{chapter.6}

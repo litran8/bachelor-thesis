@@ -8,11 +8,11 @@
 \chapter*{\centering Abstract}
 \begin{quotation}
 \noindent 
-A previous study found out that NullPointerExceptions are very serious in Java projects. When a NullPointerExceptions occurs the developer is provided only with a stack trace to where the exception happened. This only gives insight into the effect of the fault but not into its cause. So we have to ask the question when and why this reference was set to null.
+A previous study found out that NullPointerExceptions are very \ugh{serious} in Java projects. When a NullPointerExceptions occurs the developer is provided only with a stack trace to where the exception happened. \nm{NullPointerException is not ``serious", but is frequent and hard to debug. Please rephrase a bit this paragraph. Useful reference: \url{http://scg.unibe.ch/archive/papers/Osma15a.pdf}} This only gives insight into the effect of the fault but not into its cause. \ugh{So we have to ask the question when and why this reference was set to null.}\nm{Developer is the one presented only with stack trace, and he is the one WHO often asks a question of where this null is coming from.}
 
-The aim of the project is to be able to provide the user with an additional stack trace of where the value was actually set to null, next to the normal stack trace of an exception. We attempt to achieve this goal by instrumenting java source code ideally with a minimal overhead. 
+The aim of the project is to \del{be able }to provide \chg{the}{a} \chg{user}{developer} with an additional stack trace of where the value was actually set to null, next to the \chg{normal}{default} stack trace of a \ins{null pointer }exception. We attempt to achieve this goal by instrumenting java source code ideally with a minimal \ins{execution} overhead. 
 
-By tracking the null assignments the debugging after a NullPointerException will be simplified. 
+\ugh{By tracking the null assignments the debugging after a NullPointerException will be simplified.} \nm{Make clear that tracking the assignments is done statically.}
 \end{quotation}
 \clearpage
 
@@ -27,13 +27,15 @@ By tracking the null assignments the debugging after a NullPointerException will
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
 \label{ch:introduction}
-Nowadays, certainly every programmer is confronted with NullPointerExceptions in big Java Projects, whether it is for an enterprise or for private purposes. Not to mention even in small Java Projects they are also heavily present.
+Nowadays, certainly every programmer is confronted with NullPointerExceptions in \chg{big}{both big and small} Java Projects, whether it is for an enterprise or for private purposes. \nm{You should reference some paper stating the prevalence of NullPointerException. You can start the research from Haidar's paper already mentioned in the abstract.} \del{Not to mention even in small Java Projects they are also heavily present.}
 
-So what are those NullPointerExceptions? This thesis is going to attach importance to Java that is a concurrent, class-based, object-oriented programming language. We chose Java because NullPointerExceptions are more serious in this language than in others, e.g. Smalltalk. NullPointerException is a RuntimeException. In Java, an object reference can be assigned with a special null value. The exception is thrown when an application attempts to use an object reference that has the null value. (There are multiple ways this exception can be thrown, like: Calling an instance method on the object referred by a null reference; Accessing or modifying an instance field of the object referred by a null reference and so on.) In Java Projects developers always have to deal with a huge amount of references which means avoiding these NullPointerExceptions is as good as impossible.
+So what are those NullPointerExceptions? \del{This thesis is going to attach importance to Java that is a concurrent, class-based, object-oriented programming language.}\nm{I get the idea that Java was not important before this thesis?! :)} \del{We chose Java because NullPointerExceptions are more serious in this language than in others, e.g. Smalltalk.}\nm{This is not true. NullPointerException is a problem commonly in object-oriented languages.} NullPointerException is a RuntimeException. In Java, an object reference can be assigned with a special null value. The exception is thrown when an application attempts to use an object reference that has the null value. \nm{Do not copy from online. \url{https://en.wikibooks.org/wiki/Java_Programming/Preventing_NullPointerException}} (There are multiple ways this exception can be thrown, like: Calling an instance method on the object referred by a null reference; Accessing or modifying an instance field of the object referred by a null reference and so on.) \nm{Why brackets?} \ugh{In Java Projects developers always have to deal with a huge amount of references which means avoiding these NullPointerExceptions is as good as impossible.}\nm{You can still have a big pile of objects, and none could be pointing to null.}
 
-On regular meetings among programmers they report what they have been doing and what they are planning to do for the next few weeks. But all too often it is stated that they are trying to fix bugs or have spent a lot of time fixing them. If there would be a way to minimize the time fixing exceptions and allow to work more efficiently, projects would progress much faster.
+\ugh{On regular meetings among programmers they report what they have been doing and what they are planning to do for the next few weeks. But all too often it is stated that they are trying to fix bugs or have spent a lot of time fixing them. If there would be a way to minimize the time fixing exceptions and allow to work more efficiently, projects would progress much faster.}\nm{Rewrite: yes, developers deal with a lot of problems caused by null pointer exception, and you should find some paper to reference that. Also, not all bugs are caused by nulls. I would not mention weekly meetings.}
 
-The main goal of the NullSpy application takes a step to that ideal vision. Anytime developers are facing a NullPointerException they don’t have to spent time on debugging finding where and why a reference was set to null. With NullSpy the exact location of the null assignment is shown next to the ordinary stack trace the Java virtual machine produces.
+\nm{You should elaborate bit more on NullPointerException. Find some example in real code, not foo-bar example (JHotDraw can serve) for more insight.}
+
+The main goal of the NullSpy \nm{What is NullSpy? You did not mention it till now.} application takes a step to that ideal vision. Anytime developers are facing a NullPointerException they \chg{don’t}{do not} have to spent time on debugging finding where and why a reference was set to null. With NullSpy the exact location of the null assignment is shown next to the ordinary stack trace the Java virtual machine produces.\nm{Got the meaning, but rephrase last two sentences into something like: Our intention with NullSpy is to present a developer the exact location of the null assignment next to the ordinary stack trace, in order to help him when searching for the place of dereference.}
 
 In this thesis it is explained how the goal mentioned above is achieved step by step, by using a class library Javassist (Java Programming Assistant) which allows us to deal with Java bytecode.
 
@@ -44,7 +46,7 @@ This chapter provides a short overview of works/technologies used in this projec
 
 \section{Javassist}
 \label{sec:javassist}
-Javassist or Java Programming Assistant\footnote{\url{http://jboss-javassist.github.io/javassist/}}, a subproject of Jboss, is a class library which allows you to deal with Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way like defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader.
+Javassist or Java Programming Assistant\footnote{\url{http://jboss-javassist.github.io/javassist/}}\nm{You should reference paper related to Javassist}, a subproject of Jboss, is a class library which allows you to deal with Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way like defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader.
 
 \begin{figure}[H]
 \centering
@@ -53,7 +55,7 @@ Javassist or Java Programming Assistant\footnote{\url{http://jboss-javassist.git
   \label{fig:bytecodeModificationLevels}
 \end{figure}
 
-Unlike many other libraries Javassist offers two levels of API: source level and bytecode level (See figure \ref{fig:bytecodeModificationLevels}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Only knowing the Java language is enough because the API is designed only with the vocabulary of Java. On this level the programmer just has to write normal source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes directly in binary form like other editors, e.g. ASM.
+Unlike many other libraries Javassist offers two levels of API: source level and bytecode level (See figure \ref{fig:bytecodeModificationLevels}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Only knowing the Java language is enough because the API is designed only with the vocabulary of Java. On this level the programmer just has to write \chg{normal}{regular} source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes directly in binary form like other editors, e.g. ASM.
 
 At this point, let us look at a small example to give you an idea how the bytecode manipulation works.
 
@@ -64,7 +66,7 @@ At this point, let us look at a small example to give you an idea how the byteco
   \label{fig:javassistExample}
 \end{figure}
 
-First a ClassPool object is obtained that controls bytecode modification with Javassist. With the ClassPool a class file can be read on demand for constructing a CtClass object. The class CtClass (compile-time class) is just an abstract representation of a class file which means all manipulations are performed on the CtClass. With the method invocation \textit{get()} on ClassPoola reference to the class file \textit{test.Rectangle} is obtained. In this example the superclass of \textit{test.Rectangle} is just changed to \textit{test.Point}. If the changes are done, the method call \textit{writeFile()} on CtClass is necessary to make sure that the changes are reflected on the original class file.\footnote{Getting started with Javassist: \url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}}
+First a ClassPool object \del{is obtained} that controls bytecode modification with Javassist \ins{is obtained}. With the ClassPool a class file can be read on demand for constructing a CtClass object. The class CtClass (compile-time class) is just an abstract representation of a class file which means all manipulations are performed on the CtClass. With the method invocation \textit{get()} on ClassPool a reference to the class file \textit{test.Rectangle} is obtained\nm{File must have an extension, like .java or .class. So, do we obtain a reference to the file or to a \textit{class}?}. In this example the superclass of \textit{test.Rectangle} is just changed to \textit{test.Point}. \nm{Make picture with numbered lines, so that you can reference in each line what are you doing.} If the changes \nm{changes to what? on what?} are done, the method call \textit{writeFile()} on CtClass is necessary \ins{to call?} to make sure that the changes are reflected on the original class file.\footnote{Getting started with Javassist: \url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}}\nm{Why footnote here? You should put it at the beginning of section.}
 
 \begin{figure}[H]
 \centering
@@ -73,26 +75,26 @@ First a ClassPool object is obtained that controls bytecode modification with Ja
   \label{fig:javassistModules}
 \end{figure}
 
-Figure \ref{fig:javassistModules} gives you an understanding/overview how the main part of bytecode manipulation with Javassist is built up. The ClassPool is nothing else than a container of multiple CtClasses. As described before CtClass is just the abstract representation of a class file on which modifications are done. Like typical classes, it can hold several compile-time fields, constants or methods. While speaking about bytecode manipulation all the time, nothing but editing methods is manly meant. It is possible to insert additional source code at the beginning of the method body, at the end or at a specific line. Next to these options even a \textit{catchBlock} can be added.
+Figure \ref{fig:javassistModules} gives you an understanding/overview how the main part of bytecode manipulation with Javassist is built up. The ClassPool is nothing else than a container of multiple CtClasses. As described before CtClass is just the abstract representation of a class file \nm{file? or a class} on which modifications are done. Like typical classes, it can hold \del{several}\nm{several? not one?} compile-time fields, constants or methods. \ugh{While speaking about bytecode manipulation all the time, nothing but editing methods is manly meant.}\nm{I cannot parse this.} It is possible to insert additional source code at the beginning of the method body, at the end or at a specific line. \ugh{Next to these options even a \textit{\chg{catchBlock}{catch block}} can be added.}\nm{Is it next to these options? Where can you add the catch block? Isn't it among the options of adding code at the beginning, at the end or at specific point in the method code?}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\linewidth]{insertionCodeExample}
-\caption{Inserting code example}
+\caption{Inserting code example\nm{Do you mention this figure somewhere?}}
   \label{fig:insertionCodeExample}
 \end{figure}
 
 \section{JAD}
-JAva Decompiler\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and a Eclipse plugin for the programming language Java. A short explanation what a decompiler is: a computer program that takes an executable file as input, and attempts to create a high level, compatible source file that does the same thing. So it is used in software reverse engineering.
+\chg{JAva Decompiler}{Java Decompier (JAD)}\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and a Eclipse plugin for the programming language Java. \chg{A short explanation what a decompiler is:}{A decompiler is} a computer program that takes an executable file as input, and attempts to create a high level, compatible source file \ugh{that does the same thing}. \chg{So it}{It} is used in software reverse engineering.\nm{Do you have a reference for this?}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\linewidth]{bytecodeSourcecode}
-\caption{Decompile example}
+\caption{Decompile example\nm{Do you mention this figure somewhere? Lines are blurry. Make clear what do you want to state with this.}}
   \label{fig:bytecodeSourcecode}
 \end{figure}
 
-JAD is used in NullSpy since after running NullSpy on a project only the modificated bytecodes are available. To simplify the check whether the modification by Javassist, e.g. inserting source code, has succeeded, a decompiler is needed.
+\ugh{JAD is used in NullSpy since after running NullSpy on a project only the modificated bytecode\del{s} \chg{are}{is}\nm{bytecode is uncountable} available.} To simplify the check whether the modification by Javassist, e.g. inserting source code, has succeeded, a decompiler is needed. \nm{I am not sure this is the right place for JAD if you want to mention it. JAD was only used by *you* to be sure that the instrumentation is actually working, but it is not used in the final version of NullSpy? Or is it? If it is, then rewrite this section; it if it not and if you were using it just for the sake of debugging through NullSpy - you do not need to mention it.}
 
 \chapter{NullSpy}
 As earlier explained in the introduction (\ref{ch:introduction}), this project is about providing the user with additional stack trace where the origin of a NullPointerException is actually rooted. Briefly worded, it shows the developer the exact location of where a method receiver, which causes the NPE, was assigned to null.

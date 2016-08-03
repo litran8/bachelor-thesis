@@ -65,6 +65,9 @@
 \newcommand{\subscript}[1]{$_{\textrm{\footnotesize{#1}}}$}
 \newcommand{\superscript}[1]{$^{\textrm{\footnotesize{#1}}}$}
 \newcommand{\vertical}[1]{\raisebox{-4em}{\begin{sideways}{#1}\end{sideways}}}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
+\usepackage{boxedminipage}
 
 \newboolean{showedits}
 \setboolean{showedits}{true} % toggle to show or hide edits
@@ -110,7 +113,7 @@
   \newcommand{\chk}[1]{} % changed, please check
   }
 \newcommand\nm[1]{\nb{NM}{violet}{#1}} % add more author macros here
-\newcommand\lt[1]{\nb{LT}{red}{#1}}
+\newcommand\lt[1]{\nb{LT}{orange}{#1}}
 
 
 % ============================================================================
@@ -135,7 +138,10 @@
 \definecolor{javapurple}{rgb}{0.5,0,0.35} % keywords
 \definecolor{javadocblue}{rgb}{0.25,0.35,0.75} % javadoc
 
-\lstnewenvironment{Java}
+\renewcommand{\lstlistingname}{Code}% Listing -> Algorithm
+\renewcommand{\lstlistlistingname}{List of \lstlistingname s}% List of Listings -> List of Algorithms
+
+\lstnewenvironment{Java}[1][]
 {\lstset{
 	language=Java,
 	basicstyle=\footnotesize\ttfamily,
@@ -149,12 +155,18 @@
 	numbersep=10pt,
 	tabsize=4,
 	showspaces=false,
-	showstringspaces=false
+	showstringspaces=false,
+	breaklines=true,
+	captionpos=b,
+	xleftmargin=2em,
+	framexleftmargin=1.5em,
+	frame=single,
+	#1
 }}
 {}
 
 
-\lstnewenvironment{JVMIS}
+\lstnewenvironment{JVMIS}[1][]
 {\lstset{
 	language=JVMIS,
 	basicstyle=\footnotesize\ttfamily,
@@ -162,25 +174,42 @@
 	stringstyle=\color{javared},
 	commentstyle=\color{javagreen},
 	morecomment=[s][\color{javadocblue}]{/**}{*/},
-	numbers=left,
+	numbers=none,
 	numberstyle=\tiny\color{black},
 	stepnumber=1,
 	numbersep=10pt,
 	tabsize=4,
 	showspaces=false,
 	showstringspaces=false
+	breaklines=true,
+	captionpos=b,
+	xleftmargin=2em,
+	framexleftmargin=1.5em,
+	frame=single,
+	#1
 }}
 {}
 
 
+\definecolor{codegray}{gray}{0.9}
+\newcommand{\code}[1]{
+	\colorbox{codegray}
+	{\texttt{#1}}
+}
 
 %----------------------------------------------------------------------------
 % references
 \newcommand{\tabref}[1]{\hyperref[{tab:#1}]{Table~\ref*{tab:#1}}}
 \newcommand{\figref}[1]{\hyperref[{fig:#1}]{Figure~\ref*{fig:#1}}}
 \newcommand{\secref}[1]{\hyperref[{sec:#1}]{Section~\ref*{sec:#1}}}
+\newcommand{\subsecref}[1]{\hyperref[{subsec:#1}]{Subsection~\ref*{subsec:#1}}}
 \newcommand{\lstref}[1]{\hyperref[{lst:#1}]{Listing~\ref*{lst:#1}}}
-\newcommand{\charef}[1]{\hyperref[{cha:#1}]{Chapter~\ref*{cha:#1}}}
+\newcommand{\charef}[1]{\hyperref[{ch:#1}]{Chapter~\ref*{ch:#1}}}
+\newcommand{\coderef}[1]{\hyperref[{code:#1}]{Code~\ref*{code:#1}}}
+\newcommand{\bytecoderef}[1]{\hyperref[{bytecode:#1}]{Bytecode~\ref*{bytecode:#1}}}
+\newcommand{\algref}[1]{\hyperref[{alg:#1}]{Algorithm~\ref*{alg:#1}}}
+\newcommand{\boxref}[1]{\hyperref[{box:#1}]{Box~\ref*{box:#1}}}
+
 %----------------------------------------------------------------------------
 
 % abbreviations

@@ -133,7 +133,7 @@
 \usepackage{xcolor}
 \usepackage{textcomp}
 \usepackage{listings}
-\definecolor{javared}{rgb}{0.6,0,0} % for strings
+\definecolor{javablue}{rgb}{0,0,0.6} % for strings
 \definecolor{javagreen}{rgb}{0.25,0.5,0.35} % comments
 \definecolor{javapurple}{rgb}{0.5,0,0.35} % keywords
 \definecolor{javadocblue}{rgb}{0.25,0.35,0.75} % javadoc
@@ -146,7 +146,7 @@
 	language=Java,
 	basicstyle=\footnotesize\ttfamily,
 	keywordstyle=\color{javapurple}\bfseries,
-	stringstyle=\color{javared},
+	stringstyle=\color{javablue},
 	commentstyle=\color{javagreen},
 	morecomment=[s][\color{javadocblue}]{/**}{*/},
 	numbers=left,
@@ -165,16 +165,14 @@
 }}
 {}
 
-
 \lstnewenvironment{JVMIS}[1][]
 {\lstset{
 	language=JVMIS,
 	basicstyle=\footnotesize\ttfamily,
 	keywordstyle=\color{javagreen}\bfseries,
-	stringstyle=\color{javared},
+	stringstyle=\color{javablue},
 	commentstyle=\color{javagreen},
 	morecomment=[s][\color{javadocblue}]{/**}{*/},
-	numbers=none,
 	numberstyle=\tiny\color{black},
 	stepnumber=1,
 	numbersep=10pt,
@@ -183,8 +181,6 @@
 	showstringspaces=false
 	breaklines=true,
 	captionpos=b,
-	xleftmargin=2em,
-	framexleftmargin=1.5em,
 	frame=single,
 	#1
 }}
@@ -196,6 +192,10 @@
 	\colorbox{codegray}
 	{\texttt{#1}}
 }
+
+%----------------------------------------------------------------------------
+
+
 
 %----------------------------------------------------------------------------
 % references

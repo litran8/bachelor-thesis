@@ -112,11 +112,12 @@ In this thesis \ugh{it is explained}\brs{do not use passive, use royal we insted
 \chapter {Technical Background}
 \label{ch:technicalBackground}
 
-This chapter provides a short overview of technologies used in this project that were essential for the implementation of NullSpy.
+This chapter provides a short overview of technologies used in \del{this project that were essential for} the implementation of NullSpy.
 
 \section{Javassist}
 \label{sec:javassist}
-\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}\cite{Chib00}\cite{Chib03}, a subproject of Jboss, is a class library which allows to deal with Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way like defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. In case of more interest how Javassist works, we recommend to read the following tutorial: \url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}.
+\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}\cite{Chib00}\cite{Chib03}, a subproject of Jboss, is a class library which \ugh{allows to}\brs{Oscar hates this, it is wrong to say ``allows to'' because you are missing a subject \ie ``allows me to'', ``allows John to''. use ``enables'' instead \ie ``enables manipulation of the bytecode''. please note it's not ``enables to'' because that has the same problem} \ugh{deal} with Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way\ins{.} \chg{like}{Examples of this manipulation include} defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. \del{In case of more interest how Javassist works, we recommend to read the following tutorial: \url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}}
+\ins{A tutorial for using javasist\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html} is available online and was used as a starting point for this work}.\brs{put the url in a footnote, it would not compile ins+footnote}
 
 \begin{figure}[H]
 \centering
@@ -125,7 +126,7 @@ This chapter provides a short overview of technologies used in this project that
   \label{fig:bytecodeModificationLevels}
 \end{figure}
 
-Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level (See \figref{bytecodeModificationLevels}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Only knowing the Java language is enough because the API is designed only with the vocabulary of Java. On this level the programmer just has to write regular source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes directly in binary form like other editors, e.g. ASM.
+Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level (See \figref{bytecodeModificationLevels}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. \chg{Only knowing}{Knowledge of} the Java language is enough \chg{because}{since} the API is designed only with the vocabulary of Java. On this level the programmer \del{just} has to write \chg{regular}{Java}\brs{is there irregular source?} source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes \chg{directly in binary form}{my modifying the bytecode directly} \del{like other editors, e.g. ASM.}
 
 At this point, let us look at a small example of how the bytecode manipulation works.
 
@@ -135,12 +136,15 @@ CtClass cc = pool.get("test.Rectangle");
 cc.setSuperclass(pool.get("test.Point"));
 cc.writeFile();
 \end{Java}
+\brs{a polymorphic call site? this code needs a better caption. }
 
 \begin{enumerate}
-	\item First a \textit{ClassPool} object that controls bytecode modification with Javassist is obtained. With the ClassPool a class file can be read on demand for constructing a CtClass object. By class file the binary file which has the extension \textit{.class} and represents either a Java class or an interface is meant. 
-	\item The class \textit{CtClass} (compile-time class) represents the class file, that means all manipulations are performed on the CtClass. With the method invocation \code{get()} on ClassPool a reference to the CtClass object which represents the class \code{test.Rectangle} is obtained.
-	\item In this example the superclass of \code{test.Rectangle} is just changed to \code{test.Point}.
-	\item If the bytecode modification is done, the method call \code{writeFile()} on CtClass is necessary to make sure that the changes are reflected on the original class file.
+	\item First a \textit{ClassPool} object that controls bytecode modification with Javassist is obtained. With the ClassPool\brs{be consistent with textit class names} a class file can be read on demand for constructing a CtClass object. By class file the binary file which has the extension \textit{.class} and represents either a Java class or an interface is meant. \brs{rewrite. super confusing. try using the phrase ``object representation of a file with the .class extension''. also, your german is showing with ``is meant'' at the end.}
+	
+	\item The class \textit{CtClass} (compile-time class) represents the class file\chg{, that means}{meaning that} all manipulations are performed on the CtClass \ins{object}. \chg{With the method invocation \code{get()} on ClassPool a reference to the CtClass object which represents the class \code{test.Rectangle} is obtained.}{We obtain a reference to the CtClass object representing the \code{test.Rectangle} class by invoking the \code{get()} method on the ClassPool instance.}
+	
+	\item In this example the superclass of \code{test.Rectangle} is \ugh{just}\brs{please stop saying just at random moments. If you wish to play down the significance of the action use ``simply''} changed to \code{test.Point}.
+	\item \chg{If}{Once} the bytecode modification is done, the method call \code{writeFile()} on \ins{the instance of} CtClass is necessary to make sure that the changes are reflected on the original class file.
 \end{enumerate}
  
 \begin{figure}[H]
@@ -149,8 +153,12 @@ cc.writeFile();
 \caption{Javassist Modules}
   \label{fig:javassistModules}
 \end{figure}
+\brs{Captions are sentences and should end accordingly (. ! ?). please apply globaly}
 
-\figref{javassistModules} gives an understanding/overview how the main part of bytecode manipulation with Javassist is built up. The ClassPool is nothing else than a container of multiple CtClasses. As described before CtClass represents those class files on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors, fields, method invocations, local variables etc. But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of the method body, at the end or at a specific line. Next to these options even a \textit{catch block} can be added. The difference between \code{insertAfter()} and \code{addCatch()} is insertAfter inlines some code just before every return instruction in the method body and addCatch adds a catch clause to the method which handles an exception thrown in the body. So the catch clause is always positioned at the end of the method body. In \figref{insertionCodeExample} below a small insertion example is demonstrated.
+\figref{javassistModules} gives an \del{understanding/}overview \ins{of} how the main part of bytecode manipulation with Javassist is built up. The ClassPool is \chg{nothing else than}{simply} a container of multiple CtClasses. As described before CtClass represents \del{those} class files on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors, fields, method invocations, local variables \chg{etc.}{\etc} But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of the method body\chg{,}{ or} at the end or at a specific line. 
+
+\brs{not sure how the remainder here is relevant, please just give a nice example of some source code, how one would add code to it using javasist and the result}
+Next to these options even a \textit{catch block} can be added. The difference between \code{insertAfter()} and \code{addCatch()} is insertAfter inlines some code just before every return instruction in the method body and addCatch adds a catch clause to the method which handles an exception thrown in the body. So the catch clause is always positioned at the end of the method body. In \figref{insertionCodeExample} below a small insertion example is demonstrated.
 
 \begin{figure}[H]
 \centering
@@ -160,7 +168,7 @@ cc.writeFile();
 \end{figure}
 
 \section{JAD}
-Java Decompier (JAD)\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and a Eclipse plugin for the programming language Java. A decompiler is a computer program that takes an executable file as input, and attempts to create a high level, compatible source file. If the source file is compiled again, it will produce an executable program that behaves the same way as the original one. It is used in software reverse engineering.
+Java Decompier (JAD)\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and a Eclipse plugin for the programming language Java. A decompiler is a \del{computer} program that takes an executable file as input, and attempts to create a high level, compatible source file. If the source file is compiled again, it will produce an executable program that behaves the same way as the original one. It is \ins{often} used in software reverse engineering.
 
 The example \bytecoderef{jad} is decompiled by JAD and the result is the source code right under the example. It is also a good opportunity to present how bytecode looks like.
 
@@ -199,7 +207,7 @@ public void itemStateChanged(ItemEvent e) {
 }
 \end{Java}
 
-In NullSpy itself, JAD is not used but it was a big help during the implementation phase. Since after running NullSpy on a project only the modificated bytecode is available. The use of JAD is for the sake of debugging through Nullspy; to check whether the modification by Javassist, e.g. inserting source code, has succeeded. Another way to check the result for correctness is looking at bytecode itself what would have taken a lot of effort and time.
+\del{In NullSpy itself}, JAD is \del{not used} \ins{in no way a dependency of NullSpy} but it was a big help during the implementation phase. Since after running NullSpy on a project only the \chg{modificated}{modified}\brs{please use a spellcheck} bytecode is available. The use of JAD is for the sake of debugging \del{through} Nullspy; to check whether the modification by Javassist, e.g. inserting source code, has succeeded. Another way to check the result for correctness is looking at bytecode itself \chg{what}{but that} would have taken a lot \chg{of}{more} effort and time.
 
 \chapter{NullSpy}
 As earlier explained in \charef{introduction}, this project is about providing the user with additional stack trace with the information of the origin or line of code of where null is assigned to a variable that caused the NullPointerException. In short, it shows the developer the exact location of where a method receiver or a field (in a field access case) was assigned to null.

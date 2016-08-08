@@ -483,6 +483,8 @@ Once the bytecode is modified, the way to get the data of fields needs some adap
 \label{bytecodeAdaptation}
 Each time encountering a variable assignment we first extract the needed data and directly after this we adapt the class file by adding extra bytecode right after the assignment bytecode to check whether the variable is null or not. If it is null, the information collected before is stored either into the \textit{``localVariableMap"} or into a \textit{``fieldMap"} which are HashMaps.
 
+\tt{ch.scg.nullSpy.runtimeSupporter.VariableTesterdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd}
+
 The added bytecode represents a static method of a class named \code{ch.scg.nullSpy.runtimeSupporter.VariableTester} which will be added to the modified project after class file modification is done. Depending on the kind of variable analyzed at the moment different bytecode is constructed, meaning different method with different parameter/variable data is added.
 
 There were again some challenges we had to get over, like getting the wanted data after an instrumentation and entering the additional code in the right position of the bytecode sequence (\subsecref{bytecodeAdaptationDifficulties}).
@@ -798,8 +800,22 @@ Coding beautifully the way so that it will not smell was another challenge due t
 We also came in contact with the building XML file and the jar file. Concerning the XML file, we gained experience by learning a new language by modifying it that it also creates a jar file out of the modified project. 
 
 \chapter {Anleitung zu wissenschaftlichen Arbeiten}
-This consists of additional documentation, e.g. a tutorial, user guide etc.
-Required by the Informatik regulation.
+NullSpy is a program which helps Java developers to find the root of NullPointerExceptions by providing an additional link next to the common stack trace. The key idea behind NullSpy is to help developers to save time fixing bugs which are caused by NullPointerExcpetions. Of course this approach tries to provide this service by keeping the overhead to a minimum. To demonstrate how NullSpy works, this chapter serves as a small tutorial that takes JHotDraw as the testing project to show the feature of NullSpy.
+
+\section{Installation}
+\label{sec:installation}
+For this tutorial JHotDraw is needed. In order to download it, visit the following site and download ``JHotDraw6.0 beta 1" (version we worked with during the implementation of NullSpy):\\
+\href{http://www.jhotdraw.org}{www.jhotdraw.org}\\
+Unpack the archive and store it to a location of your choice. To be able to run JHotDraw additional libraries are used, that are not included in JHotDraw itself. Following libraries are to be downloaded:\\
+``batik-all-1.7": \href{http://www.java2s.com/Code/Jar/b/Downloadbatikall17jar.htm}{www.java2s.com/Code/Jar/b/Downloadbatikall17jar}\\
+``jdo": \href{http://www.java2s.com/Code/Jar/j/Downloadjdojar.htm}{www.java2s.com/Code/Jar/j/Downloadjdojar}\\
+Again unpack those archives and store them in a lib folder in your JHodDraw project.
+
+Running the tests of JHotdraw with the commando line the location of libraries ``hamcrest" and ``junit" are needed, which are normally also downloaded when the programming environment Eclipse\footnote{Can be downloaded here: \href{https://eclipse.org/downloads/}{www.eclipse.org/downloads}} is downloaded.
+
+
+
+
 
 %END Doc
 %-------------------------------------------------------

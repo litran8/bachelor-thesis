@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  7 AUG 2016 14:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.1.12)  9 AUG 2016 15:46
 entering extended mode
 **./preamble.tex
 (preamble.tex
@@ -263,6 +263,18 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
+l.27 \usepackage[htt]{
+                      hyphenat}
+\usepackage may only appear in the document preamble, i.e.,
+between \documentclass and \begin{document}.
+
+
+! LaTeX Error: \usepackage before \documentclass.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
 l.28 \usepackage{
                  times}
 \usepackage may only appear in the document preamble, i.e.,
@@ -444,7 +456,7 @@ Type  H <return>  for immediate help.
  ...                                              
                                                   
 l.47 \usepackage[parfill]{
-                          parskip}
+                          parskip} %culprit -> fontpage into 2 pages !!!!!!!...
 \usepackage may only appear in the document preamble, i.e.,
 between \documentclass and \begin{document}.
 
@@ -516,13 +528,13 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.70 \usepackage{
+l.69 \usepackage{
                  boxedminipage}
 \usepackage may only appear in the document preamble, i.e.,
 between \documentclass and \begin{document}.
 
 ! Undefined control sequence.
-l.72 \newboolean
+l.71 \newboolean
                 {showedits}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -537,7 +549,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.72 \newboolean{s
+l.71 \newboolean{s
                   howedits}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -552,7 +564,7 @@ Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no s in font nullfont!
 ! Undefined control sequence.
-l.73 \setboolean
+l.72 \setboolean
                 {showedits}{true} % toggle to show or hide edits
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -574,7 +586,7 @@ Missing character: There is no r in font nullfont!
 Missing character: There is no u in font nullfont!
 Missing character: There is no e in font nullfont!
 ! Undefined control sequence.
-l.74 \ifthenelse
+l.73 \ifthenelse
                 {\boolean{showedits}}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -583,7 +595,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.74 \ifthenelse{\boolean
+l.73 \ifthenelse{\boolean
                          {showedits}}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -607,7 +619,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.91 \usepackage{
+l.90 \usepackage{
                  xcolor}
 \usepackage may only appear in the document preamble, i.e.,
 between \documentclass and \begin{document}.
@@ -619,7 +631,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.92 \usepackage[normalem]{
+l.91 \usepackage[normalem]{
                            ulem}
 \usepackage may only appear in the document preamble, i.e.,
 between \documentclass and \begin{document}.
@@ -631,13 +643,13 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.94 \usepackage{
+l.93 \usepackage{
                  amssymb}
 \usepackage may only appear in the document preamble, i.e.,
 between \documentclass and \begin{document}.
 
 ! Undefined control sequence.
-l.97 \newboolean
+l.96 \newboolean
                 {showcomments}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -652,7 +664,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.97 \newboolean{s
+l.96 \newboolean{s
                   howcomments}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -670,7 +682,7 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no s in font nullfont!
 ! Undefined control sequence.
-l.98 \setboolean
+l.97 \setboolean
                 {showcomments}{true}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -695,8 +707,8 @@ Missing character: There is no r in font nullfont!
 Missing character: There is no u in font nullfont!
 Missing character: There is no e in font nullfont!
 ! Undefined control sequence.
-l.100 \ifthenelse
-                 {\boolean{showcomments}}
+l.99 \ifthenelse
+                {\boolean{showcomments}}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -704,8 +716,8 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.100 \ifthenelse{\boolean
-                          {showcomments}}
+l.99 \ifthenelse{\boolean
+                         {showcomments}}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -724,57 +736,9 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no s in font nullfont!
-
-! LaTeX Error: Environment quote undefined.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.121 \renewenvironment{quote}
-                              
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-! LaTeX Error: \usepackage before \documentclass.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.133 \usepackage{
-                  xcolor}
-\usepackage may only appear in the document preamble, i.e.,
-between \documentclass and \begin{document}.
-
-
-! LaTeX Error: \usepackage before \documentclass.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.134 \usepackage{
-                  textcomp}
-\usepackage may only appear in the document preamble, i.e.,
-between \documentclass and \begin{document}.
-
-
-! LaTeX Error: \usepackage before \documentclass.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.135 \usepackage{
-                  listings}
-\usepackage may only appear in the document preamble, i.e.,
-between \documentclass and \begin{document}.
-
 ! Undefined control sequence.
-l.136 \definecolor
-                  {javablue}{rgb}{0,0,0.6} % for strings
+l.117 \definecolor
+                  {green(pigment)}{rgb}{0.0, 0.65, 0.31}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -788,10 +752,144 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.136 \definecolor{j
-                    avablue}{rgb}{0,0,0.6} % for strings
+l.117 \definecolor{g
+                    reen(pigment)}{rgb}{0.0, 0.65, 0.31}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
+
+Missing character: There is no g in font nullfont!
+Missing character: There is no r in font nullfont!
+Missing character: There is no e in font nullfont!
+Missing character: There is no e in font nullfont!
+Missing character: There is no n in font nullfont!
+Missing character: There is no ( in font nullfont!
+Missing character: There is no p in font nullfont!
+Missing character: There is no i in font nullfont!
+Missing character: There is no g in font nullfont!
+Missing character: There is no m in font nullfont!
+Missing character: There is no e in font nullfont!
+Missing character: There is no n in font nullfont!
+Missing character: There is no t in font nullfont!
+Missing character: There is no ) in font nullfont!
+Missing character: There is no r in font nullfont!
+Missing character: There is no g in font nullfont!
+Missing character: There is no b in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no . in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no , in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no . in font nullfont!
+Missing character: There is no 6 in font nullfont!
+Missing character: There is no 5 in font nullfont!
+Missing character: There is no , in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no . in font nullfont!
+Missing character: There is no 3 in font nullfont!
+Missing character: There is no 1 in font nullfont!
+
+! LaTeX Error: Environment quote undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.124 \renewenvironment{quote}
+                              
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: \usepackage before \documentclass.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.136 \usepackage{
+                  xcolor}
+\usepackage may only appear in the document preamble, i.e.,
+between \documentclass and \begin{document}.
+
+
+! LaTeX Error: \usepackage before \documentclass.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.137 \usepackage{
+                  textcomp}
+\usepackage may only appear in the document preamble, i.e.,
+between \documentclass and \begin{document}.
+
+
+! LaTeX Error: \usepackage before \documentclass.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.138 \usepackage{
+                  listings}
+\usepackage may only appear in the document preamble, i.e.,
+between \documentclass and \begin{document}.
+
+! Undefined control sequence.
+l.139 \definecolor
+                  {cadmiumred}{rgb}{0.89, 0.0, 0.13}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.139 \definecolor{c
+                    admiumred}{rgb}{0.89, 0.0, 0.13}
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+Missing character: There is no c in font nullfont!
+Missing character: There is no a in font nullfont!
+Missing character: There is no d in font nullfont!
+Missing character: There is no m in font nullfont!
+Missing character: There is no i in font nullfont!
+Missing character: There is no u in font nullfont!
+Missing character: There is no m in font nullfont!
+Missing character: There is no r in font nullfont!
+Missing character: There is no e in font nullfont!
+Missing character: There is no d in font nullfont!
+Missing character: There is no r in font nullfont!
+Missing character: There is no g in font nullfont!
+Missing character: There is no b in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no . in font nullfont!
+Missing character: There is no 8 in font nullfont!
+Missing character: There is no 9 in font nullfont!
+Missing character: There is no , in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no . in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no , in font nullfont!
+Missing character: There is no 0 in font nullfont!
+Missing character: There is no . in font nullfont!
+Missing character: There is no 1 in font nullfont!
+Missing character: There is no 3 in font nullfont!
+! Undefined control sequence.
+l.140 \definecolor
+                  {javablue}{rgb}{0,0,0.6} % for strings
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
 
 Missing character: There is no j in font nullfont!
 Missing character: There is no a in font nullfont!
@@ -812,7 +910,7 @@ Missing character: There is no 0 in font nullfont!
 Missing character: There is no . in font nullfont!
 Missing character: There is no 6 in font nullfont!
 ! Undefined control sequence.
-l.137 \definecolor
+l.141 \definecolor
                   {javagreen}{rgb}{0.25,0.5,0.35} % comments
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -846,7 +944,7 @@ Missing character: There is no . in font nullfont!
 Missing character: There is no 3 in font nullfont!
 Missing character: There is no 5 in font nullfont!
 ! Undefined control sequence.
-l.138 \definecolor
+l.142 \definecolor
                   {javapurple}{rgb}{0.5,0,0.35} % keywords
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -878,7 +976,7 @@ Missing character: There is no . in font nullfont!
 Missing character: There is no 3 in font nullfont!
 Missing character: There is no 5 in font nullfont!
 ! Undefined control sequence.
-l.139 \definecolor
+l.143 \definecolor
                   {javadocblue}{rgb}{0.25,0.35,0.75} % javadoc
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -921,7 +1019,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.141 \renewcommand{\lstlistingname}
+l.145 \renewcommand{\lstlistingname}
                                     {Code}% Listing -> Algorithm
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -933,14 +1031,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.142 \renewcommand{\lstlistlistingname}
+l.146 \renewcommand{\lstlistlistingname}
                                         {List of \lstlistingname s}% List of...
 Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 ! Undefined control sequence.
-l.144 \lstnewenvironment
-                        {Java}[1][]
+l.148 \lstnewenvironment
+                        {Java}[1][H]
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -954,8 +1052,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.144 \lstnewenvironment{J
-                          ava}[1][]
+l.148 \lstnewenvironment{J
+                          ava}[1][H]
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
@@ -967,9 +1065,10 @@ Missing character: There is no [ in font nullfont!
 Missing character: There is no 1 in font nullfont!
 Missing character: There is no ] in font nullfont!
 Missing character: There is no [ in font nullfont!
+Missing character: There is no H in font nullfont!
 Missing character: There is no ] in font nullfont!
 ! Undefined control sequence.
-l.145 {\lstset
+l.149 {\lstset
               {
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1003,7 +1102,7 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no = in font nullfont!
 ! Undefined control sequence.
-l.147 	basicstyle=\footnotesize
+l.151 	basicstyle=\footnotesize
                                \ttfamily,
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1012,7 +1111,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.148 	keywordstyle=\color
+l.152 	keywordstyle=\color
                           {javapurple}\bfseries,
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1021,9 +1120,9 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 148.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 152.
 ! Undefined control sequence.
-l.149 	stringstyle=\color
+l.153 	stringstyle=\color
                          {javablue},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1032,7 +1131,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.150 	commentstyle=\color
+l.154 	commentstyle=\color
                           {javagreen},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1041,7 +1140,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.151 	morecomment=[s][\color
+l.155 	morecomment=[s][\color
                              {javadocblue}]{/**}{*/},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1050,7 +1149,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.153 	numberstyle=\tiny
+l.157 	numberstyle=\tiny
                         \color{black},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1059,7 +1158,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.153 	numberstyle=\tiny\color
+l.157 	numberstyle=\tiny\color
                               {black},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1068,7 +1167,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! You can't use `macro parameter character #' in horizontal mode.
-l.164 	#
+l.169 	#
         1
 Sorry, but I'm not programmed to handle this case;
 I'll just pretend that you didn't ask for it.
@@ -1076,98 +1175,98 @@ If you're in the wrong mode, you might be able to
 return to the right one by typing `I}' or `I$' or `I\par'.
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 144--167
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 ,
  []
 
 
-Overfull \hbox (125.9989pt too wide) in paragraph at lines 144--167
+Overfull \hbox (125.9989pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 keywordstyle=javapurple,
  []
 
 
-Overfull \hbox (110.24904pt too wide) in paragraph at lines 144--167
+Overfull \hbox (110.24904pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 stringstyle=javablue,
  []
 
 
-Overfull \hbox (120.74895pt too wide) in paragraph at lines 144--167
+Overfull \hbox (120.74895pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 commentstyle=javagreen,
  []
 
 
-Overfull \hbox (178.49844pt too wide) in paragraph at lines 144--167
+Overfull \hbox (178.49844pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 morecomment=[s][javadocblue]/***/,
  []
 
 
-Overfull \hbox (68.2494pt too wide) in paragraph at lines 144--167
+Overfull \hbox (68.2494pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 numbers=left,
  []
 
 
-Overfull \hbox (94.49918pt too wide) in paragraph at lines 144--167
+Overfull \hbox (94.49918pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 numberstyle=black,
  []
 
 
-Overfull \hbox (68.2494pt too wide) in paragraph at lines 144--167
+Overfull \hbox (68.2494pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 stepnumber=1,
  []
 
 
-Overfull \hbox (78.74931pt too wide) in paragraph at lines 144--167
+Overfull \hbox (78.74931pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 numbersep=10pt,
  []
 
 
-Overfull \hbox (52.49954pt too wide) in paragraph at lines 144--167
+Overfull \hbox (52.49954pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 tabsize=4,
  []
 
 
-Overfull \hbox (89.24922pt too wide) in paragraph at lines 144--167
+Overfull \hbox (89.24922pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 showspaces=false,
  []
 
 
-Overfull \hbox (120.74895pt too wide) in paragraph at lines 144--167
+Overfull \hbox (120.74895pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 showstringspaces=false,
  []
 
 
-Overfull \hbox (83.99927pt too wide) in paragraph at lines 144--167
+Overfull \hbox (83.99927pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 breaklines=true,
  []
 
 
-Overfull \hbox (68.2494pt too wide) in paragraph at lines 144--167
+Overfull \hbox (68.2494pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 captionpos=b,
  []
 
 
-Overfull \hbox (83.99927pt too wide) in paragraph at lines 144--167
+Overfull \hbox (83.99927pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 xleftmargin=2em,
  []
 
 
-Overfull \hbox (120.74895pt too wide) in paragraph at lines 144--167
+Overfull \hbox (120.74895pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 framexleftmargin=1.5em,
  []
 
 
-Overfull \hbox (68.2494pt too wide) in paragraph at lines 144--167
+Overfull \hbox (68.2494pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 frame=single,
  []
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 144--167
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 148--172
 \OT1/cmtt/m/n/10 1
  []
 
 ! Undefined control sequence.
-l.168 \lstnewenvironment
-                        {JVMIS}[1][]
+l.173 \lstnewenvironment
+                        {JVMIS}[1][H]
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
 misspelled it (e.g., `\hobx'), type `I' and the correct
@@ -1181,8 +1280,8 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.168 \lstnewenvironment{J
-                          VMIS}[1][]
+l.173 \lstnewenvironment{J
+                          VMIS}[1][H]
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
@@ -1195,9 +1294,10 @@ Missing character: There is no [ in font nullfont!
 Missing character: There is no 1 in font nullfont!
 Missing character: There is no ] in font nullfont!
 Missing character: There is no [ in font nullfont!
+Missing character: There is no H in font nullfont!
 Missing character: There is no ] in font nullfont!
 ! Undefined control sequence.
-l.169 {\lstset
+l.174 {\lstset
               {
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1232,7 +1332,7 @@ Missing character: There is no l in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no = in font nullfont!
 ! Undefined control sequence.
-l.171 	basicstyle=\footnotesize
+l.176 	basicstyle=\footnotesize
                                \ttfamily,
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1241,7 +1341,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.172 	keywordstyle=\color
+l.177 	keywordstyle=\color
                           {javagreen}\bfseries,
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1250,7 +1350,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.173 	stringstyle=\color
+l.178 	stringstyle=\color
                          {javablue},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1259,7 +1359,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.174 	commentstyle=\color
+l.179 	commentstyle=\color
                           {javagreen},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1268,7 +1368,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.175 	morecomment=[s][\color
+l.180 	morecomment=[s][\color
                              {javadocblue}]{/**}{*/},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1277,7 +1377,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.176 	numberstyle=\tiny
+l.181 	numberstyle=\tiny
                         \color{black},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1286,7 +1386,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.176 	numberstyle=\tiny\color
+l.181 	numberstyle=\tiny\color
                               {black},
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1295,7 +1395,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! You can't use `macro parameter character #' in horizontal mode.
-l.185 	#
+l.191 	#
         1
 Sorry, but I'm not programmed to handle this case;
 I'll just pretend that you didn't ask for it.
@@ -1303,82 +1403,82 @@ If you're in the wrong mode, you might be able to
 return to the right one by typing `I}' or `I$' or `I\par'.
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 168--188
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 ,
  []
 
 
-Overfull \hbox (120.74895pt too wide) in paragraph at lines 168--188
+Overfull \hbox (120.74895pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 keywordstyle=javagreen,
  []
 
 
-Overfull \hbox (110.24904pt too wide) in paragraph at lines 168--188
+Overfull \hbox (110.24904pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 stringstyle=javablue,
  []
 
 
-Overfull \hbox (120.74895pt too wide) in paragraph at lines 168--188
+Overfull \hbox (120.74895pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 commentstyle=javagreen,
  []
 
 
-Overfull \hbox (178.49844pt too wide) in paragraph at lines 168--188
+Overfull \hbox (178.49844pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 morecomment=[s][javadocblue]/***/,
  []
 
 
-Overfull \hbox (94.49918pt too wide) in paragraph at lines 168--188
+Overfull \hbox (94.49918pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 numberstyle=black,
  []
 
 
-Overfull \hbox (68.2494pt too wide) in paragraph at lines 168--188
+Overfull \hbox (68.2494pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 stepnumber=1,
  []
 
 
-Overfull \hbox (78.74931pt too wide) in paragraph at lines 168--188
+Overfull \hbox (78.74931pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 numbersep=10pt,
  []
 
 
-Overfull \hbox (52.49954pt too wide) in paragraph at lines 168--188
+Overfull \hbox (52.49954pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 tabsize=4,
  []
 
 
-Overfull \hbox (89.24922pt too wide) in paragraph at lines 168--188
+Overfull \hbox (89.24922pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 showspaces=false,
  []
 
 
-Overfull \hbox (115.499pt too wide) in paragraph at lines 168--188
+Overfull \hbox (115.499pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 showstringspaces=false
  []
 
 
-Overfull \hbox (83.99927pt too wide) in paragraph at lines 168--188
+Overfull \hbox (83.99927pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 breaklines=true,
  []
 
 
-Overfull \hbox (68.2494pt too wide) in paragraph at lines 168--188
+Overfull \hbox (68.2494pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 captionpos=b,
  []
 
 
-Overfull \hbox (68.2494pt too wide) in paragraph at lines 168--188
+Overfull \hbox (68.2494pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 frame=single,
  []
 
 
-Overfull \hbox (5.24995pt too wide) in paragraph at lines 168--188
+Overfull \hbox (5.24995pt too wide) in paragraph at lines 173--194
 \OT1/cmtt/m/n/10 1
  []
 
 ! Undefined control sequence.
-l.190 \definecolor
+l.206 \definecolor
                   {codegray}{gray}{0.9}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1393,7 +1493,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.190 \definecolor{c
+l.206 \definecolor{c
                     odegray}{gray}{0.9}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -1414,7 +1514,7 @@ Missing character: There is no 0 in font nullfont!
 Missing character: There is no . in font nullfont!
 Missing character: There is no 9 in font nullfont!
 ! Undefined control sequence.
-l.216 \tracingcolors
+l.232 \tracingcolors
                      4
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1429,14 +1529,14 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.216 \tracingcolors 4
+l.232 \tracingcolors 4
                       
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
 
 Missing character: There is no 4 in font nullfont!
 ! Undefined control sequence.
-l.240 \DeclareGraphicsExtensions
+l.256 \DeclareGraphicsExtensions
                                 {.pdf,.png}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1451,7 +1551,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.240 \DeclareGraphicsExtensions{.
+l.256 \DeclareGraphicsExtensions{.
                                   pdf,.png}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -1466,7 +1566,7 @@ Missing character: There is no p in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no g in font nullfont!
 ! Undefined control sequence.
-l.241 \graphicspath
+l.257 \graphicspath
                    {{images/}}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1488,7 +1588,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.271 			pdftitle={
+l.287 			pdftitle={
                    \thesistitle}, pdfauthor={\thesisauthor},
 \usepackage may only appear in the document preamble, i.e.,
 between \documentclass and \begin{document}.
@@ -1500,7 +1600,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.271 			pdftitle={\thesistitle},
+l.287 			pdftitle={\thesistitle},
                                   pdfauthor={\thesisauthor},
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -1624,18 +1724,18 @@ Missing character: There is no f in font nullfont!
 (preamble.aux)
 \openout1 = `preamble.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 281.
-LaTeX Font Info:    ... okay on input line 281.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 281.
-LaTeX Font Info:    ... okay on input line 281.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 281.
-LaTeX Font Info:    ... okay on input line 281.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 281.
-LaTeX Font Info:    ... okay on input line 281.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 281.
-LaTeX Font Info:    ... okay on input line 281.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 281.
-LaTeX Font Info:    ... okay on input line 281.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 296.
+LaTeX Font Info:    ... okay on input line 296.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 296.
+LaTeX Font Info:    ... okay on input line 296.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 296.
+LaTeX Font Info:    ... okay on input line 296.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 296.
+LaTeX Font Info:    ... okay on input line 296.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 296.
+LaTeX Font Info:    ... okay on input line 296.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 296.
+LaTeX Font Info:    ... okay on input line 296.
 
 
 ! LaTeX Error: The font size command \normalsize is not defined:
@@ -1645,7 +1745,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.281 \begin{document}
+l.296 \begin{document}
                       
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -1658,7 +1758,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.285 \begin{titlepage}
+l.300 \begin{titlepage}
                        
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -1671,7 +1771,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.288   \begin{figure}
+l.303   \begin{figure}
                       [t]
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -1681,7 +1781,7 @@ Missing character: There is no [ in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no ] in font nullfont!
 ! Undefined control sequence.
-l.290   \center{\includegraphics
+l.305   \center{\includegraphics
                                 [scale=0.5]{logos/UNI_Bern.png}}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1712,17 +1812,17 @@ Missing character: There is no I in font nullfont!
 ! Missing $ inserted.
 <inserted text> 
                 $
-l.290 ...er{\includegraphics[scale=0.5]{logos/UNI_
+l.305 ...er{\includegraphics[scale=0.5]{logos/UNI_
                                                   Bern.png}}
 I've inserted a begin-math/end-math symbol since I think
 you left one out. Proceed, with fingers crossed.
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 290.
+(Font)              <7> on input line 305.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 290.
+(Font)              <5> on input line 305.
 ! Extra }, or forgotten $.
-l.290 ...degraphics[scale=0.5]{logos/UNI_Bern.png}
+l.305 ...degraphics[scale=0.5]{logos/UNI_Bern.png}
                                                   }
 I've deleted a group-closing symbol because it seems to be
 spurious, as in `$x}$'. But perhaps the } is legitimate and
@@ -1731,7 +1831,7 @@ the way to recover is to insert both the forgotten and the
 deleted material, e.g., by typing `I$}'.
 
 ! Extra }, or forgotten $.
-l.290 ...egraphics[scale=0.5]{logos/UNI_Bern.png}}
+l.305 ...egraphics[scale=0.5]{logos/UNI_Bern.png}}
                                                   
 I've deleted a group-closing symbol because it seems to be
 spurious, as in `$x}$'. But perhaps the } is legitimate and
@@ -1740,13 +1840,13 @@ the way to recover is to insert both the forgotten and the
 deleted material, e.g., by typing `I$}'.
 
 
-! LaTeX Error: \begin{center} on input line 286 ended by \end{figure}.
+! LaTeX Error: \begin{center} on input line 301 ended by \end{figure}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.292   \end{figure}
+l.307   \end{figure}
                     
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -1755,7 +1855,7 @@ or  <return>  to continue without it.
 ! Missing $ inserted.
 <inserted text> 
                 $
-l.292   \end{figure}
+l.307   \end{figure}
                     
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -1766,7 +1866,7 @@ my insertion and my current dilemma will both disappear.
 ! Missing } inserted.
 <inserted text> 
                 }
-l.292   \end{figure}
+l.307   \end{figure}
                     
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -1777,7 +1877,7 @@ my insertion and my current dilemma will both disappear.
 ! Missing } inserted.
 <inserted text> 
                 }
-l.292   \end{figure}
+l.307   \end{figure}
                     
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -1786,7 +1886,7 @@ really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
 ! Undefined control sequence.
-l.296     {\bfseries\Huge
+l.311     {\bfseries\Huge
                           \thesistitle \par
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1795,7 +1895,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.297     \Large
+l.312     \Large
                  \vspace{0.1in} \thesissubtitle \par}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1804,7 +1904,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.300     \LARGE
+l.315     \LARGE
                 {\textbf{Bachelor Thesis} \\}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1813,7 +1913,7 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 ! Undefined control sequence.
-l.303     {\Large
+l.318     {\Large
                   \thesisauthor \par from \par \thesisauthorOrigin}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1859,7 +1959,7 @@ Missing character: There is no a in font nullfont!
 Missing character: There is no n in font nullfont!
 Missing character: There is no d in font nullfont!
 ! Undefined control sequence.
-l.306     {\Large
+l.321     {\Large
                   Faculty of Science \\
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1900,7 +2000,7 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no r in font nullfont!
 Missing character: There is no n in font nullfont!
 ! Undefined control sequence.
-l.309     {\Large
+l.324     {\Large
                   \thesisdate \par}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1920,7 +2020,7 @@ Missing character: There is no 0 in font nullfont!
 Missing character: There is no 1 in font nullfont!
 Missing character: There is no 6 in font nullfont!
 ! Undefined control sequence.
-l.312    {\Large
+l.327    {\Large
                  \thesisleiter} \par
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1952,7 +2052,7 @@ Missing character: There is no a in font nullfont!
 Missing character: There is no s in font nullfont!
 Missing character: There is no z in font nullfont!
 ! Undefined control sequence.
-l.313       {\Large
+l.328       {\Large
                     \thesisasst} \par
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -1960,23 +2060,6 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
-Missing character: There is no R in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no r in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no h in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no t in font nullfont!
 Missing character: There is no N in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no v in font nullfont!
@@ -1992,16 +2075,16 @@ Missing character: There is no k in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no v in font nullfont!
 Missing character: There is no i in font nullfont!
-LaTeX Font Info:    Try loading font information for +cmr on input line 313.
-LaTeX Font Info:    No file cmr.fd. on input line 313.
+LaTeX Font Info:    Try loading font information for +cmr on input line 328.
+LaTeX Font Info:    No file cmr.fd. on input line 328.
 
 LaTeX Font Warning: Font shape `/cmr/m/n' undefined
-(Font)              using `/cmr/m/n' instead on input line 313.
+(Font)              using `/cmr/m/n' instead on input line 328.
 
 ! Corrupted NFSS tables.
 wrong@fontshape ...message {Corrupted NFSS tables}
                                                   error@fontshape else let f...
-l.313       {\Large \thesisasst
+l.328       {\Large \thesisasst
                                } \par
 This error message was generated by an \errmessage
 command, so I can't give any explicit help.
@@ -2010,25 +2093,8 @@ and deduce the truth by order and method.
 
 
 LaTeX Font Warning: Font shape `/cmr/m/n' undefined
-(Font)              using `OT1/cmr/m/n' instead on input line 313.
+(Font)              using `OT1/cmr/m/n' instead on input line 328.
 
-Missing character: There is no R in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no r in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no h in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no a in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no t in font nullfont!
 Missing character: There is no B in font nullfont!
 Missing character: There is no o in font nullfont!
 Missing character: There is no r in font nullfont!
@@ -2044,7 +2110,7 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no v in font nullfont!
 Missing character: There is no i in font nullfont!
 ! Undefined control sequence.
-l.315     {\Large
+l.330     {\Large
                   Software Composition Group \par Institute for Computer Sci...
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -2138,7 +2204,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.324 \end{titlepage}
+l.339 \end{titlepage}
                      
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
@@ -2152,10 +2218,10 @@ or  <return>  to continue without it.
 
  
 Here is how much of TeX's memory you used:
- 100 strings out of 493634
- 851 string characters out of 3143730
+ 103 strings out of 493634
+ 863 string characters out of 3143730
  54604 words of memory out of 3000000
- 3581 multiletter control sequences out of 15000+200000
+ 3584 multiletter control sequences out of 15000+200000
  4116 words of font info for 16 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  18i,2n,16p,137b,181s stack positions out of 5000i,500n,10000p,200000b,50000s

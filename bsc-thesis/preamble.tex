@@ -44,15 +44,14 @@
 
 % lina entered
 \usepackage{indentfirst}
-\usepackage[parfill]{parskip}
+\usepackage[parfill]{parskip} %culprit -> fontpage into 2 pages !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 \usepackage[bottom]{footmisc}
 
 \usepackage[T1]{fontenc}
 \usepackage{caption}
 \usepackage{booktabs}
 \usepackage{siunitx}
-
-
+\usepackage{refcount}
 \setlength{\parindent}{1.5em}
 
 % constants
@@ -114,7 +113,9 @@
   }
 \newcommand\nm[1]{\nb{NM}{violet}{#1}} % add more author macros here
 \newcommand\lt[1]{\nb{LT}{orange}{#1}}
-\newcommand\brs[1]{\nb{BS}{green}{#1}}
+
+\definecolor{green(pigment)}{rgb}{0.0, 0.65, 0.31}
+\newcommand\brs[1]{\nb{BS}{green(pigment)}{#1}}
 \newcommand\latex[1]{\nb{\LaTeX}{blue}{#1}}
 \newcommand\todo[1]{\nb{TO DO}{blue}{#1}}
 
@@ -135,6 +136,7 @@
 \usepackage{xcolor}
 \usepackage{textcomp}
 \usepackage{listings}
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
 \definecolor{javablue}{rgb}{0,0,0.6} % for strings
 \definecolor{javagreen}{rgb}{0.25,0.5,0.35} % comments
 \definecolor{javapurple}{rgb}{0.5,0,0.35} % keywords
@@ -143,7 +145,7 @@
 \renewcommand{\lstlistingname}{Code}% Listing -> Algorithm
 \renewcommand{\lstlistlistingname}{List of \lstlistingname s}% List of Listings -> List of Algorithms
 
-\lstnewenvironment{Java}[1][]
+\lstnewenvironment{Java}[1][H]
 {\lstset{
 	language=Java,
 	basicstyle=\footnotesize\ttfamily,
@@ -160,14 +162,15 @@
 	showstringspaces=false,
 	breaklines=true,
 	captionpos=b,
-	xleftmargin=2em,
-	framexleftmargin=1.5em,
+	%xleftmargin=2em,
+	%framexleftmargin=1.5em,
 	frame=single,
+	float,
 	#1
 }}
 {}
 
-\lstnewenvironment{JVMIS}[1][]
+\lstnewenvironment{JVMIS}[1][H]
 {\lstset{
 	language=JVMIS,
 	basicstyle=\footnotesize\ttfamily,
@@ -184,17 +187,28 @@
 	breaklines=true,
 	captionpos=b,
 	frame=single,
+	float,
 	#1
 }}
 {}
 
+\renewcommand{\texttt}[1]{%
+  \begingroup
+  \ttfamily
+  \begingroup\lccode`~=`/\lowercase{\endgroup\def~}{/\discretionary{}{}{}}%
+  \begingroup\lccode`~=`[\lowercase{\endgroup\def~}{[\discretionary{}{}{}}%
+  \begingroup\lccode`~=`.\lowercase{\endgroup\def~}{.\discretionary{}{}{}}%
+  \catcode`/=\active\catcode`[=\active\catcode`.=\active
+  \scantokens{#1\noexpand}%
+  \endgroup
+}
 
 \definecolor{codegray}{gray}{0.9}
 \newcommand{\code}[1]{
 	\colorbox{codegray}
 	{\texttt{#1}}
 }
-
+\sloppy
 %----------------------------------------------------------------------------
 
 
@@ -276,7 +290,6 @@
 \newcommand{\hrref}[2]{\hyperref}
 % ===========================================================================
 % ===========================================================================
-
 
 % D O C U M E N T
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %

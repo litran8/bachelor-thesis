@@ -8,11 +8,11 @@
 \chapter*{\centering Abstract}
 \begin{quotation}
 \noindent 
-A previous study found out that \ugh{NullPointerExceptions}\brs{not sure if we can use NullPointerException as a word. We need to double check that} are the most frequently occurring \chg{furthermore}{and} \chg{very hard}{the most difficult} \brs{rock is hard, problems are difficult} to \del{be} debug\del{ged} exception\ins{s} in Java projects. \chg{It is}{They are}\brs{you started in plural (NullPointerExcemptionS) and switched to singular here (it). be consistent} hard to debug because the developer is only provided with a stack trace to where the exception \del{happened when a NullPointerException is} \ins{was} thrown. This only gives insight into the effect of the fault but not into its cause. \del{That is why the developer often asks where this null reference is coming from.}
+A previous study found out that \ugh{NullPointerExceptions}\brs{not sure if we can use NullPointerException as a word. We need to double check that} are the most frequently occurring and the most difficult to debug exceptions in Java projects. They are difficult to debug because the developer is only provided with a stack trace to where the exception was thrown. This only gives insight into the effect of the fault but not into its cause.
 
-The aim of the project is to provide a developer with an additional stack trace of where the \chg{value}{variable that caused the NullPointerException} was actually set to null\del{, next to the default stack trace of a NullPointerException}\brs{covered by the ``additioinal stack trace''}. We attempt to achieve this goal by instrumenting java source code \chg{ideally with}{striving for}  a minimal execution overhead. 
+The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the NullPointerException was actually set to null. We attempt to achieve this goal by instrumenting java source code striving for a minimal execution overhead. 
 
-By tracking the null assignments \chg{by}{through} \chg{statically analyzing}{static analysis  and instrumentation of the} bytecode \del{and inserting additional code}\brs{implied in the ``instrumentation''} \ugh{the debugging after a NullPointerException will be simplified.}\brs{if you start the sentence with ``by doing X...'' you should end it with something like ``we can achieve Y'' ``developers can obtain Z'' \eg ``By genetically modifying cows we can make them produce chocolate milk.''} 
+By tracking the null assignments through static analysis and instrumentation of the bytecode we can achieve a more efficient debugging process after an occurrence of a NullPointerException. 
 \end{quotation}
 \clearpage
 
@@ -27,14 +27,14 @@ By tracking the null assignments \chg{by}{through} \chg{statically analyzing}{st
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
 \label{ch:introduction}
-Nowadays, \ugh{certainly every programmer}\brs{except all the people that don't use Java} is confronted with NullPointerExceptions in both big and small Java projects, whether it is for an enterprise or for private purposes\brs{rephrase this to along the lines of ``Practically all Java developers are confronted with...''} . The seriousness of null dereferencing \chg{can be stated since it has been found out that in projects}{is apparent from the finding that } 35\% of the conditional statements \ins{in open source Java projects} are null checks which has a negative impact on performance \cite{Osma15a}\brs{Really? performance is what Haidar is complaining about in his paper? I honestly doubt that, i would bet it's readability of code.}.\latex{add a ~ instead of a space when using \cite{} to ensure it does not break the line there \eg performance~\cite{Osma15a}} It is also considered \del{as} the number one error Java programmers make\footnote{\url{http://www.javacoffeebreak.com/articles/toptenerrors.html}}.
+Nowadays, practically all Java developers are confronted with NullPointerExceptions in both big and small Java projects, whether it is for an enterprise or for private purposes. The seriousness of null dereferencing is apparent from the finding that 35\% of the conditional statements in open source Java projects are null checks which degrades the readability of code and of course has a negative impact on performance~\cite{Osma15a}. It is also considered the number one error Java programmers make\footnote{\url{http://www.javacoffeebreak.com/articles/toptenerrors.html}}.
 
-\del{So what are those NullPointerExceptions?}\brs{too flowery. this is a technical paper, not literature, get to the point} NullPointerException is a commonly occurring RuntimeException in object-oriented languages. There is a special value \textit{null} \ugh{that is a pointer which does not point to a valid object, so it points to nowhere}\brs{the null value is not a pointer, it is assigned to pointers/references to indicate that the pointer/reference does not point to/reference an object}. The \ugh{main cause}\brs{and what are the other causes?} is a method invocation \ins{or an attempt to access a field} on a null object\brs{null objects are a different thing, they are concrete objects that represent a typed null value} \del{or an attempt to access a field}. This object reference can be a local variable, \chg{a}{an} instance field, an element of a collection, a return value of a function, \del{an object has not be initialized and so on}\brs{be mindful of this please! you just said that an object reference can be a a non-initialized object. object references and objects are two very distinct things, so please keep this in mind as you write to avoid this type of mistake}. In Java Projects developers always have to deal with a huge amount of references which means there is a high probability that there will be a NullPointerException.
+NullPointerException is a commonly occurring RuntimeException in object-oriented languages. There is a special value \textit{null} that is assigned to pointers to indicate that the pointer does not point to an object. The cause of NullPointerExceptions is a method invocation on an object assigned the value null or an attempt to access a field. This object reference can be a local variable, an instance field, an element of a collection or a return value of a function. In Java Projects developers always have to deal with a huge amount of references which means there is a high probability that there will be a NullPointerException.
 
 Now we will present two different situations in which a NullPointerException can be thrown.
 
-\begin{Java}[caption={NullPointerException example - Method receiver}, label=code:npeExampleMethodReceiver]
-public void drop(java.awt.dnd.DropTargetDropEvent dtde) {
+\begin{Java}[caption={NullPointerException example - Method receiver. This code snippet is form JHotDraw project\protect\footnote{\url{http://www.jhotdraw.org/}}.}, label={code:npeExampleMethodReceiver}]
+public void drop(DropTargetDropEvent dtde) {
 	//...
 	try {
 		//...
@@ -45,15 +45,15 @@ public void drop(java.awt.dnd.DropTargetDropEvent dtde) {
 	}
 	catch (NullPointerException npe) {
 		npe.printStackTrace();
-		dtde.dropComplete(false);
+		//...
 	}
 	//...
 }
 \end{Java}
 
-Lets say \ins{that} in \coderef{npeExampleMethodReceiver} the variable at line 5 is assigned \del{with} the \ugh{special}\brs{are we gonna call it special every time?} null value \chg{thanks}{by} to the return value of the function \code{DNDHelper.processReceivedData()}. So the method receiver (\code{ff} at line 7) is null and when a method is called on this object a NullPointerException is thrown. Because the the NullPointerException occurred in the \code{try\{\}} block the \code{catch\{\}} block right after it handles the exception. The stack trace only takes the developer to line 7 where the exception is caused but not to the real culprit which is the assignment at line 5. This is a very simple example and the easiest way to produce a NullPointerException\brs{it's really not a simple example, we might consider finding a simpler one}. The root of the bug\brs{what bug? the NullPointerException is handled by the catch block} is located in the same method. \ugh{But in case a field access is performed it can be a lot more complicated. }\brs{WAT? a field access makes things more complicated? how? if you want to introduce your second example, just do it.}
+Lets say that in \coderef{npeExampleMethodReceiver} the variable at line 5 is assigned the null value by the return value of the function \code{DNDHelper.processReceivedData()}. So the method receiver (\code{ff} at line 7) is null and when a method is called on this object a NullPointerException is thrown. Because the the NullPointerException occurred in the \code{try\{\}} block the \code{catch\{\}} block right after it handles the exception. The stack trace only takes the developer to line 7 where the exception is caused but not to the real culprit which is the assignment at line 5. This is a very simple example and the easiest way to produce a NullPointerException\brs{it's really not a simple example, we might consider finding a simpler one}. The root of the NullPointerException is located in the same method.
 
-\begin{Java}[caption={NullPointerException example - Field access}, label=npeExampleFieldAccess]
+\begin{Java}[caption={NullPointerException example - Field access. This code snippet is taken from JHotDraw project\protect\footnote{\url{http://www.jhotdraw.org/}} and slightly modified.}, label={code:npeExampleFieldAccess}]
 public class DrawApplication extends JFrame implements DrawingEditor,
 		PaletteListener, VersionRequester {
 	//...
@@ -85,98 +85,153 @@ public class DrawApplication extends JFrame implements DrawingEditor,
 }
 \end{Java}
 
-With the \ugh{flow-sequence} \brs{flow-sequence? i guess you mean ``method invocations'' or something} \chg{of}{in} the method \code{open()} at line 10 the class instance \code{fManager} (line 4) is initialized \ins{by invoking the bla bla method} and \chg{at a later point it is accessed}{is accessed at a later point}\brs{your german is showing :) no need for the verb at the end}. Suppose the instance field \code{fManager} is set to null by the function \code{getIconkitManager()} at line 19\ins{ }when the method \code{createIconkit()} \ins{at line 12} is \chg{performed}{executed} \del{at line 12}. Later at line 14 the function \code{setTool()} is invoked which attempts an access to the field \code{fManager} that \ugh{points to nowhere}\brs{avoid this. just say it has a value of null}. That means a NullPointerException is thrown at line 25 \chg{and with the stack trace we only can track back the exception like}{with the stack trace shown in Figure X.Y} :
+With the method invocations in the method \code{open()} at line 10 the class instance \code{fManager} (line 4) is initialized by invoking the \code{createIconkit()} method at line 12 and is accessed at a later point. Suppose the instance field \code{fManager} is set to null by the function \code{getIconkitManager()} at line 19 when the method \code{createIconkit()} is executed. Later at line 14 the function \code{setTool()} is invoked which attempts an access to the field \code{fManager} that has a value of null. That means a NullPointerException is thrown at line 25 with the stack trace shown in \boxref{stackTrace} :
 
 \begin{figure}[H]
 \renewcommand\figurename{Box}
 	\begin{boxedminipage}{\textwidth}
-		\color{red}
+		\color{cadmiumred}
 		Exception in thread "main" \textcolor{blue}{java.lang.NullPointerException}\newline
 		\tab at org.jhotdraw.application.DrawApplication.setTool(\textcolor{blue}{DrawApplication.java:25})\newline
 		\tab at org.jhotdraw.application.DrawApplication.open(\textcolor{blue}{DrawApplication.java:14})\newline
 		\tab at org.jhotdraw.application.DrawApplication.open(\textcolor{blue}{DrawApplication.java:7})\newline
 	 \tab ...
 	\end{boxedminipage}
-	\caption{NullPointerException}
-	\label{box:npe}
+	\caption{Stack trace of a NullPointerException.}
+	\label{box:stackTrace}
 \end{figure}
 
-In \boxref{npe} \ins{we} can \chg{be seen}{see} that the stack trace does not track to the root of the NullPointerException. That means the Java developer has to debug to find the exception root\brs{not sure what an exception root is. either define it before \ie``we call the location where the variable was assigned the null value an exception root''. or say what you mean}
+In \boxref{stackTrace} we can see that the stack trace does not track to the root of the NullPointerException. We call the location where the variable was assigned the null value the root of an exception (in our case a NullPointerException). That means the Java developer has to debug to find the exception root.
 
 All too often programmers states that they are trying to fix bugs or have spent a lot of time fixing them. Of course not all of the bugs are NullPointerExceptions but there could be few of them. If there would be a way to minimize the time fixing exceptions and allow to work more efficiently, projects would progress much faster.\nm{Rewrite: yes, developers deal with a lot of problems caused by null pointer exception, and you should find some paper to reference that.}\lt{can't find papers!}\brs{skipped this paragraph, let's sync}
 
-At this point we would like to introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously\chg{,}{.} \chg{i}{I}n other words its main goal is to take a step to \ugh{that ideal vision}\brs{again, too flowery}. The intention behind NullSpy is to present the developers the exact location of the null assignment next to the ordinary stack trace, \del{in order to help him find the place of dereference}\brs{he already knows the place of dereference it's where the stack trace shows}.
+At this point we would like to introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. In other words its main goal is to take a step on minimizing the debugging time. The intention behind NullSpy is to present the developers the exact location of the null assignment next to the ordinary stack trace.
 
-In this thesis \ugh{it is explained}\brs{do not use passive, use royal we insted \ie we explain} how the goal mentioned above is achieved \del{step by step}, \del{by using a class library Javassist (Java Programming Assistant) which allows us to deal with Java bytecode.}\brs{not important, mention what else you do \ie and we also discuss the limitations and performance impact of the approach}
+In this thesis we explain how the goal mentioned above is achieved and we also discuss the challenges, the limitations and performance impact of the approach.
 
 \chapter {Technical Background}
 \label{ch:technicalBackground}
 
-This chapter provides a short overview of technologies used in \del{this project that were essential for} the implementation of NullSpy.
+This chapter provides a short overview of technologies used in the implementation of NullSpy.
 
 \section{Javassist}
 \label{sec:javassist}
-\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}\cite{Chib00}\cite{Chib03}, a subproject of Jboss, is a class library which \ugh{allows to}\brs{Oscar hates this, it is wrong to say ``allows to'' because you are missing a subject \ie ``allows me to'', ``allows John to''. use ``enables'' instead \ie ``enables manipulation of the bytecode''. please note it's not ``enables to'' because that has the same problem} \ugh{deal} with Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way\ins{.} \chg{like}{Examples of this manipulation include} defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. \del{In case of more interest how Javassist works, we recommend to read the following tutorial: \url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}}
-\ins{A tutorial for using javasist\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html} is available online and was used as a starting point for this work}.\brs{put the url in a footnote, it would not compile ins+footnote}
+\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}~\cite{Chib00}~\cite{Chib03}, a subproject of Jboss, is a class library which enables manipulation of the Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way. Examples of this manipulation include defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. A tutorial for using Javassist\footnote{\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}} is available online and was used as a starting point for this work.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\linewidth]{bytecodeModificationLevels}
-\caption{Bytecode modification levels}
+\includegraphics[width=0.8\linewidth]{javassistLevel}
+\caption{Bytecode modification levels.}
   \label{fig:bytecodeModificationLevels}
 \end{figure}
 
-Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level (See \figref{bytecodeModificationLevels}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. \chg{Only knowing}{Knowledge of} the Java language is enough \chg{because}{since} the API is designed only with the vocabulary of Java. On this level the programmer \del{just} has to write \chg{regular}{Java}\brs{is there irregular source?} source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes \chg{directly in binary form}{my modifying the bytecode directly} \del{like other editors, e.g. ASM.}
+Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level (See \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
 
 At this point, let us look at a small example of how the bytecode manipulation works.
 
-\begin{Java}[caption={A polymorphic call site}, label=call-site]
+\begin{Java}[caption={Javassist example. This example is taken from the Javassist tutorial.}, label={code:javassistExample}][H]
 ClassPool pool = ClassPool.getDefault();
 CtClass cc = pool.get("test.Rectangle");
 cc.setSuperclass(pool.get("test.Point"));
 cc.writeFile();
 \end{Java}
-\brs{a polymorphic call site? this code needs a better caption. }
 
 \begin{enumerate}
-	\item First a \textit{ClassPool} object that controls bytecode modification with Javassist is obtained. With the ClassPool\brs{be consistent with textit class names} a class file can be read on demand for constructing a CtClass object. By class file the binary file which has the extension \textit{.class} and represents either a Java class or an interface is meant. \brs{rewrite. super confusing. try using the phrase ``object representation of a file with the .class extension''. also, your german is showing with ``is meant'' at the end.}
+	\item First a \textit{ClassPool} object that controls bytecode modification with Javassist is obtained. With the \textit{ClassPool} a class file (``.class'') can be read on demand for constructing a \textit{CtClass} object.
 	
-	\item The class \textit{CtClass} (compile-time class) represents the class file\chg{, that means}{meaning that} all manipulations are performed on the CtClass \ins{object}. \chg{With the method invocation \code{get()} on ClassPool a reference to the CtClass object which represents the class \code{test.Rectangle} is obtained.}{We obtain a reference to the CtClass object representing the \code{test.Rectangle} class by invoking the \code{get()} method on the ClassPool instance.}
+	\item The class \textit{CtClass} (compile-time class) represents the class file meaning that all manipulations are performed on the \textit{CtClass} object. We obtain a reference to the \textit{CtClass} object representing the \code{test.Rectangle} class by invoking the \code{get()} method on the \textit{ClassPool} instance.
 	
-	\item In this example the superclass of \code{test.Rectangle} is \ugh{just}\brs{please stop saying just at random moments. If you wish to play down the significance of the action use ``simply''} changed to \code{test.Point}.
-	\item \chg{If}{Once} the bytecode modification is done, the method call \code{writeFile()} on \ins{the instance of} CtClass is necessary to make sure that the changes are reflected on the original class file.
+	\item In this example the superclass of \code{test.Rectangle} is simply changed to \code{test.Point}.
+	\item Once the bytecode modification is done, the method call \code{writeFile()} on the instance of \textit{CtClass} is necessary to make sure that the changes are reflected on the original class file.
 \end{enumerate}
  
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{javassistModules}
-\caption{Javassist Modules}
+\caption{Javassist modules.}
   \label{fig:javassistModules}
 \end{figure}
-\brs{Captions are sentences and should end accordingly (. ! ?). please apply globaly}
 
-\figref{javassistModules} gives an \del{understanding/}overview \ins{of} how the main part of bytecode manipulation with Javassist is built up. The ClassPool is \chg{nothing else than}{simply} a container of multiple CtClasses. As described before CtClass represents \del{those} class files on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors, fields, method invocations, local variables \chg{etc.}{\etc} But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of the method body\chg{,}{ or} at the end or at a specific line. 
+\figref{javassistModules}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} gives an overview of how the main part of bytecode manipulation with Javassist is built up. The \textit{ClassPool} is simply a container of multiple \textit{CtClasses}. As described before \textit{CtClass} represents class files on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors, fields, method invocations, local variables \etc But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of the method body or at the end or at a specific line. The next example shows how to add code using Javassist.
 
-\brs{not sure how the remainder here is relevant, please just give a nice example of some source code, how one would add code to it using javasist and the result}
-Next to these options even a \textit{catch block} can be added. The difference between \code{insertAfter()} and \code{addCatch()} is insertAfter inlines some code just before every return instruction in the method body and addCatch adds a catch clause to the method which handles an exception thrown in the body. So the catch clause is always positioned at the end of the method body. In \figref{insertionCodeExample} below a small insertion example is demonstrated.
+\begin{Java}[caption={Initial code.}, label={code:initialCode}][H]
+public static void main(String[] args) {
+	System.out.println("This is an example class.");
+}
+\end{Java}
+
+\renewcommand\lstlistingname{Bytecode}
+\begin{JVMIS}[caption={Initial bytecode.}, label={bytecode:initialBytecode}, breaklines=true][H]
+public static void main(java.lang.String[]);
+  0: getstatic     #16	// Field java/lang/System.out:Ljava/io/PrintStream;
+  3: ldc           #22	// String This is an example class.
+  5: invokevirtual #24	// Method java/io/PrintStream.println:(Ljava/lang/String;)V
+  8: return
+\end{JVMIS}
+
+We want to add one line of code at the beginning of \coderef{initialCode}. \bytecoderef{initialBytecode} is the corresponding bytecode of \coderef{initialCode}.
+
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={Instrumentator.}, label={code:instrumentator}][H]
+public class Instrumentator {
+	public static void main(String[] args) throws NotFoundException,
+			CannotCompileException, FileNotFoundException, IOException {
+		ClassPool pool = ClassPool.getDefault();
+		CtClass cc = pool.get("insertJavaCodeExample.ExampleClass");
+
+		CtBehavior behavior = cc.getDeclaredMethod("main");
+		behavior.insertBefore("System.out.println(\"This is the inserted code.\");");
+
+		ClassFile classFile = cc.getClassFile();
+		String destinationPath = args[0] + "\\ExampleClassInstrumented.class";
+		classFile.write(new DataOutputStream(new FileOutputStream(
+				destinationPath)));
+	}
+}
+\end{Java}
+
+With \coderef{instrumentator} we obtain a \textit{CtClass} object \code{cc} at line 5 which represents the class to be modified. At line 7 we get the method we want to modify by adding some source code: \code{System.out.println(``This is the inserted code.'');}. Javassist takes a \textit{java.lang.String} object, compiles it automatically and adds it into the bytecode at the specified location, in our situation at the beginning of the \code{main()} method. The modified class is then stored at a destination folder we chose (line 12).
+
+Below the result, how the \code{main()} method looks like after the modification. At line 2 we see the inserted code. 
+
+\begin{Java}[caption={Instrumented code: Decompiled with JAD (\secref{jad})}, label={code:instrumentedCodeDecompiled}][H]
+public static void main(String args[]) {
+	System.out.println("This is the inserted code.");
+	System.out.println("This is an example class.");
+}
+\end{Java}
+
+And of course the \bytecoderef{modifiedBytecode} has changed since Javassist added additional bytecode. The pc-interval [0,3,5] represents the added code.
+
+\renewcommand\lstlistingname{Bytecode}
+\begin{JVMIS}[caption={Modified bytecode.}, label={bytecode:modifiedBytecode}, breaklines=true][H]
+public static void main(java.lang.String[]);
+  0: getstatic     #16 	// Field java/lang/System.out:Ljava/io/PrintStream;
+  3: ldc           #35	// String This is the inserted code.
+  5: invokevirtual #24	// Method java/io/PrintStream.println:(Ljava/lang/String;)V
+  8: getstatic     #16	// Field java/lang/System.out:Ljava/io/PrintStream;
+ 11: ldc           #22	// String This is an example class.
+ 13: invokevirtual #24	// Method java/io/PrintStream.println:(Ljava/lang/String;)V
+ 16: return
+\end{JVMIS}
+
+\brs{not sure how the remainder here is relevant, please just give a nice example of some source code, how one would add code to it using javasist and the result} \lt{ganzer paragraph weg?}
+Next to these options even a \textit{catch block} can be added. The difference between \code{insertAfter()} and \code{addCatch()} is insertAfter inlines some code right before every return instruction in the method body and addCatch adds a catch clause to the method which handles an exception thrown in the body. So the catch clause is always positioned at the end of the method body. In \figref{insertionCodeExample} below a small insertion example is demonstrated.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\linewidth]{insertionCodeExample}
-\caption{Inserting code example}
+\caption{Inserting code example.}
   \label{fig:insertionCodeExample}
 \end{figure}
 
 \section{JAD}
-Java Decompier (JAD)\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and a Eclipse plugin for the programming language Java. A decompiler is a \del{computer} program that takes an executable file as input, and attempts to create a high level, compatible source file. If the source file is compiled again, it will produce an executable program that behaves the same way as the original one. It is \ins{often} used in software reverse engineering.
+\label{sec:jad}
+Java Decompier (JAD)\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and a Eclipse plugin for the programming language Java. A decompiler is a program that takes an executable file as input, and attempts to create a high level, compatible source file. If the source file is compiled again, it will produce an executable program that behaves the same way as the original one. It is often used in software reverse engineering.
 
 The example \bytecoderef{jad} is decompiled by JAD and the result is the source code right under the example. It is also a good opportunity to present how bytecode looks like.
 
-\begin{JVMIS}[caption={Bytecode example}, label={bytecode:jad}]
-// Method descriptor #10 (Lorg/jhotdraw/applet/DrawApplet;)V
-// Stack: 2, Locals: 2
-// Method descriptor #22 (Ljava/awt/event/ItemEvent;)V
-// Stack: 2, Locals: 2
+\begin{JVMIS}[caption={Bytecode example.}, label={bytecode:jad}, breaklines=true]
 public void itemStateChanged(java.awt.event.ItemEvent e);
   0  aload_1 [e]
   1  invokevirtual java.awt.event.ItemEvent.getStateChange()...
@@ -200,39 +255,39 @@ Stack map table: number of frames 1
  [pc: 22, same]
 \end{JVMIS}
 
-\begin{Java}[caption={Decompiled bytecode}, label={code:decompiledBytecode}]
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={Decompiled bytecode.}, label={code:decompiledBytecode}]
 public void itemStateChanged(ItemEvent e) {
 	if(e.getStateChange() == 1)
 	loadDrawing((String)e.getItem());
 }
 \end{Java}
 
-\del{In NullSpy itself}, JAD is \del{not used} \ins{in no way a dependency of NullSpy} but it was a big help during the implementation phase. Since after running NullSpy on a project only the \chg{modificated}{modified}\brs{please use a spellcheck} bytecode is available. The use of JAD is for the sake of debugging \del{through} Nullspy; to check whether the modification by Javassist, e.g. inserting source code, has succeeded. Another way to check the result for correctness is looking at bytecode itself \chg{what}{but that} would have taken a lot \chg{of}{more} effort and time.
+JAD is in no way a dependency of NullSpy but it was a big help during the implementation phase. Since after running NullSpy on a project only the modified bytecode is available. The use of JAD is for the sake of debugging Nullspy; to check whether the modification by Javassist, e.g. inserting source code, has succeeded. Another way to check the result for correctness is looking at bytecode itself but that would have taken a lot more effort and time.
 
 \chapter{NullSpy}
-As \del{earlier} explained in \charef{introduction}, this project is about providing the user with \ins{an} additional stack trace \chg{with}{containing} the information \chg{of the origin or line of code of}{on} where \ins{the} null is assigned to \chg{a}{the} variable that caused the NullPointerException. In short, it shows the developer the exact location of where a method receiver\brs{I'm not sure method receiver is the right jargon for java. we need to check} or a field (in a field access case) was assigned \del{to} null \brs{assigning something to null means null=myVar}.
+As explained in \charef{introduction}, this project is about providing the user with an additional stack trace containing the information on where the null is assigned to the variable that caused the NullPointerException. In short, it shows the developer the exact location of where a method receiver\brs{I'm not sure method receiver is the right jargon (Ausdrucksweise) for java. we need to check} or a field (in a field access case) was assigned null.
 
-Here we \del{would like to } \brs{you are the author, don't tell the reader what you would like to do, he cares about what you did do} give a short \chg{insight}{overview}\brs{you cannot give insight} of how we \del{managed to successfully} implement\ins{ed} the core of \del{the project} NullSpy. Next to how it is built up, we will also address the challenges we \del{were} \chg{encountering}{encountered} during the implementation \chg{and}{as well as} the limitations\ins{ of the tool.} \del{ we planned for future work }(\charef{conclusionFutureWork}).
+Here we give a short overview of how we implemented the core of NullSpy. We will also address the challenges (\secref{challenges}) we encountered during the implementation as well as the limitations of the tool (\secref{limitations}).
 
-\section{High Level Overview/Rough Scheme}
+\section{High Level Overview}
 \label{sec:highLevelOverview}
-\brs{use just ``High level overview'' as the title}
+The general approach of NullSpy is to statically analyze a project and instrument the bytecode. \lt{In NullSpy we are working with the value of variable. Since ...} \nm{You should add a sentence or two to explain this more. Why statical
+analysis? Why adding bytecode?} \ugh{We add bytecode to check on every variable for its value and extract information (name, line number etc.) about it if necessary. Another reason is to get information about method receivers} (\boxref{methodReceiverInfo}). \ugh{To know where exactly they are placed in source code we need to statically examine the code and insert the bytecode at the right place.}\brs{this part carries no information at all. I have no idea what you wanted to say here and why. are we not talking about high level overview here? \ie the architecture etc.?} 
 
-The general approach of NullSpy is to statically analyze \ins{a project} and \chg{add}{instrument the} bytecode \del{to a project}. \ugh{We add bytecode to check on every variable for its value and extract information (name, line number etc.) about it if necessary.Another reason is to get information about method receivers} (\boxref{methodReceiverInfo}). \ugh{To know where exactly they are placed in source code we need to statically examine the code and insert the bytecode at the right place.}\brs{this part carries no information at all. I have no idea what you wanted to say here and why. are we not talking about high level overview here? \ie the architecture etc.?} 
+NullSpy first loads the project that we wish to instrument. Loading the project to NullSpy addressed only, the compiled class files of the project, which means the project source code does not have to be imported into the programming environment, e.g. Eclipse. Simultaneously at load time as each class file is loaded the bytecode is modified as described \secref{lowLevelOverview}.
 
-\del{What} NullSpy first \del{does is }load\chg{ing}{s} the project that \chg{should be able to track the null assignment if a NullPointerException is thrown}{we wish to instrument}. \del{By} loading the project to NullSpy \ins{addressed only}, the compiled class files of the project \del{are addressed only}, which means the project \chg{itself}{source code} does not have to be imported \chg{to}{into} the programming environment, e.g. Eclipse. \ugh{Simultaneously at load time each class file is modified with help of Javassist. In what way will be discussed in the following }\secref{lowLevelOverview}\brs{please rephrase along the lines of ``as each class file is loaded the bytecode is modified as described in bla bla}.
-
-Once the project modification is done it is stored in a destination folder that the user has chosen before\brs{How? it might be a good idea to discuss the command line arguments}. This means \ins{that} \del{after} the \chg{changes}{updated bytecode} \del{there} will be \ins{stored in }another \chg{version of the project which can perform additional work like tracking the null assignment}{location, keeping the original class files intact}. \del{Since only the class files are accessed previously, the result which is stored in the destination folder is as expected only the modified bytecode.}
+Once the project modification is done it is stored in a destination folder that the user has chosen before\brs{How? it might be a good idea to discuss the command line arguments}. This means that the updated bytecode will be stored in another location, keeping the original class files intact.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\linewidth]{highLevelOverview}
-\caption{Modification overview}
+\caption{Modification overview.}
   \label{fig:highLevelOverview}
 \end{figure}
-\brs{\url{http://www.merriam-webster.com/dictionary/instrumentator}. Also, you could break up the one block in to separate phases to make it more clear what happens.}
+\brs{\url{http://www.merriam-webster.com/dictionary/instrumentator}. Also, you could break up the one block in to separate phases to make it more clear what happens.} \lt{verstehe nicht}
 
-Of course the original project can be replaced by the modificated one too. But the developer has to think carefully about it because once replaced, the additional bytecode stays there and the execution time is slightly different than it was before.\brs{but one can always recompile to source to get the original class files when needed. this is an important point you should raise}
+Of course the original project can be replaced by the modified one too. But the developer has to think carefully about it because once replaced, the additional bytecode stays there and the execution time is slightly different than it was before. To get rid of the additional bytecode, the developer has to recompile the source code to get the original class files when needed. This has to be done every time when NullSpy is used on the project.
 
 \section{Low Level Overview}
 \label{sec:lowLevelOverview}
@@ -242,9 +297,9 @@ Of course the original project can be replaced by the modificated one too. But t
 \ugh{In a NullPointerException situation the developer is provided with the stack trace with which he/she can extract the information about the line number and the Java class name of where the NullPointerException occurred. Those data serves as a search criteria for further actions. We look these two information up in the file about the method receiver data. On a match more details about the method receiver can be read out. With this method receiver entry information we search for its assignment location which can be found in the HashMaps containing the details about all null assignments. And finally, if an entry in the HashMaps is found which matches the information extracted before, the exact location of the null assignment is found. The result is providing the user with an additional stack trace link next to the usual one. Clicking on that link will take one directly to the NullPointerException root. So to be able to provide this function, data about the method receivers and variable assignments have to be collected initially.} 
 \brs{you are all over the place here, talking about everything from wrapping main to hashmaps and csv files. It's confusing even to me. I think maybe we should get together and try to build up a structure for this chapter}
 
-\ugh{So we first load the project which should be modified and then go through all class files of it.}\brs{belongs in high level overview, it should be clear here that we have started loading a project and are loading and processing single files} A NullPointerException can be thrown if a method call was performed on an object respectively an access on a field which is null. To keep it simple for further explanations we will only mention method receiver from now on instead of method receiver and field.\brs{again, not sure of method receiver is good jargon for java. In any case, we should define the term like this earlier, i like avoiding the ``method or field access'' every time}
+A NullPointerException can be thrown if a method call was performed on an object or we attempt to access a field which is assigned null. To keep it simple for further explanations we will only mention method receiver from now on instead of method receiver and field.\brs{again, not sure of method receiver is good jargon for java. In any case, we should define the term like this earlier, i like avoiding the ``method or field access'' every time}
 
-To reach the goal of NullSpy we have to gather information about the method receiver. A list of what kind of information is needed about the method receiver can be found in \subsecref{methodReceiver}. \ugh{Next to this}\brs{please stop using ``Next to'' in this context} also information about the variable assignments has to be collected to know the exact location of the null assignments. The main idea behind NullSpy actually is to get information comparing those together when a NullPointerException occurs and if there is a hit during the comparison the location of the null assignment can be obtained easily.\brs{again, we need better structure here, I get you are trying to give an overview and then dig in to the specifics, but it's just too much details for an overview, and not enough to be clear}
+To reach the goal of NullSpy we have to gather information about the method receiver. A list of what kind of information is needed about the method receiver can be found in \subsecref{methodReceiver}. As well information about the variable assignments has to be collected to know the exact location of the null assignments. The main idea behind NullSpy actually is to get information comparing those together when a NullPointerException occurs and if there is a hit during the comparison the location of the null assignment can be obtained easily.\brs{again, we need better structure here, I get you are trying to give an overview and then dig in to the specifics, but it's just too much details for an overview, and not enough to be clear}
 
 To explain the approach we will go through an example. The \coderef{npeExampleMethodReceiver} serves as a good example\brs{phrasing aside, it's unacceptable to refer to the example from chapter 1 in chapter 3. do you expect the reader to scroll up and down to follow the example? Also, I skipped the remainder of this section, we need heavy refactoring to make this work, 2 pages of textual description is too hard to follow.}. One method receiver is located at line 7 with the name \code{ff}. We extract information from bytecode about it and store the result in an external csv file. Data like name, type, line number, behavior, class etc. are stored (full list: \boxref{methodReceiverInfo}). The next step is to find all assignments in the code and insert new bytecode right after the assignments. In the example two assignments are present, in line 5 and 7. To do something with them obviously we have to know them better, that is why we again extract data about the variables \code{ff} and \code{theO} and pass the gathered information further to the inserted code right before line 6 and line 8 starts. The new bytecode checks whether the variables are null and stores the information about the variable with null value in a HashMap. The name and type of the variable \code{ff}, the behavior name and its signature and much more are stored in the HashMap.
 
@@ -254,9 +309,7 @@ The implementation behind the NullSpy concept will be explained more thoroughly.
 
 \subsection{Method Receiver Data Collection}
 \label{subsec:methodReceiver}
-Unfortunately, Javassist does not provide the function to directly get the method receiver. We got a suggestion\brs{from whom?} to use AST (\todo{Abstract Syntax Tree footnote wiki}) to get it but we decided to not go deeper into this and implement our own algorithm.\brs{the whole suggestion thing is pointless then isn't it?}
-
-The algorithm contains following steps \del{(abstract)}:
+Unfortunately, Javassist does not provide the function to directly get the method receiver. With the following algorithm we managed to get the method receiver. The algorithm contains following steps:
 
 \begin{figure}[H]
 \renewcommand\figurename{Algorithm}
@@ -271,7 +324,7 @@ The algorithm contains following steps \del{(abstract)}:
 			\item Store variable name, type etc. into an external csv file
    \end{enumerate}
 	\end{boxedminipage}
-	\caption{Method receiver algorithm}
+	\caption{Method receiver algorithm.}
 	\label{alg:methodReceiverAlg}
 \end{figure}
 
@@ -282,7 +335,7 @@ Statically analyzing bytecode for method receiver means looking for certain opco
 In case of the \textit{invokestatic} instruction we do not have a method receiver. That is why NullSpy treats it extraordinary like ignoring it completely or wrap it as a possible method receiver when it is actually a parameter of a method invocation. In all other cases we normally use the algorithm to get the method receiver. The gathered data about method receivers are stored in an external \textit{csv} file due to performance and overhead minimization. The following list will list the information which is stored about the method receiver.
 
 \begin{figure}[H]
-\renewcommand\figurename{Box}
+\renewcommand\figurename{List}
 	\begin{boxedminipage}{\textwidth}
 		\begin{itemize}
 		\itemsep8pt
@@ -298,7 +351,7 @@ In case of the \textit{invokestatic} instruction we do not have a method receive
 		\item fieldDeclaringClassName
    \end{itemize}
 	\end{boxedminipage}
-	\caption{Method receiver information}
+	\caption{Method receiver information.}
 	\label{box:methodReceiverInfo}
 \end{figure}
 
@@ -315,15 +368,16 @@ Unfortunately, Javassist does not provide any support for gaining information ab
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{localVarCreationBytecode}
-\caption{Local variable creation}
+\caption{Local variable creation\protect.}
   \label{fig:localVarCreationBytecode}
 \end{figure}
 
-If a local variable is created, the value assigned to it is pushed onto the operand stack. With the bytecode instruction \textit{``.*store.*"} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables is composed of one, or in some cases two bytes. There are reserved machine commands for the first four local variables, index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted. Next to storing the local variable loading it from the local variable array is possible to, but only with the local variable slot number.
+If a local variable is created, the value assigned to it is pushed onto the operand stack as we can see in \figref{localVarCreationBytecode}\footnote{Figure taken from \href{http://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html}{blog.jamesdbloom.com}.}. With the bytecode instruction \textit{``.*store.*"} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables is composed of one, or in some cases two bytes. There are reserved machine commands for the first four local variables, index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted. Next to storing the local variable loading it from the local variable array is possible to, but only with the local variable slot number.
 
 With this short introduction understanding the local variable table should be easier. Each method of a class file contains a local variable table (see \bytecoderef{localVarTable}) with which many information can be read out of it, e.g. the lifespan of the local variable, what it is called, in which slot it is stored and what type it has.
 
-\begin{JVMIS}[caption={Local variable table}, label={bytecode:localVarTable}]
+\renewcommand\lstlistingname{Bytecode}
+\begin{JVMIS}[caption={Local variable table.}, label={bytecode:localVarTable}]
 Local variable table:
  [pc: 0, pc: 31] local: this index: 0 type: org.jhotdraw.samples...
  [pc: 0, pc: 31] local: newDrawing index: 1 type: org.jhotdraw...
@@ -331,16 +385,9 @@ Local variable table:
  [pc: 22, pc: 31] local: newDrawingView index: 3 type: org.jhot...
 \end{JVMIS}
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=\linewidth]{localVarTable}
-%\caption{Local variable table}
-%  \label{fig:localVarTable}
-%\end{figure}
-
 We had to pay attention to be sure to get the right local variable. Every time when we bumped into the opcode \textit{``.*store.*"} we could only get its slot and the pc\footnote{Program counter/instruction pointer: A processor register that indicates where a computer is in its program sequence.} where it is situated in the bytecode sequence. In the earlier paragraph the lifespan of the local variable was mentioned, the importance behind this is as soon as the lifespan of one ends, the slot can be reused by the next instantiated local variable. This way, the local variable table could contain multiple entries with the same local variable slot.
 
-\begin{JVMIS}[xleftmargin=2em, framexleftmargin=1.5em, numbers=left, caption={Local variable table entries with same slot (line 5\&6)}, label={fig:localVarTableDuplicatedSlot}][numbers=left]
+\begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot (line 5\&6).}, label={fig:localVarTableDuplicatedSlot}, breaklines=true]
 Local variable table:
  [pc: 0, pc: 510] local: args index: 0 type: java.lang.String[]
  [pc: 24, pc: 510] local: m index: 1 type: isFieldOrLocalVar...
@@ -350,31 +397,17 @@ Local variable table:
  [pc: 71, pc: 510] local: d2 index: 4 type: java.lang.Object
 \end{JVMIS}
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=0.7\linewidth]{localVarTableDuplicatedSlot}
-%\caption{Local variable table entries with same slot}
-%  \label{fig:localVarTableDuplicatedSlot}
-%\end{figure}
-
 After extracting the slot of the local variable we will get the first local variable table entry which contains that slot. If the pc of the local variable assignment is not included in the lifespan-pc-interval of the entry, the next entry with the same slot will be checked until both criteria (slot and pc) fits. Once those criteria are met we can be positive about having got the right local variable table entry to extract the information needed.
 
-Next to the local variable table each methods of a class file also holds another attribute called line number attribute. This is just the mapping table from pc to source code line number. Since encountering the storing keyword the pc is available , with help of it the line number can be easily obtained.
+Next to the local variable table each methods of a class file also holds another attribute called line number attribute. This is the mapping table from pc to source code line number. Since encountering the storing keyword the pc is available , with help of it the line number can be easily obtained.
 
-\begin{JVMIS}[caption={Line number table}, label={code:lineNrTable}]
+\begin{JVMIS}[caption={Line number table.}, label={code:lineNrTable}]
  Line numbers:
   [pc: 0, line: 26]
   [pc: 4, line: 27]
   [pc: 8, line: 29]
   [pc: 16, line: 30]
 \end{JVMIS}
-
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=0.3\linewidth]{lineNrTable}
-%\caption{Line number table}
-%  \label{fig:lineNrTable}
-%\end{figure}
 
 \subsubsection{Instance and Class/Static variables (Fields)}
 \label{subsec:fields}
@@ -383,7 +416,7 @@ Although Javassist does not support the access to local variable it provides a w
 There are only two instructions that indicates an access to a field, but there are actually many different types. To get the meaning of different types see the following list:
 
 \begin{figure}[H]
-\renewcommand\figurename{Box}
+\renewcommand\figurename{List}
 	\begin{boxedminipage}{\textwidth}
 		(\textbar\dots\textbar: put value on operand stack for assigning to a field)
 \begin{enumerate}
@@ -395,14 +428,14 @@ There are only two instructions that indicates an access to a field, but there a
 			\item getstatic, (getfield)*, \textbar\dots\textbar, putfield
    \end{enumerate}
 	\end{boxedminipage}
-	\caption{Field keywords}
+	\caption{Field keywords.}
 	\label{box:fieldKeywords}
 \end{figure}
 	
 Depending on the category the field belongs, different kind of information is stored. For fields 1-2 following information is needed and stored:
 
 \begin{figure}[H]
-\renewcommand\figurename{Box}
+\renewcommand\figurename{List}
 	\begin{boxedminipage}{\textwidth}
 		(\textbar\dots\textbar: put value on operand stack for assigning to a field)
 \begin{itemize}
@@ -421,14 +454,14 @@ Depending on the category the field belongs, different kind of information is st
 		\item indirectVariable (null - explained immediately)
    \end{itemize}
 	\end{boxedminipage}
-	\caption{Variable information (I)}
+	\caption{Variable information (I).}
 	\label{box:variableInfo1}
 \end{figure}
 
 In NullSpy we call these fields \textit{``directFields"}. Reading \textit{``direct"} implicates that there must be something like \textit{``indirectFields"}, and that is right. As \textit{``indirectFields"} the fields 3-4 are numbered among. Everything before the instruction \textit{putfield} is termed as \textit{``indirectVariable"}. For those fields more data are needed to store for their identification. Nearly the same as above, except:
 
 \begin{figure}[H]
-\renewcommand\figurename{Box}
+\renewcommand\figurename{List}
 	\begin{boxedminipage}{\textwidth}
 \begin{itemize}
 \itemsep8pt
@@ -443,13 +476,14 @@ In NullSpy we call these fields \textit{``directFields"}. Reading \textit{``dire
 \end{itemize}
    \end{itemize}
 	\end{boxedminipage}
-	\caption{Variable information (II)}
+	\caption{Variable information (II).}
 	\label{box:variableInfo2}
 \end{figure}
 
-An example where the instructions \textit{``putfield"} and \textit{``putstatic"} are used:
+With a syntactic example we show how the instructions \textit{``putfield"} and \textit{``putstatic"} are used:
 
-\begin{Java}[caption={Example: \textit{``putfield"} and \textit{``putstatic"}}, label={code:instrExample}]
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={Example: \textit{``putfield"} and \textit{``putstatic"}.}, label={code:instrExample}]
 public class A {
 
 	private B b = new B();
@@ -496,13 +530,11 @@ Once the bytecode is modified, the way to get the data of fields needs some adap
 \label{bytecodeAdaptation}
 Each time encountering a variable assignment we first extract the needed data and directly after this we adapt the class file by adding extra bytecode right after the assignment bytecode to check whether the variable is null or not. If it is null, the information collected before is stored either into the \textit{``localVariableMap"} or into a \textit{``fieldMap"} which are HashMaps.
 
-\tt{ch.scg.nullSpy.runtimeSupporter.VariableTesterdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd}
-
-The added bytecode represents a static method of a class named \code{ch.scg.nullSpy.runtimeSupporter.VariableTester} which will be added to the modified project after class file modification is done. Depending on the kind of variable analyzed at the moment different bytecode is constructed, meaning different method with different parameter/variable data is added.
+The added bytecode represents a static method of a class named \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}.} which will be added to the modified project after class file modification is done. Depending on the kind of variable analyzed at the moment different bytecode is constructed, meaning different method with different parameter/variable data is added.
 
 There were again some challenges we had to get over, like getting the wanted data after an instrumentation and entering the additional code in the right position of the bytecode sequence (\subsecref{bytecodeAdaptationDifficulties}).
 
-Once we have gone through the bytecode of a Java class, the modified class files are stored in a destination directory as mentioned in \secref{highLevelOverview}. Next to the instrumentation supplementary supporter classes are added to the project. The most important ones are \code{ch.unibe.scg.nullSpy.runtimeSupporter.VariableTester} which tests whether a variable is null or not and \code{ch.unibe.scg.nullSpy.runtimeSupporter.NullDisplayer} which matches data and prints the location of a null assignment when a NullPointerException is thrown.
+Once we have gone through the bytecode of a Java class, the modified class files are stored in a destination directory as mentioned in \secref{highLevelOverview}. Next to the instrumentation supplementary supporter classes are added to the project. The most important ones are \code{VariableTester}\textsuperscript{\ref{package1}} which tests whether a variable is null or not and \code{NullDisplayer}\textsuperscript{\ref{package1}} which matches data and prints the location of a null assignment when a NullPointerException is thrown.
 
 \section{Challenges}
 \label{sec:challenges}
@@ -512,31 +544,54 @@ In this section we could like to give present some of the difficulties which occ
 \label{subsec:methodReceiverDifficulties}
 Aforementioned in \subsecref{methodReceiver} (\textit{Method Receiver Data Collection}) we were encountered with a persistent problem, namely getting the pc-interval of the method receiver when the interval covers multiple lines in source code. In many development environment the written code can be formatted automatically and as well manually. See following figures:
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{multipleLine/pic4-1}
-\caption{Method invocation split in two lines example}
-  \label{fig:pic4-1}
-\end{figure}
+\begin{Java}[caption={Method invocation split in two lines example.}, label={code:4-1}, firstnumber=31]
+Image image = Iconkit.instance().registerAndLoadImage(
+	(Component)view, imageName);
+\end{Java}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{multipleLine/pic4-2}
-\caption{Bytecode to \figref{pic4-1}}
-  \label{fig:pic4-2}
-\end{figure}
+\renewcommand\lstlistingname{Bytecode}
+\begin{JVMIS}[caption={Bytecode to \coderef{4-1}.}, label={bytecode:4-2}, breaklines=true]
+ 0  invokestatic org.jhotdraw.util.Iconkit.instance() : org.jhotdraw.util.Iconkit [22]
+ 3  aload_1 [view]
+ 4  checkcast java.awt.Component [28]
+ 7  aload_0 [this]
+ 8  getfield org.jhotdraw.samples.minimap.MiniMapDesktop.imageName : java.lang.String [14]
+11  invokevirtual org.jhotdraw.util.Iconkit.registerAndLoadImage(java.awt.Component, java.lang.String) : java.awt.Image [30]
+14  astore_2 [image]
+\end{JVMIS}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.3\linewidth]{multipleLine/pic4-3}
-\caption{Line number table/interval to \figref{pic4-1}}
-  \label{fig:pic4-3}
-\end{figure}
+\begin{JVMIS}[caption={Line number table/interval to \coderef{4-1}.}, label={bytecode:4-3}, breaklines=true]
+[pc: 0, line: 31]
+[pc: 3, line: 32]
+[pc: 11, line: 31]
+\end{JVMIS}
+
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=\linewidth]{multipleLine/pic4-1}
+%\caption{Method invocation split in two lines example.}
+%  \label{fig:pic4-1}
+%\end{figure}
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=\linewidth]{multipleLine/pic4-2}
+%\caption{Bytecode to \figref{pic4-1}.}
+%  \label{fig:pic4-2}
+%\end{figure}
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=0.3\linewidth]{multipleLine/pic4-3}
+%\caption{Line number table/interval to \figref{pic4-1}.}
+%  \label{fig:pic4-3}
+%\end{figure}
 
 Figure shows a normal method invocation which is split into two lines in source code. This cannot be figured out by just looking at the bytecode therefore the line number attribute (\coderef{lineNrTable}) has to be consulted too. There is no method receiver in the figure because the method receiver would contain a method invocation itself, what is not supported in NullSpy. Another method receivers NullSpy does not support are elements of collections due to complex structures that can be stored in the collections. But still it is a good example to show how the bytecode and the line number attribute for this looks like. Applying the (\algref{methodReceiverAlg}) for gathering data about method receivers in this situation looks as follows:
 
 \begin{figure}[H]
-\renewcommand\figurename{Box}
+\renewcommand\figurename{Algorithm}
 	\begin{boxedminipage}{\textwidth}
 		\begin{enumerate}
 			\itemsep8pt
@@ -548,82 +603,186 @@ Figure shows a normal method invocation which is split into two lines in source 
 			\item Not storing it because NullSpy does not support this kind of method receiver
 		\end{enumerate}
 	\end{boxedminipage}
-	\caption{Extract method receiver example}
+	\caption{Extract method receiver example.}
 	\label{box:extractMethodReceiverExample}
 \end{figure}
 
-So how did we get the pc-interval? Just looking at bytecode is not enough, so we are looking at the line number attribute. Line number \textit{31} (\figref{pic4-3}) is listed twice, this indicates that the method invocation is split into multiple line in source code. The former declares the starting point of the interval and the latter the end of it. How to get the pc-interval will be presented shortly. But first take a look at more examples:
+Only looking at bytecode is not enough, so we are looking at the line number attribute. Line number \textit{31} (\bytecoderef{4-3}) is listed twice, this indicates that the method invocation is split into multiple line in source code. The former declares the starting point of the interval and the latter the end of it. How to get the pc-interval will be presented shortly. But first take a look at more examples:
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{multipleLine/pic3-1}
-\caption{Alternating line number example}
-  \label{fig:pic3-1}
-\end{figure}
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={Alternating line number example.}, label={code:3-1}, firstnumber=127]
+Connector oldConnector = ((ChangeConnectionHandle.UndoActivity)
+			getUndoActivity()).getOldConnector();
+\end{Java}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{multipleLine/pic3-2}
-\caption{Bytecode to \figref{pic3-1}}
-  \label{fig:pic3-2}
-\end{figure}
+\renewcommand\lstlistingname{Bytecode}
+\begin{JVMIS}[caption={Bytecode to \coderef{3-1}.}, label={code:3-2}, breaklines=true]
+47  aload_0 [this]
+48  invokevirtual org.jhotdraw.standard.ChangeConnectionHandle.getUndoActivity() : org.jhotdraw.util.Undoable [72]
+51  checkcast org.jhotdraw.standard.ChangeConnectionHandle$UndoActivity [76]
+54  invokevirtual org.jhotdraw.standard.ChangeConnectionHandle$UndoActivity.getOldConnector() : org.jhotdraw.framework.Connector [142]
+57  astore 7 [oldConnector]
+\end{JVMIS}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.3\linewidth]{multipleLine/pic3-3}
-\caption{Line number table/interval \figref{pic3-1}}
-  \label{fig:pic3-3}
-\end{figure}
+\begin{JVMIS}[caption={Line number table/interval to \coderef{3-1}.}, label={code:3-3}, breaklines=true]
+[pc: 47, line: 128]
+[pc: 51, line: 127]
+[pc: 54, line: 128]
+[pc: 57, line: 127]
+\end{JVMIS}
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=\linewidth]{multipleLine/pic3-1}
+%\caption{Alternating line number example.}
+%  \label{fig:pic3-1}
+%\end{figure}
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=\linewidth]{multipleLine/pic3-2}
+%\caption{Bytecode to \figref{pic3-1}.}
+%  \label{fig:pic3-2}
+%\end{figure}
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=0.3\linewidth]{multipleLine/pic3-3}
+%\caption{Line number table/interval \figref{pic3-1}.}
+%  \label{fig:pic3-3}
+%\end{figure}
 
 Special about this example is that the multiple line interval does not start with the smaller line number and end with the bigger one, apart from that it is alternated stored in the line number attribute.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{multipleLine/pic2-1}
-\caption{Nested interval example}
-  \label{fig:pic2-1}
-\end{figure}
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={Nested interval example.}, label={code:2-1}, firstnumber=149]
+for (int i = 0; i < ColorMap.size(); i++)
+	choice.addItem(
+		new ChangeAttributeCommand(
+			ColorMap.name(i),
+			attribute,
+			ColorMap.color(i),
+			this
+		)
+	);
+\end{Java}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{multipleLine/pic2-2}
-\caption{Bytecode to \figref{pic2-1}}
-  \label{fig:pic2-2}
-\end{figure}
+\renewcommand\lstlistingname{Bytecode}
+\begin{JVMIS}[caption={Bytecode to \coderef{2-1}.}, label={code:2-2}, breaklines=true]
+ 8  iconst_0
+ 9  istore_3 [i]
+10  goto 37
+13  aload_2 [choice]
+14  new org.jhotdraw.standard.ChangeAttributeCommand [213]
+17  dup
+18  iload_3 [i]
+19  invokestatic org.jhotdraw.util.ColorMap.name(int) : java.lang.String [246]
+22  aload_1 [attribute]
+23  iload_3 [i]
+24  invokestatic org.jhotdraw.util.ColorMap.color(int) : java.awt.Color [252]
+27  aload_0 [this]
+28  invokespecial org.jhotdraw.standard.ChangeAttributeCommand(java.lang.String, org.jhotdraw.framework.FigureAttributeConstant, java.lang.Object, org.jhotdraw.framework.DrawingEditor) [222]
+31  invokevirtual org.jhotdraw.util.CommandChoice.addItem(org.jhotdraw.util.Command) : void [225]
+34  iinc 3 1 [i]
+37  iload_3 [i]
+38  invokestatic org.jhotdraw.util.ColorMap.size() : int [256]
+41  if_icmplt 13
+\end{JVMIS}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.3\linewidth]{multipleLine/pic2-3}
-\caption{Line number table/interval to \figref{pic2-1}}
-  \label{fig:pic2-3}
-\end{figure}
+\begin{JVMIS}[caption={Line number table/interval to \coderef{2-1}.}, label={code:2-3}, breaklines=true]
+[pc: 8, line: 149]
+[pc: 13, line: 150]
+[pc: 14, line: 151]
+[pc: 18, line: 152]
+[pc: 22, line: 153]
+[pc: 23, line: 154]
+[pc: 27, line: 155]
+[pc: 28, line: 151]
+[pc: 31, line: 150]
+[pc: 34, line: 149]
+\end{JVMIS}
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=\linewidth]{multipleLine/pic2-1}
+%\caption{Nested interval example.}
+%  \label{fig:pic2-1}
+%\end{figure}
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=\linewidth]{multipleLine/pic2-2}
+%\caption{Bytecode to \figref{pic2-1}.}
+%  \label{fig:pic2-2}
+%\end{figure}
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=0.3\linewidth]{multipleLine/pic2-3}
+%\caption{Line number table/interval to \figref{pic2-1}.}
+%  \label{fig:pic2-3}
+%\end{figure}
 
 Neither in bytecode nor in line number attribute we can extract the exact interval of method invocations. Generally, we cannot distinguish if the interval represents a method invocation or a loop. Another interesting thing is that in the figure multiple corresponding pcs are included.
+\lt{change to scntactic example}
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={Incomplete interval example.}, label={code:5-1}, firstnumber=22]
+fooTestSupporter
+	.bla(getObject(),
+		staticMethod(o),
+		fooTestSupporter2.bla2(null,
+			o));
+\end{Java}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{multipleLine/pic5-1}
-\caption{Uncomplete interval example}
-  \label{fig:pic5-1}
-\end{figure}
+\renewcommand\lstlistingname{Bytecode}
+\begin{JVMIS}[caption={Bytecode to \coderef{5-1}.}, label={code:5-2}, breaklines=true]
+18  aload_1 [fooTestSupporter]
+19  invokestatic isFieldOrLocalVariableNullExample.testMethodCall.FooTest.getObject() : java.lang.Object [26]
+22  aload_3 [o]
+23  invokestatic isFieldOrLocalVariableNullExample.testMethodCall.FooTest.staticMethod(java.lang.Object) : java.lang.Object [30]
+26  aload_2 [fooTestSupporter2]
+27  aconst_null
+28  aload_3 [o]
+29  invokevirtual isFieldOrLocalVariableNullExample.testMethodCall.FooTestSupporter.bla2(java.lang.Object, java.lang.Object) : java.lang.Object [34]
+32  invokevirtual isFieldOrLocalVariableNullExample.testMethodCall.FooTestSupporter.bla(java.lang.Object, java.lang.Object, java.lang.Object) : void [38]
+\end{JVMIS}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{multipleLine/pic5-2}
-\caption{Bytecode to \figref{pic5-1}}
-  \label{fig:pic5-2}
-\end{figure}
+\begin{JVMIS}[caption={Line number table/interval to \coderef{5-1}.}, label={code:5-3}, breaklines=true]
+[pc: 18, line: 22]
+[pc: 19, line: 23]
+[pc: 22, line: 24]
+[pc: 26, line: 25]
+[pc: 28, line: 26]
+[pc: 29, line: 25]
+[pc: 32, line: 23]
+\end{JVMIS}
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.3\linewidth]{multipleLine/pic5-3}
-\caption{Line number table/interval to \figref{pic5-1}}
-  \label{fig:pic5-3}
-\end{figure}
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=\linewidth]{multipleLine/pic5-1}
+%\caption{Incomplete interval example.}
+%  \label{fig:pic5-1}
+%\end{figure}
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=\linewidth]{multipleLine/pic5-2}
+%\caption{Bytecode to \figref{pic5-1}.}
+%  \label{fig:pic5-2}
+%\end{figure}
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=0.3\linewidth]{multipleLine/pic5-3}
+%\caption{Line number table/interval to \figref{pic5-1}.}
+%  \label{fig:pic5-3}
+%\end{figure}
 
 By using the algorithm we only get the interval from pc 19-32, but actually pc 18 also belongs to the interval. That the missing pc is missing will be detected in step 4\&5 when traversing back the ArrayList by the number of parameters. If it is not a static method invocation and there is not enough possible method receivers stored in that ArrayList to traverse back, the missing pc is added in retrospect.
 
-\begin{Java}[caption={Multiple line interval algorithm}, label={alg:multipleLineAlg}]
+\renewcommand\lstlistingname{Pseudocode}
+\begin{Java}[caption={Multiple line interval algorithm.}, label={alg:multipleLineAlg}]
 i = index in line number attribute which contains the invoke.* opcode
 
 if (lineNrAttribute[j>i] <= lineNrAttribute[i]) {	
@@ -644,9 +803,8 @@ if (lineNrAttribute[j>i] <= lineNrAttribute[i]) {
 		
 }	
 \end{Java}
-%	\lstinputlisting[language=java]{code/MultipleLinePseudoCode.java}
 
-This pseudocode will give a very rough idea how the invocation interval can be read out. The detailed implementation can be seen in the classes \code{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation.MultipleLineManager} and \code{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation.MethodInvocationAnalyzer}.
+This pseudocode will give a very rough idea how the invocation interval can be read out. The detailed implementation can be seen in the classes \code{MultipleLineManager}\footnote{\label{package2}In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.} and \code{MethodInvocationAnalyzer}\textsuperscript{\ref{package2}}.
 
 \subsection{Obtaining Variable Data Difficulties - Fields}
 \label{subsec:variableDifficulties}
@@ -654,7 +812,7 @@ We previously mentioned that NullSpy first collects data about fields and we met
 
 After entered extra instructions the method \code{loopBody()} iterates onwards until it finds a key which indicates an access to a field. Normally, Javassist provides a method with which the start-pc of the field access can be find out easily, but in our case not due to bytecode alternation. This method returns the start-pc of the field as if there was no changes, however it actually has to return a bigger start-pc than it does. The start-pc is needed to distinguish in what category the field has to be assigned to (\subsecref{fields}).
 
-To find the right start-pc of the field assignment, we compare the start-pc returned by a method of Javassist with the \code{afterStorePc} of the previously found field assignment. Every time an assignment is found we store it as a reference for the next assignment to obtain the right data. Even for the store-pc of an assignment (\textit{``put.*"} the last found field is essential. If there is more interest how those pcs are obtained, please see the class \code{ch.unibe.scg.nullSpy.instrumentator.controller.FieldAnalyzer}.
+To find the right start-pc of the field assignment, we compare the start-pc returned by a method of Javassist with the \code{afterStorePc} of the previously found field assignment. Every time an assignment is found we store it as a reference for the next assignment to obtain the right data. Even for the store-pc of an assignment (\textit{``put.*"} the last found field is essential. If there is more interest how those pcs are obtained, please see the class \code{FieldAnalyzer}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller}.}.
 
 \subsection{Bytecode Adaptation Difficulties}
 \label{subsec:bytecodeAdaptationDifficulties}
@@ -662,7 +820,8 @@ The reason why we decided to use Javassist for our NullSpy project is because th
 
 One big problem encountered while inserting the test method between an assignment and a closing bracket \code{\}}. We tried to insert additional code as shown in \figref{insertionCodeExample} by specifying the exact line number where it should be entered in source code. Unfortunately Javassist first checks the specified line whether it contains some code (only symbols excluded). If there is no code at that line it computes the next line that contains some and inserts the test method right before it. Please visualize a situation where for example a local variable is created/instantiated at the end of a \code{if-body}. In this situation Javassist adds the extra code right before the next code line which is outside the existing scope of the local variable.
 
-\begin{Java}[caption={Bytecode adaptation example}, label={code:bytecodeAdaptationExample_1}]
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={Bytecode adaptation example.}, label={code:bytecodeAdaptationExample_1}]
 Object fontName;
 if (fName.startsWith("A")) {
 	fontName = new Arial();
@@ -671,18 +830,18 @@ if (fName.startsWith("A")) {
 }
 \end{Java}
 
-\begin{Java}[caption={Wrong Adaptation to \coderef{bytecodeAdaptationExample_1}}, label={code:bytecodeAdaptionExample_2}]
+\begin{Java}[caption={Wrong Adaptation to \coderef{bytecodeAdaptationExample_1}.}, label={code:bytecodeAdaptionExample_2}]
 Object fontName;
 if (fName.startsWith("A")) {
 	fontName = new Arial();
  } else {
-	ch.unibe.scg.nullSpy.runtimeSupporter.VariableTester.testLocalVar("", "", "", "", "", "", fontName, 0, 0, 0, 0, 0);
+	--<inserted code which takes ``fontName'' as parameter>--
 	fontName = new Calibri();
 }
 \end{Java}
 
 
-That is why changed the way to insert the test method at bytecode-level. Like this we first have to build up the bytecode sequence and then enter it before a specific pc. Please take a look at the class \code{ch.unibe.scg.nullSpy.instrumentator.controller.ByteCodeAdapter} how the bytecode sequence is created.
+That is why changed the way to insert the test method at bytecode-level. Like this we first have to build up the bytecode sequence and then enter it before a specific pc. Please take a look at the class \code{ByteCodeAdapter}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller}.} how the bytecode sequence is created.
 
 There are of course many other small problems during the implementation of NullSpy but these mentioned are the most troublesome ones.
 
@@ -692,9 +851,9 @@ During the implementation of NullSpy we had to change the concept few times due 
 
 Our first idea of how NullSpy could track the NullPointerExceptions is to gather information about variable assignment, which is the case now, and also inject another test method right before each method invocations. In small projects this way could have worked fine but in larger projects which could contain hundreds of classes with a lot of method invocations the execution time would be strongly influenced.
 
-Being able to collect data about variables we still are not able to avoid injecting bytecode even it affects the runtime. Related to this issue a limitation about Javassist is mentioned before namely inserting bytecode right before a closing bracket (\subsecref{bytecodeAdaptationDifficulties}). Because of this it highly depends on the location where additional code should be inserted whether using the source-level API is possible or not. Avoiding checking all the location where something new should be added it is more secure to do this on bytecode-level. But in cases like entering something at the beginning or at the end of a method body the source-level is just fine.
+Being able to collect data about variables we still are not able to avoid injecting bytecode even it affects the runtime. Related to this issue a limitation about Javassist is mentioned before namely inserting bytecode right before a closing bracket (\subsecref{bytecodeAdaptationDifficulties}). Because of this it highly depends on the location where additional code should be inserted whether using the source-level API is possible or not. \ugh{Avoiding checking all the location where something new should be added it is more secure to do this on bytecode-level.}\lt{ändern} But in cases like entering something at the beginning or at the end of a method body the source-level is just fine.
 
-Another limitation of Javassist to mention is that it does not provide anything to get information about method receivers. It only allows one to extract information about local variables, fields and method invocations itself. The programming language Java also does not provide any information about the method receiver, since the exception object or the stack trace element just contains the class, file, method name and the line number. Nonetheless making possible to gather data about them the algorithm discussed before (see \algref{methodReceiverAlg}) fulfills the missing task.
+Another limitation of Javassist to mention is that it does not provide anything to get information about method receivers. It only allows one to extract information about local variables, fields and method invocations itself. The programming language Java also does not provide any information about the method receiver, since the exception object or the stack trace element only contains the class, file, method name and the line number. Nonetheless making possible to gather data about them the algorithm discussed before (see \algref{methodReceiverAlg}) fulfills the missing task.
 
 The last limitation we want to discuss here is that unfortunately NullSpy is not capable to track the root of NullPointerExceptions that are originated in a null which was returned of a method call or in an element of a collection. Why those situations are not supported in NullSpy is because of the impossibility way to store them, e.g. imagine a nested ArrayList or a HashMap and a never ending return value of method invocations. So we lack something tangible to compare with each other, get a hit and read the location out of the hit (\secref{futureWork}).
 
@@ -746,7 +905,7 @@ How did we get the numbers? First of all, of course another executable jar file 
 	30 & 7.363	&7.784	\\ \cline{2-3}
 	\cline{2-3}
 	\end{tabular}
-	\caption{Execution time}
+	\caption{Execution time.}
 	\label{tab:executionTime}
 \end{table}
 
@@ -758,11 +917,11 @@ How did we get the numbers? First of all, of course another executable jar file 
 		7.2041	&	7.566834 \\
 		\hline
 	\end{tabular}
-	\caption{Average time}
+	\caption{Average time.}
 	\label{tab:averageTime}
 \end{table}
 
-The runtime of the modified project takes 0.362734s longer than the original one, this means after adding additional code to the project results in approximately \textbf{5\%} overhead. This small overhead is quite negligible. But this numbers have to be interpreted with caution because the overhead is only measured on JHotDraw. It only has few variable assignments but how much would it go up if there are tons of them?
+The runtime of the modified project takes 0.362734s longer than the original one, this means after adding additional code to the project results in approximately \textbf{5\%} overhead. This small overhead is quite negligible. But this numbers have to be interpreted with caution because the overhead is only measured on JHotDraw.
 
 \chapter {Conclusion and Future Work}
 \label{ch:conclusionFutureWork}

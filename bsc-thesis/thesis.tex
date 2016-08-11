@@ -33,7 +33,7 @@ Nowadays, practically all Java developers are confronted with \npes in both big 
 
 Now we will present two different situations in which a \npe can be thrown.
 
-\begin{Java}[caption={\Npe example - \Mr.}, label={code:npeExampleMethodReceiver}]
+\begin{Java}[caption={\Npe example (I).}, label={code:npeExampleMethodReceiver}]
 public void drop(DropTargetDropEvent dtde) {
 	//...
 	try {
@@ -51,9 +51,9 @@ public void drop(DropTargetDropEvent dtde) {
 }
 \end{Java}
 
-Lets say that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable at line 5 is assigned the null value by the return value of the function \code{DNDHelper.processReceivedData()}. So the \mr (\code{ff} at line 7) is null and when a method is called on this object a \npe is thrown. Because the the \npe occurred in the \code{try\{\}} block the \code{catch\{\}} block right after it handles the exception. The stack trace only takes the developer to line 7 where the exception is caused but not to the real culprit which is the assignment at line 5. This is a very simple example and the easiest way to produce a \npe\brs{it's really not a simple example, we might consider finding a simpler one}.
+Lets say that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable at line 5 is assigned the null value by the return value of the function \code{DNDHelper.processReceivedData()}. So the variable (\code{ff} at line 7) is null and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the \code{catch\{\}} block right after it handles the exception. The stack trace only takes the developer to line 7 where the exception is caused but not to the real culprit which is the assignment at line 5. This is a very simple example and the easiest way to produce a \npe\brs{it's really not a simple example, we might consider finding a simpler one}.
 
-\begin{Java}[caption={\Npe example - Field access.}, label={code:npeExampleFieldAccess}]
+\begin{Java}[caption={\Npe example (II).}, label={code:npeExampleFieldAccess}]
 public class DrawApplication extends JFrame implements DrawingEditor,
 		PaletteListener, VersionRequester {
 	//...
@@ -301,21 +301,16 @@ public void itemStateChanged(ItemEvent e) {
 }
 \end{Java}
 
-JAD is in no way a dependency of NullSpy but it was a big help during the implementation phase. Since after running NullSpy on a project only the modified bytecode is available. The use of JAD is for the sake of debugging Nullspy; to check whether the modification by Javassist, e.g. inserting source code, has succeeded. Another way to check the result for correctness is looking at bytecode itself but that would have taken a lot more effort and time.
+JAD is in no way a dependency of NullSpy but it was a big help during the implementation phase. Since after running NullSpy on a project only the modified bytecode is available. The use of JAD is for the sake of debugging Nullspy; to check whether the modification by Javassist, \ie inserting source code, has succeeded. Another way to check the result for correctness is looking at bytecode itself but that would have taken a lot more effort and time.
 
 \chapter{NullSpy}
-As explained in \charef{introduction}, this project is about providing the user with an additional stack trace containing the information on where the null is assigned to the variable that caused the \npe. In short, it shows the developer the exact location of where a \mr\brs{I'm not sure method receiver is the right jargon (Ausdrucksweise) for java. we need to check} or a field (in a field access case) was assigned null.
+As explained in \charef{introduction}, this project is about providing the user with an additional stack trace containing the information on where the null is assigned to the variable that caused the \npe. In short, the exact location of where a variable was assigned null will be revealed. We will use the term \mr to refer to the variable or object a method is invoked on and that caused the \npe.
 
 Here we give a short overview of how we implemented the core of NullSpy. We will also address the challenges (\secref{challenges}) we encountered during the implementation as well as the limitations of the tool (\secref{limitations}).
 
 \section{High Level Overview}
 \label{sec:highLevelOverview}
-The general approach of NullSpy is to statically analyze a project and instrument the bytecode. \lt{In NullSpy we are working with the value of variable. Since ...} \nm{You should add a sentence or two to explain this more. Why statical
-analysis? Why adding bytecode?} \ugh{We add bytecode to check on every variable for its value and extract information (name, line number etc.) about it if necessary. Another reason is to get information about \mrs} (\boxref{methodReceiverInfo}). \ugh{To know where exactly they are placed in source code we need to statically examine the code and insert the bytecode at the right place.}\brs{this part carries no information at all. I have no idea what you wanted to say here and why. are we not talking about high level overview here? \ie the architecture etc.?} 
-
-NullSpy first loads the project that we wish to instrument. Loading the project to NullSpy addressed only, the compiled class files of the project, which means the project source code does not have to be imported into the programming environment, e.g. Eclipse. Simultaneously at load time as each class file is loaded the bytecode is modified as described \secref{lowLevelOverview}.
-
-Once the project modification is done it is stored in a destination folder that the user has chosen before\brs{How? it might be a good idea to discuss the command line arguments}. This means that the updated bytecode will be stored in another location, keeping the original class files intact.
+The general approach of NullSpy is to statically analyze a project and instrument the bytecode. We can take the three basic steps of NullSpy from \figref{highLevelOverview}: \textit{load, modify, store}. NullSpy is not a GUI but a console application which takes two parameters. The first argument NullSpy needs is the path to the \textit{bin}-folder of the original project and the second one is the destination where the developer wants to store the modified project.
 
 \begin{figure}[H]
 \centering
@@ -323,9 +318,24 @@ Once the project modification is done it is stored in a destination folder that 
 \caption{High level overview.}
   \label{fig:highLevelOverview}
 \end{figure}
-\brs{\url{http://www.merriam-webster.com/dictionary/instrumentator}. Also, you could break up the one block in to separate phases to make it more clear what happens.} \lt{verstehe nicht}
 
-Of course the original project can be replaced by the modified one too. But the developer has to think carefully about it because once replaced, the additional bytecode stays there and the execution time is slightly different than it was before. To get rid of the additional bytecode, the developer has to recompile the source code to get the original class files when needed. This has to be done every time when NullSpy is used on the project.
+Those three steps of NullSpy are described in \boxref{abstractSteps}:
+
+\begin{figure}[H]
+\renewcommand\figurename{List}
+	\begin{boxedminipage}{\textwidth}
+\begin{enumerate}
+\itemsep8pt
+      \item Input: Load compiled class files of project we wish for being able to track the null assignments into NullSpy.
+      \item Modification: The modification part contains the dealing with the bytecode instrumentation and adding modules to the project that handles the inserted code.
+			\item Output: Store modified class files to the chosen folder.
+   \end{enumerate}
+	\end{boxedminipage}
+	\caption{NullSpy abstract steps.}
+	\label{box:abstractSteps}
+\end{figure}
+
+Once the project modification is done it is stored in a destination folder the user has chosen before. We provide the option to choose the destination is because in case the developer does not want to overwrite the original project with the modified one. This means that the updated bytecode can be stored in another location, keeping the original class files intact. Of course the original project can be replaced by the modified one too. But the developer has to think carefully about it because once replaced, the additional bytecode stays there and the execution time is slightly different than it was before. To get rid of the additional bytecode, the developer has to recompile the source code to get the original class files when needed. This has to be done every time when NullSpy is used on the project.
 
 \section{Low Level Overview}
 \label{sec:lowLevelOverview}

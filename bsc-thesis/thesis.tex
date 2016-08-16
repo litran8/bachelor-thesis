@@ -8,7 +8,7 @@
 \chapter*{\centering Abstract}
 \begin{quotation}
 \noindent 
-A previous study found out that \npe are the most frequently occurring and the most difficult to debug exceptions in Java projects. They are difficult to debug because the developer is only provided with a stack trace to where the exception was thrown. This only gives insight into the effect of the fault but not into its cause.
+A previous study found out that \npe are the most frequently occurring and the most difficult to debug exceptions in Java projects. \nm{Are they ``the most difficult" or just ``difficult"? Is there a reference to backup this claim?} They are difficult to debug because the developer is only provided with a stack trace to where the exception was thrown. This only gives insight into the effect of the fault but not into its cause.
 
 The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the \npe was actually set to null. We attempt to achieve this goal by instrumenting java source code striving for a minimal execution overhead. 
 
@@ -27,9 +27,9 @@ By tracking the null assignments through static analysis and instrumentation of 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
 \label{ch:introduction}
-Nowadays, practically all Java developers are confronted with \npes in both big and small Java projects, whether it is for an enterprise or for private purposes. The seriousness of null dereferencing is apparent from the finding that 35\% of the conditional statements in open source Java projects are null checks which degrades the readability of code and of course has a negative impact on performance~\cite{Osma15a}. It is also considered the number one error Java programmers make\footnote{\url{http://www.javacoffeebreak.com/articles/toptenerrors.html}}.
+Nowadays, practically all Java developers are \ins{at some point} confronted with \npes in both big and small Java projects, whether it is for an enterprise or for private purposes. \ugh{The seriousness of null dereferencing is apparent from the finding that 35\% of the conditional statements in open source Java projects are null checks which degrades the readability of code and of course has a negative impact on performance~\cite{Osma15a}.} \nm{This is a run-on sentence. Try to split it in two, for example: ``Previous research has found that 35\% of conditional checks in Java projects are null checks \cite{Osma15a}. This reduces the readability of source code and has a negative impact on performance \cite{Osma15a}."} It is also considered the number one error Java programmers make\footnote{\url{http://www.javacoffeebreak.com/articles/toptenerrors.html}}.
 
-\Npe is a commonly occurring RuntimeException in object-oriented languages. There is a special value \textit{null} that is assigned to pointers to indicate that the pointer does not point to an object. The cause of \npes is a method invocation on an object assigned the value null or an attempt to access a field. This object reference can be a local variable, an instance field, an element of a collection or a return value of a function. In Java Projects developers always have to deal with a huge amount of references which means there is a high probability that there will be a \npe.
+\Npe is a commonly occurring \chg{RuntimeException}{\rte} \nm{I would also recommend to use a command for ``RuntimeException". I have created one in preamble.tex as \textbackslash rte I would say ``run-time" exception instead of RuntimException. Have a look at \url{http://scg.unibe.ch/wiki/howtos/commonwritingerrors/Runtime}} in object-oriented languages. There is a special value \textit{null} that is assigned to pointers to indicate that the pointer does not point to an object. The cause of \npes is a method invocation on an object assigned the value null or an attempt to access a field \ins{of an object referring to the null value}. This object reference can be\ins{, for example} a local variable, an instance field, an element of a collection or a return value of a function. \nm{A method argument can also have a null value.} \ugh{In Java Projects developers always have to deal with a huge amount of references which means there is a high probability that there will be a \npe.}\nm{The number of objects does not increase the likelihood of encountering null value. I would delete this sentence or rephrase it.}
 
 Now we will present two different situations in which a \npe can be thrown.
 
@@ -38,7 +38,8 @@ public void drop(DropTargetDropEvent dtde) {
 	//...
 	try {
 		//...
-		DNDFigures ff = (DNDFigures)DNDHelper.processReceivedData(DNDFiguresTransferable.DNDFiguresFlavor, dtde.getTransferable());
+		DNDFigures ff = (DNDFigures)DNDHelper.processReceivedData(DNDFiguresTransferable.DNDFiguresFlavor, 
+			dtde.getTransferable());
 		//...
 		Point theO = ff.getOrigin();
 		//...
@@ -51,7 +52,7 @@ public void drop(DropTargetDropEvent dtde) {
 }
 \end{Java}
 
-Lets say that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable at line 5 is assigned the null value by the return value of the function \code{DNDHelper.processReceivedData()}. So the variable (\code{ff} at line 7) is null and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the \code{catch\{\}} block right after it handles the exception. The stack trace only takes the developer to line 7 where the exception is caused but not to the real culprit which is the assignment at line 5. This is a very simple example and the easiest way to produce a \npe\brs{it's really not a simple example, we might consider finding a simpler one}.
+Lets say that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet taken from JHotDraw project: \url{http://www.jhotdraw.org/}} \nm{Try to format code. I have done it now. Do not break the line on receiver object.} the variable at line 5 is assigned the null value by the return value of the function \code{DNDHelper.processReceivedData()}. So the variable (\code{ff} at line \chg{7}{8}) is null and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the \ins{following} \code{catch\{\}} block \del{right after it} \chg{handles}{will handle} the exception. The stack trace only takes the developer to line 7 where the exception is caused but not to the real culprit which is the assignment at line 5. This is a very simple example and the easiest way to produce a \npe\brs{it's really not a simple example, we might consider finding a simpler one}\nm{I agree with Boris. This casting, for example, does not anything to do with the point of the example, and arguments in the method are too long, so they just hamper it.}.
 
 \begin{Java}[caption={\Npe example (II).}, label={code:npeExampleFieldAccess}]
 public class DrawApplication extends JFrame implements DrawingEditor,
@@ -85,7 +86,7 @@ public class DrawApplication extends JFrame implements DrawingEditor,
 }
 \end{Java}
 
-A more complicated way a \npe can be thrown is \ie in a field access situation. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation. With the method invocations in the method \code{open()} at line 10 the class instance \code{fManager} (line 4) is initialized by invoking the \code{createIconkit()} method at line 12 and is accessed at a later point. Suppose the instance field \code{fManager} is set to null by the function \code{getIconkitManager()} at line 19 when the method \code{createIconkit()} is executed. Later at line 14 the function \code{setTool()} is invoked which attempts an access to the field \code{fManager} that has a value of null. That means a \npe is thrown at line 25 with the stack trace shown in \boxref{stackTrace} :
+A more complicated way a \npe can be thrown is \ie in a field access situation. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation. With the method invocations in the method \code{open()} at line 10 the class instance \code{fManager} (line 4) is initialized by invoking the \code{createIconkit()} method at line 12 and is accessed at a later point. \nm{Split this in more sentences, one per method invocation, with a bit more text.} Suppose the instance field \code{fManager} is set to null by the function \code{getIconkitManager()} at line 19 when the method \code{createIconkit()} is executed. Later at line 14 the function \code{setTool()} is invoked which attempts an access to the field \code{fManager} that has a value of null. That means a \npe is thrown at line 25 with the stack trace shown in \boxref{stackTrace} : \nm{I like the example :), just explain this execution flow a bit more. I understood what you want to say, but I was more following source code on my own, than reading the text.}
 
 \begin{figure}[H]
 \renewcommand\figurename{Box}
@@ -101,11 +102,11 @@ A more complicated way a \npe can be thrown is \ie in a field access situation. 
 	\label{box:stackTrace}
 \end{figure}
 
-In \boxref{stackTrace} we can see that the stack trace does not track to the root of the \npe. We call the location where the variable was assigned the null value the root of an exception. That means the Java developer has to debug to find the exception root.
+In \boxref{stackTrace} we can see that the stack trace does not track to the root of the \npe. We call the location where the variable was assigned the null value the root of an exception. That means the Java developer has to debug \chg{to find}{her way to} the exception root.
 
 All too often programmers states that they are trying to fix bugs or have spent a lot of time fixing them. Of course not all of the bugs are \npes but there could be few of them. If there would be a way to minimize the time fixing exceptions and allow to work more efficiently, projects would progress much faster.\nm{Rewrite: yes, developers deal with a lot of problems caused by null pointer exception, and you should find some paper to reference that.}\lt{can't find papers!}\brs{skipped this paragraph, let's sync}
 
-At this point we would like to introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. In other words its main goal is to take a step on minimizing the debugging time. The intention behind NullSpy is to present the developers the exact location of the null assignment next to the ordinary stack trace.
+At this point we would like to introduce our project named \textit{\textbf{NullSpy}} \nm{Nice :)} which supports the developers in situations discussed previously. In other words its main goal is to take a step on minimizing the debugging time. The intention behind NullSpy is to present the developers the exact location of the null assignment next to the ordinary stack trace.
 
 In this thesis we explain how the goal mentioned above is achieved and we also discuss the challenges, the limitations and performance impact of the approach.
 

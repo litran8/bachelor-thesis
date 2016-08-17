@@ -417,7 +417,7 @@ protected void open(org.jhotdraw.framework.DrawingView newDrawingView);
 
 In step 1 we had big troubles getting the right interval of the \mr. By only statically analyzing the bytecode it is unapparent where the \mr is situated exactly in bytecode. But more about the challenges we encountered in \subsecref{methodReceiverDifficulties}.
 
-Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex \textit{``invoke.*"}. There are exactly five kinds of bytecode instruction: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamic-typed languages\footnote{Language whose type checking is usually performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports the \textit{static-typed} language\footnote{Language whose type checking is performed at compile time.} Java.
+Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*"}. There are exactly five kinds of bytecode instruction: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamic-typed languages\footnote{Language whose type checking is usually performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports the \textit{static-typed} language\footnote{Language whose type checking is performed at compile time.} Java.
 
 In case of the \textit{invokestatic} instruction we do not have a \mr. That is why NullSpy treats it extraordinary like ignoring it completely or wrap it as a possible \mr when it is actually a parameter of a method invocation. In all other cases we normally use the algorithm to get the \mr. 
 
@@ -444,11 +444,13 @@ After getting the pc-interval of a \mr we gather data about it and store them in
 	\label{box:methodReceiverInfo}
 \end{figure}
 
+We will talk about the purpose why these information about the \mr are needed later in this section.
+
 \subsection{Variable Data Collection}
 \label{subsec:variable}
-While going through the bytecode attention is paid to some opcodes\footnote{Operation code: Machine language instruction.}. Right after each keyword that indicates a variable assignment we insert some bytecode. The inserted code represents a test method which tests whether the value of the assigned variable is null or not and store some information about it. Unlike in getting information about the \mr in \subsecref{methodReceiver} the data about the variables are stored in a HashMap.
+Data about the \mrs plus information about the variables which are assigned an object are needed in NullSpy. In section before we were looking for instructions which matches the regex \textit{``invoke.*''} for finding \mrs in bytecode. This time we are looking for following regexs \textit{``astore.*''} and \textit{``put.*''}. The former refers to local variable assignments and the latter to field assignments. After finding one of the assignment NullSpy gathers data about the variable because NullSpy inserts bytecode right after the assignment which represents a method invocation that needs the gained data as parameters. The inserted bytecode represents a test method which tests whether the value assigned to the variable is null and store the gathered information about it. Unlike in getting information about the \mr in \subsecref{methodReceiver} the data about the variables are stored in a HashMap.
 
-What kind of opcodes were NullSpy looking for? For instance or class/static variables the bytecode instruction \textit{getfield} and \textit{getstatic} were essential, for local variables the important opcodes were those which matches the regex \textit{``aload.*"}. Due to different types of variables and the limitation of Javassist gathering information about them was performed differently. Again getting the necessary data about the variables we encountered many difficulties which will be discussed in the \secref{challenges}.
+In the next two subsections we will look at how those information about the assigned variables are extracted. Due to different variable types and the limitation of Javassist, the way of gathering information about the assignments is performed differently.
 
 \subsubsection{Local Variable}
 \label{subsubsec:localVariable}
@@ -461,9 +463,9 @@ Unfortunately, Javassist does not provide any support for gaining information ab
   \label{fig:localVarCreationBytecode}
 \end{figure}
 
-If a local variable is created, the value assigned to it is pushed onto the operand stack as we can see in \figref{localVarCreationBytecode}\footnote{Figure taken from \href{http://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html}{blog.jamesdbloom.com}.}. With the bytecode instruction \textit{``.*store.*"} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables is composed of one, or in some cases two bytes. There are reserved machine commands for the first four local variables, index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted. Next to storing the local variable loading it from the local variable array is possible to, but only with the local variable slot number.
+If a local variable is created, the value assigned to it is pushed onto the operand stack as we can see in \figref{localVarCreationBytecode}\footnote{Figure taken from \href{http://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html}{blog.jamesdbloom.com}.}. With the bytecode instruction \textit{``astore.*"} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables is composed of one, or in some cases two bytes. There are reserved machine commands for the first four local variables, index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted. In addition to storing local variable loading it from the local variable array is possible too, but of course again only with the local variable slot number.
 
-With this short introduction understanding the local variable table should be easier. Each method of a class file contains a local variable table (see \bytecoderef{localVarTable}) with which many information can be read out of it, e.g. the lifespan of the local variable, what it is called, in which slot it is stored and what type it has.
+With this short introduction understanding the local variable table should be easier. Each method of a class file contains a local variable table (see \bytecoderef{localVarTable}) with which many information can be read out, \ie the lifespan of a local variable, what it is called, in which slot it is stored and what type it has.
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[caption={Local variable table.}, label={bytecode:localVarTable}, breaklines=true]
@@ -474,9 +476,9 @@ Local variable table:
  [pc: 22, pc: 31] local: newDrawingView index: 3 type: org.jhotdraw.framework.DrawingView
 \end{JVMIS}
 
-We had to pay attention to be sure to get the right local variable. Every time when we bumped into the opcode \textit{``.*store.*"} we could only get its slot and the pc\footnote{Program counter/instruction pointer: A processor register that indicates where a computer is in its program sequence.} where it is situated in the bytecode sequence. In the earlier paragraph the lifespan of the local variable was mentioned, the importance behind this is as soon as the lifespan of one ends, the slot can be reused by the next instantiated local variable. This way, the local variable table could contain multiple entries with the same local variable slot.
+We have to pay attention to get the right local variable every time we bump into one while iterating through bytecode. Every time we hit upon the opcode \textit{``astore.*"} we could only get its slot and the pc where it is situated in the bytecode sequence. In the earlier paragraph the lifespan of the local variable was mentioned. The importance behind this is, as soon as the lifespan of one ends, the slot can be reused by the next instantiated local variable. This way, the local variable table could contain multiple entries with the same local variable slot.
 
-\begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot (line 4\&7).}, label={bytecode:localVarTableDuplicatedSlot}, breaklines=true]
+\begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot 2 (line 4\&7).}, label={bytecode:localVarTableDuplicatedSlot}, breaklines=true]
 Local variable table:
  [pc: 0, pc: 95] local: this index: 0 type: org.jhotdraw.samples.javadraw.JavaDrawViewer
  [pc: 0, pc: 95] local: filename index: 1 type: java.lang.String
@@ -486,9 +488,7 @@ Local variable table:
  [pc: 44, pc: 94] local: e index: 2 type: java.io.IOException
 \end{JVMIS}
 
-After extracting the slot of the local variable we will get the first local variable table entry which contains that slot. If the pc of the local variable assignment is not included in the lifespan-pc-interval of the entry, the next entry with the same slot will be checked until both criteria (slot and pc) fits. Once those criteria are met we can be positive about having got the right local variable table entry to extract the information needed.
-
-Next to the local variable table each methods of a class file also holds another attribute called line number attribute. This is the mapping table from pc to source code line number. Since encountering the storing keyword the pc is available , with help of it the line number can be easily obtained.
+After extracting the slot (\ie index: 2) of the local variable we will get the first local variable table entry which contains that slot (\ie line 4). If the pc (\ie pc: 45) of the local variable assignment is not included in the lifespan-pc-interval of the entry (\ie [pc: 13, pc: 40]), the next entry (\ie line 7;  [pc: 44, pc: 94]) with the same slot will be examined until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information we need.
 
 \begin{JVMIS}[caption={Line number table.}, label={code:lineNrTable}]
  Line numbers:
@@ -498,8 +498,34 @@ Next to the local variable table each methods of a class file also holds another
   [pc: 16, line: 30]
 \end{JVMIS}
 
-\subsubsection{Instance and Class/Static variables (Fields)}
-\label{subsec:fields}
+Each method of a class file does not only hold a local variable table but also another attribute called line number attribute. This is the mapping table from pc to source code line number. That means after getting the pc of the local variable assignment we can obtain the right line number. The line number is essential for constructing the link which is added to the common exception stack trace.
+
+The other information we need in addition to the line number are: 
+
+\begin{figure}[H]
+\renewcommand\figurename{List}
+	\begin{boxedminipage}{\textwidth}
+\begin{itemize}
+		\itemsep8pt
+    \item variableID (distinguishes whether the variable is a field or a local variable)
+		\item localVariableName
+		\item localVariableLineNumber
+		\item localVariableType
+		\item startPc
+		\item storePc
+		\item afterPc
+		\item className
+		\item behavior
+		\item localVariableAttributeIndex
+		\item localVariableSlot
+   \end{itemize}
+	\end{boxedminipage}
+	\caption{Local variable information.}
+	\label{box:localVarInfo}
+\end{figure}
+
+\subsubsection{Instance and Class/Static variable (Field)}
+\label{subsec:field}
 Although Javassist does not support the access to local variable it provides a way for fields. Javassist allows modifying an expression in a method body with the class \code{Javassist.expt.ExprEditor}. In our case we only want to extract some information about the fields instead of any modification, nevertheless this class can be used appropriately. What it does is to scan the bytecodes on instructions like \textit{``putfield"} or \textit{``putstatic"}.
 
 There are only two instructions that indicates an access to a field, but there are actually many different types. To get the meaning of different types see the following list:
@@ -526,7 +552,6 @@ Depending on the category the field belongs, different kind of information is st
 \begin{figure}[H]
 \renewcommand\figurename{List}
 	\begin{boxedminipage}{\textwidth}
-		(\textbar\dots\textbar: put value on operand stack for assigning to a field)
 \begin{itemize}
 		\itemsep8pt
     \item fieldID (which is field or localVar)
@@ -880,9 +905,9 @@ This pseudocode will give a very rough idea how the invocation interval can be r
 
 \subsection{Obtaining Variable Data Difficulties - Fields}
 \label{subsec:variableDifficulties}
-We previously mentioned that NullSpy first collects data about fields and we met some difficulties regarding this. By using the method \code{loopBody()} from class \code{Javassist.expt.ExprEditor} (\subsecref{fields}) for gathering information caused those troubles because it loops through the GIVEN \code{methodInfo} which contains the bytecode sequence of a method. Even after finding a field assignment and adding some additional bytecode to it, the method still iterates through the unchanged \code{methodInfo} it got as parameter without the additional bytecode. Getting the right start-pc of a field assignment is not a straight forward process as it may seem.
+We previously mentioned that NullSpy first collects data about fields and we met some difficulties regarding this. By using the method \code{loopBody()} from class \code{Javassist.expt.ExprEditor} (\subsecref{field}) for gathering information caused those troubles because it loops through the GIVEN \code{methodInfo} which contains the bytecode sequence of a method. Even after finding a field assignment and adding some additional bytecode to it, the method still iterates through the unchanged \code{methodInfo} it got as parameter without the additional bytecode. Getting the right start-pc of a field assignment is not a straight forward process as it may seem.
 
-After entered extra instructions the method \code{loopBody()} iterates onwards until it finds a key which indicates an access to a field. Normally, Javassist provides a method with which the start-pc of the field access can be find out easily, but in our case not due to bytecode alternation. This method returns the start-pc of the field as if there was no changes, however it actually has to return a bigger start-pc than it does. The start-pc is needed to distinguish in what category the field has to be assigned to (\subsecref{fields}).
+After entered extra instructions the method \code{loopBody()} iterates onwards until it finds a key which indicates an access to a field. Normally, Javassist provides a method with which the start-pc of the field access can be find out easily, but in our case not due to bytecode alternation. This method returns the start-pc of the field as if there was no changes, however it actually has to return a bigger start-pc than it does. The start-pc is needed to distinguish in what category the field has to be assigned to (\subsecref{field}).
 
 To find the right start-pc of the field assignment, we compare the start-pc returned by a method of Javassist with the \code{afterStorePc} of the previously found field assignment. Every time an assignment is found we store it as a reference for the next assignment to obtain the right data. Even for the store-pc of an assignment (\textit{``put.*"} the last found field is essential. If there is more interest how those pcs are obtained, please see the class \code{FieldAnalyzer}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller}.}.
 

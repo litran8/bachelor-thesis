@@ -124,9 +124,10 @@ This chapter provides a short overview of technologies used in the implementatio
 
 \section{Bytecode}
 \label{sec:bytecode}
-What NullSpy primary does, is to analyze and modify bytecode. That is why we will describe how bytecode looks like and explain some terms we will often use in this thesis. We start with an example to make it easier to understand.
+\ugh{What NullSpy primary does, is to analyze and modify bytecode.}\brs{what does it do secondary? Use something like ``The backbone of NullSpy is analysis and modification of Java byte code'' } That is why we \del{will} describe \chg{how}{the Java } bytecode \del{looks like} and explain some terms we will \chg{often use}{use often} in this thesis. We start with an example to make it easier to understand.
+\brs{What example? also, what is bytecode?}
 
-\begin{Java}[caption={Hello World example}, label={code:helloWorld}][H]
+\begin{Java}[caption={Hello World exampld\brs{mentioned way to late in text}}, label={code:helloWorld}][H]
 public class HelloWorld {
 	private String hello = "Hello World!";
 
@@ -156,12 +157,12 @@ public void say();
 			[pc: 5, pc: 13] local: result index: 1 type: java.lang.String
 \end{JVMIS}
 
-We are going to look only at the bytecode of method \code{say()}. Those green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} as a synonym for those instructions since it is a number that represents the operation to perform. Java bytecode is actually an abstract machine language that Java virutal machine can understand and execute. 
+We are going to look only at the bytecode of method \code{say()}. Those green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} as a synonym for those instructions since it is a number that represents the operation to perform. Java bytecode is actually an abstract machine language that Java virutal machine can understand and execute. \brs{aha, here it is! now I know what bytecode is after reading 2 paragraphs about it. Say first what it is, say that it's stack based, and then show an example of the instructions so the reader knows what they are looking at in the example.}
 
-On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that indicates where a computer is located in its program sequence. It is also called instruction pointer. Here, we use these pcs also as an indexation. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents something. This term will play an important role in \subsecref{methodReceiver}.
-On the right-side it shows the name and type of variables, or in case of an invocation the behavior\/method name and the parameters it takes \etc. In \secref{lowLevelOverview} we will see how they are used.
+On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that \ugh{indicates where a computer is located in its program sequence}\brs{what?}. It is also called instruction pointer. \chg{Here, we}{We} use these pcs also as an \chg{indexation}{index in to the bytecode}. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents something\brs{give an example of what that something can be. I'm thinking pc-interval is an instruction-set that represents a crocodile. a crocodile is a something right?}. This term will play an important role in \subsecref{methodReceiver}\brs{just say ``further in the thesis'', it's not important in which exact section at this point}.
+\brs{You have been talking about other stuff for a while, remind the reader about the xample \eg ``Going back to the example shown in bytecode bla bla, we can see ''}On the right-side it shows the name and type of variables, or in case of an invocation the behavior\/method name and the parameters it takes \etc. In \secref{lowLevelOverview} we will see how \chg{they are}{this information is} used.
 
-Underneath the instructions we find the \textit{line number table}. It maps the pc with the source code line. The numbers at the end of the lines in \boxref{stackTrace} indicate the lines of code that caused the \npe. Since NullSpy adds a link to the common stack trace it needs this table to extract the right line number. In \secref{lowLevelOverview} we will discuss more about the \textit{line number} and \textit{local variable attribute}.
+Underneath the instructions we find the \textit{line number table}. It maps the pc \chg{with}{to} the source code line. The numbers at the end of the lines in \boxref{stackTrace} indicate the lines of code that caused the \npe. \ugh{Since NullSpy adds a link to the common stack trace it needs this table to extract the right line number.}\brs{just say that this information is used to recover where the null was assigned} In \secref{lowLevelOverview} we will discuss more about the \textit{line number} and \textit{local variable attribute}.
 
 \section{Javassist}
 \label{sec:javassist}

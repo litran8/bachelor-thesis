@@ -166,7 +166,7 @@ Underneath the instructions we find the \textit{line number table}. It maps the 
 
 \section{Javassist}
 \label{sec:javassist}
-\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}~\cite{Chib00}~\cite{Chib03}, a subproject of Jboss, is a class library which enables manipulation of the Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way. Examples of this manipulation include defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. A tutorial for using Javassist\footnote{\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}} is available online and was used as a starting point for this work.
+\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}~\cite{Chib00}~\cite{Chib03}, a subproject of Jboss, is a \ugh{class} library which enables manipulation of the Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way. Examples of this manipulation include defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. A tutorial for using Javassist\footnote{\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}} is available online and was used as a starting point for this work.
 
 \begin{figure}[H]
 \centering
@@ -175,12 +175,12 @@ Underneath the instructions we find the \textit{line number table}. It maps the 
   \label{fig:bytecodeModificationLevels}
 \end{figure}
 
-Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level (See \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
+Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level (See \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.}\brs{not sure how this figure shows 2 levels of apis}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
 
-At this point, let us look at a small example of how the bytecode manipulation works.
+At this point, let us look at a small example\brs{what example?} of how the bytecode manipulation works.
 
 \renewcommand\lstlistingname{Code}
-\begin{Java}[caption={Javassist example. This example is taken from the Javassist tutorial.}, label={code:javassistExample}][H]
+\begin{Java}[caption={Javassist example. This example is taken from the Javassist tutorial.\brs{never mentioned in text}}, label={code:javassistExample}][H]
 ClassPool pool = ClassPool.getDefault();
 CtClass cc = pool.get("test.Rectangle");
 cc.setSuperclass(pool.get("test.Point"));
@@ -192,7 +192,7 @@ cc.writeFile();
 	
 	\item The class \textit{CtClass} (compile-time class) represents the class file meaning that all manipulations are performed on the \textit{CtClass} object. We obtain a reference to the \textit{CtClass} object representing the \code{test.Rectangle} class by invoking the \code{get()} method on the \textit{ClassPool} instance.
 	
-	\item In this example the superclass of \code{test.Rectangle} is simply changed to \code{test.Point}.
+	\item In this example \chg{the superclass of \code{test.Rectangle} is simply changed to \code{test.Point}}{the only bytecode modification done is changing the superclass of \code{test.Rectangle} to \code{test.Point}}.
 	\item Once the bytecode modification is done, the method call \code{writeFile()} on the instance of \textit{CtClass} is necessary to make sure that the changes are reflected on the original class file.
 \end{enumerate}
  
@@ -203,7 +203,7 @@ cc.writeFile();
   \label{fig:javassistModules}
 \end{figure}
 
-\figref{javassistModules}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} gives an overview of how the main part of bytecode manipulation with Javassist is built up. The \textit{ClassPool} is simply a container of multiple \textit{CtClasses}. As described before \textit{CtClass} represents class files on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors, fields, method invocations, local variables \etc But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of the method body or at the end or at a specific line. The next example shows how to add code using Javassist.
+\figref{javassistModules}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} gives an overview of how the main part of bytecode manipulation with Javassist is built up. The \textit{ClassPool} is simply a container of multiple \textit{CtClasses}. As described before \textit{CtClass} represents class files on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors, fields, method invocations, local variables \etc But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of the method body\chg{ or}{, } at the end or at a specific line. The next example shows how to add code using Javassist.
 
 \begin{Java}[caption={Initial code.}, label={code:initialCode}][H]
 public static void main(String[] args) {
@@ -220,7 +220,7 @@ public static void main(java.lang.String[]);
   8: return
 \end{JVMIS}
 
-We want to add one line of code at the beginning of \coderef{initialCode}. \bytecoderef{initialBytecode} is the corresponding bytecode of \coderef{initialCode}.
+We want to add one line of code at the beginning of \ins{the main method in} \coderef{initialCode}. \bytecoderef{initialBytecode} is the corresponding bytecode of \coderef{initialCode}.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Bytecode modifier.}, label={code:bytecodeModifier}][H]
@@ -241,7 +241,7 @@ public class BytecodeModifier {
 
 With \coderef{bytecodeModifier} we obtain a \textit{CtClass} object \code{cc} at line 5 which represents the class to be modified. At line 7 we get the method we want to modify by adding some source code: \code{System.out.println(``This is the inserted code.'');}. Javassist takes a \textit{java.lang.String} object, compiles it automatically and adds it into the bytecode at the specified location, in our situation at the beginning of the \code{main()} method.
 
-Below the result, how the \code{main()} method looks like after the modification. At line 2 we see the inserted code. 
+Below \ins{is} the result\chg{,}{\ie} how the \code{main()} method looks like after the modification\brs{this is not really true since the source code was not modified. Say that this main method is equivalent to what we achieved with javastis}. At line 2 we see the inserted code. 
 
 \begin{Java}[caption={Instrumented code: Decompiled with JAD (\secref{jad})}, label={code:instrumentedCodeDecompiled}][H]
 public static void main(String args[]) {
@@ -250,7 +250,7 @@ public static void main(String args[]) {
 }
 \end{Java}
 
-And of course the \bytecoderef{modifiedBytecode} has changed since Javassist added additional bytecode. The pc-interval [0,3,5] represents the added code.
+And of course the \bytecoderef{modifiedBytecode} has changed since Javassist added additional bytecode. The pc-interval [0,3,5] \brs{not a fan on the [] notation, easily confused with references, use something else} represents the added code.
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[caption={Modified bytecode.}, label={bytecode:modifiedBytecode}, breaklines=true][H]
@@ -276,9 +276,9 @@ public static void main(java.lang.String[]);
 
 \section{JAD}
 \label{sec:jad}
-Java Decompier (JAD)\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and a Eclipse plugin for the programming language Java. A decompiler is a program that takes an executable file as input, and attempts to create a high level, compatible source file. If the source file is compiled again, it will produce an executable program that behaves the same way as the original one. It is often used in software reverse engineering.
+Java Decompier (JAD)\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and \chg{a}{an} Eclipse plugin for the programming language Java. A decompiler is a program that takes an executable file as input, and attempts to create a high level, compatible source file. If the source file is compiled again, it will produce an executable program that behaves the same way as the original one. It is often used in software reverse engineering.
 
-The example \bytecoderef{jad} is decompiled by JAD and the result is the source code right under the example. It is also a good opportunity to present how bytecode looks like.
+The example \bytecoderef{jad} is decompiled by JAD and the result is the source code right under the example. It is also a good opportunity to present \chg{how}{what} bytecode looks like\brs{looks like -> what, behaves, works, any other action -> how. Also, didn't we have a whole section on bytecode? why is now a good opportunity to present what it looks like? we saw a ton of it 2 sections ago!}.
 
 \begin{JVMIS}[caption={Bytecode example.}, label={bytecode:jad}, breaklines=true]
 public void itemStateChanged(java.awt.event.ItemEvent e);
@@ -310,7 +310,7 @@ public void itemStateChanged(ItemEvent e) {
 }
 \end{Java}
 
-JAD is in no way a dependency of NullSpy but it was a big help during the implementation phase. Since after running NullSpy on a project only the modified bytecode is available. The use of JAD is for the sake of debugging Nullspy; to check whether the modification by Javassist, \ie inserting source code, has succeeded. Another way to check the result for correctness is looking at bytecode itself but that would have taken a lot more effort and time.
+JAD is in no way a dependency of NullSpy but it was a big help during the implementation phase\del{.} Since after running NullSpy on a project only the modified bytecode is available. The use of JAD is for the sake of debugging Nullspy; to check whether the modification by Javassist, \ie inserting source code, \chg{has succeeded}{was successful}. Another way to check the result for correctness is looking at bytecode itself but that would have taken a lot more effort and time.
 
 \chapter{NullSpy}
 As explained in \charef{introduction}, this project is about providing the user with an additional stack trace containing the information on where the null is assigned to the variable that caused the \npe. In short, the exact location of where a variable was assigned null will be revealed. We will use the term \mr to refer to the variable or object a method is invoked on and that caused the \npe.

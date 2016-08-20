@@ -27,13 +27,13 @@ By tracking the null assignments through static analysis and instrumentation of 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
 \label{ch:introduction}
-Nowadays, practically all Java developers are at some point confronted with \npes in both big and small Java projects, whether it is for an enterprise or for private purposes. Previous research has found that 35\% of conditional checks in Java projects are null checks~\cite{Osma15a}. This reduces the readability of source code and has a negative impact on performance~\cite{Osma15a}. It is also considered the number one error Java programmers make\footnote{\url{http://www.javacoffeebreak.com/articles/toptenerrors.html}}.
+Nowadays, practically all Java developers are at some point confronted with \npes in both big and small Java projects\del{, whether it is for an enterprise or for private purposes}. Previous research has found that 35\% of conditional checks in Java projects are null checks~\cite{Osma15a}. This reduces the readability of source code and has a negative impact on performance~\cite{Osma15a}. It is also considered the number one error Java programmers make\footnote{\url{http://www.javacoffeebreak.com/articles/toptenerrors.html}}.
 
-\Npe is a commonly occurring \rte in object-oriented languages. There is a special value \textit{null} that is assigned to pointers to indicate that the pointer does not point to an object. The cause of \npes is a method invocation on an object assigned the value null or an attempt to access a field of an object referring to the null value. This object reference can be, \eg a local variable, an instance field, an element of a collection or a return value of a function.
+\Npe is a commonly occurring \rte in object-oriented languages. \ins{In most OOP languages }There is a special value \ins{called} \textit{null} that is assigned to pointers\ins{ (or references)} \ins{in order }to indicate that the pointer does not point to an object. \chg{The cause of \npes is a method invocation on an object assigned the value null or an attempt to access a field of an object referring to the null value}{A \npe are caused by invoking a method or accessing a field through a null value reference }. \del{This object reference can be, \eg a local variable, an instance field, an element of a collection or a return value of a function.}\brs{this sentence does not add anything}
 
-Now we will present two different situations in which a \npe can be thrown.
+\chg{Now we will}{To better understand occurrences of \npes we} present two different situations in which a \npe can be thrown.
 
-\begin{Java}[caption={\Npe example (I).}, label={code:npeExampleMethodReceiver}]
+\begin{Java}[caption={\Npe example (I).\brs{why is code not floating? Apply globaly.}\brs{the more interesting parts should be bolded \ie the ff variable.}}, label={code:npeExampleMethodReceiver}]
 public void drop(DropTargetDropEvent dtde) {
 	//...
 	try {
@@ -53,7 +53,7 @@ public void drop(DropTargetDropEvent dtde) {
 }
 \end{Java}
 
-Lets say that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable at line 5 is assigned the null value by the return value of the function \code{DNDHelper.processReceivedData()}. So the variable (\code{ff} at line 9) is null and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception. The stack trace only takes the developer to line 7 where the exception is caused but not to the real culprit which is the assignment at line 5. This is a very simple example and the easiest way to produce a \npe\brs{it's really not a simple example, we might consider finding a simpler one}\nm{I agree with Boris. This casting, for example, does not anything to do with the point of the example, and arguments in the method are too long, so they just hamper it.}\lt{Can I replace the parameters with ``...''?}.
+\chg{Lets say}{Assume} that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \ins{\code{ff}} at line 5 is assigned the null value \chg{by}{from} the return value of the function \code{DNDHelper.processReceivedData()}. \chg{So}{This means that } the \ins{same} variable \del{(}\code{ff} \del{at line 9)} is \ugh{null}\brs{should be emph or code} \ins{at line 9 }and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception \ins{by printing the stack trace}. The stack trace \del{only} takes the developer to line 7 where the exception \chg{is}{was} caused but not to the real culprit which is the assignment at line 5. This is a very simple example and the easiest way to produce a \npe\brs{it's really not a simple example, we might consider finding a simpler one}\nm{I agree with Boris. This casting, for example, does not anything to do with the point of the example, and arguments in the method are too long, so they just hamper it.}\lt{Can I replace the parameters with ``...''?}\brs{Please do, also remove the cast}.
 
 \begin{Java}[caption={\Npe example (II).}, label={code:npeExampleFieldAccess}]
 public class DrawApplication extends JFrame implements DrawingEditor,
@@ -87,13 +87,13 @@ public class DrawApplication extends JFrame implements DrawingEditor,
 }
 \end{Java}
 
-A more complicated way a \npe can be thrown is \ie in a field access situation. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation. 
+A more complicated way a \npe can be \chg{thrown}{triggered} is \del{\ie}{\ie means "that is" or "to be more precise" so it's not applicable here} \chg{in a field access situation}{when it involves variables with larger scopes such as class members}. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation. 
 
-We assume now that the class instance \code{fManager} (line 4) is initialized with the value null by invoking \code{getIconkitManager()} at line 19 in method \code{createIconkit()} (line 18).
+We assume now that the \ugh{class instance}\brs{a class instance is an object, I think you want to say class member, or field} \code{fManager} (line 4) is initialized with the value null by invoking \code{getIconkitManager()} at line 19 in method \code{createIconkit()} (line 18). \brs{maybe add a ``main'' that the reader can follow, it's kind of confusing like this}
 
-The execution flow which causes the \npe starts with the method \code{open()} at line 6. What it does is only calling another method with the same name but with parameters \code{open(...)}. This method \code{open(...)} invokes methods at line 12 that sets the field \code{fManager} to null as described before. Then it calls \code{setTool(...)} at line 14 which will cause the \npe. 
+The execution flow which causes the \npe starts with the method \code{open()} at line 6. \chg{What it does is}{It} \del{only} call\chg{ing}{s} another method with the same name but with parameters \code{open(...)}. This method \code{open(...)} invokes methods at line 12 that sets the field \code{fManager} to null as described before. Then it calls \code{setTool(...)} at line 14 which will cause the \npe. \brs{we really need to simplify this example, having open() call open(bla) is pointless.}
 
-In method \code{setTool(...)} (line 23) the \npe is finally thrown by the method invocation or field access at line 25 \code{fManager.getComponent()}. The resulting \npe stack trace is shown in \boxref{stackTrace}:
+In method \code{setTool(...)} (line 23) the \npe is finally thrown by the method invocation \del{or field access} at line 25 \del{\code{fManager.getComponent()}}. The resulting \npe stack trace is shown in \boxref{stackTrace}:
 
 \begin{figure}[H]
 \renewcommand\figurename{Box}
@@ -109,11 +109,11 @@ In method \code{setTool(...)} (line 23) the \npe is finally thrown by the method
 	\label{box:stackTrace}
 \end{figure}
 
-In \boxref{stackTrace} we can see that the stack trace does not track to the root of the \npe. We call the location where the variable was assigned the null value the root of an exception. That means the Java developer has to debug her way to the exception root.
+In \boxref{stackTrace} we can see that the stack trace does not track to the \ugh{root}\brs{use of undefined variable root before definition. This should say ``...does not track to the location where the variable is assigned the null value. We call this location the root of an exception} of the \npe. We call the location where the variable was assigned the null value the root of an exception. That means the Java developer has to debug her way to the exception root.
 
-All too often programmers states that they are trying to fix bugs or have spent a lot of time fixing them. Of course not all of the bugs are \npes but there could be few of them. If there would be a way to minimize the time fixing exceptions and allow to work more efficiently, projects would progress much faster.\nm{Rewrite: yes, developers deal with a lot of problems caused by null pointer exception, and you should find some paper to reference that.}\lt{can't find papers!}\brs{skipped this paragraph, let's sync}
+\ugh{All too often programmers states that they are trying to fix bugs or have spent a lot of time fixing them. Of course not all of the bugs are \npes but there could be few of them. If there would be a way to minimize the time fixing exceptions and allow to work more efficiently, projects would progress much faster.}\nm{Rewrite: yes, developers deal with a lot of problems caused by null pointer exception, and you should find some paper to reference that.}\lt{can't find papers!}\brs{skipped this paragraph, let's sync}
 
-At this point we would like to introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. In other words its main goal is to take a step on minimizing the debugging time. The intention behind NullSpy is to present the developers the exact location of the null assignment next to the ordinary stack trace.
+At this point we \del{would like to}\brs{you are the author, I don't care what you would like to do, I care about what you did do} introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. In other words \chg{its}{the} main goal \ins{of NullSpy} is to take a step \chg{on}{towards} minimizing the \ins{time spent }debugging \chg{time}{\npes}. The intention behind NullSpy is to\ins{, once an unhandled \npe has occurred,} present the developers the exact location of the null assignment next to the ordinary stack trace.
 
 In this thesis we explain how the goal mentioned above is achieved and we also discuss the challenges, the limitations and performance impact of the approach.
 
@@ -124,9 +124,10 @@ This chapter provides a short overview of technologies used in the implementatio
 
 \section{Bytecode}
 \label{sec:bytecode}
-What NullSpy primary does, is to analyze and modify bytecode. That is why we will describe how bytecode looks like and explain some terms we will often use in this thesis. We start with an example to make it easier to understand.
+\ugh{What NullSpy primary does, is to analyze and modify bytecode.}\brs{what does it do secondary? Use something like ``The backbone of NullSpy is analysis and modification of Java byte code'' } That is why we \del{will} describe \chg{how}{the Java } bytecode \del{looks like} and explain some terms we will \chg{often use}{use often} in this thesis. We start with an example to make it easier to understand.
+\brs{What example? also, what is bytecode?}
 
-\begin{Java}[caption={Hello World example}, label={code:helloWorld}][H]
+\begin{Java}[caption={Hello World exampld\brs{mentioned way to late in text}}, label={code:helloWorld}][H]
 public class HelloWorld {
 	private String hello = "Hello World!";
 
@@ -156,16 +157,16 @@ public void say();
 			[pc: 5, pc: 13] local: result index: 1 type: java.lang.String
 \end{JVMIS}
 
-We are going to look only at the bytecode of method \code{say()}. Those green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} as a synonym for those instructions since it is a number that represents the operation to perform. Java bytecode is actually an abstract machine language that Java virutal machine can understand and execute. 
+We are going to look only at the bytecode of method \code{say()}. Those green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} as a synonym for those instructions since it is a number that represents the operation to perform. Java bytecode is actually an abstract machine language that Java virutal machine can understand and execute. \brs{aha, here it is! now I know what bytecode is after reading 2 paragraphs about it. Say first what it is, say that it's stack based, and then show an example of the instructions so the reader knows what they are looking at in the example.}
 
-On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that indicates where a computer is located in its program sequence. It is also called instruction pointer. Here, we use these pcs also as an indexation. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents something. This term will play an important role in \subsecref{methodReceiver}.
-On the right-side it shows the name and type of variables, or in case of an invocation the behavior\/method name and the parameters it takes \etc. In \secref{lowLevelOverview} we will see how they are used.
+On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that \ugh{indicates where a computer is located in its program sequence}\brs{what?}. It is also called instruction pointer. \chg{Here, we}{We} use these pcs also as an \chg{indexation}{index in to the bytecode}. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents something\brs{give an example of what that something can be. I'm thinking pc-interval is an instruction-set that represents a crocodile. a crocodile is a something right?}. This term will play an important role in \subsecref{methodReceiver}\brs{just say ``further in the thesis'', it's not important in which exact section at this point}.
+\brs{You have been talking about other stuff for a while, remind the reader about the xample \eg ``Going back to the example shown in bytecode bla bla, we can see ''}On the right-side it shows the name and type of variables, or in case of an invocation the behavior\/method name and the parameters it takes \etc. In \secref{lowLevelOverview} we will see how \chg{they are}{this information is} used.
 
-Underneath the instructions we find the \textit{line number table}. It maps the pc with the source code line. The numbers at the end of the lines in \boxref{stackTrace} indicate the lines of code that caused the \npe. Since NullSpy adds a link to the common stack trace it needs this table to extract the right line number. In \secref{lowLevelOverview} we will discuss more about the \textit{line number} and \textit{local variable attribute}.
+Underneath the instructions we find the \textit{line number table}. It maps the pc \chg{with}{to} the source code line. The numbers at the end of the lines in \boxref{stackTrace} indicate the lines of code that caused the \npe. \ugh{Since NullSpy adds a link to the common stack trace it needs this table to extract the right line number.}\brs{just say that this information is used to recover where the null was assigned} In \secref{lowLevelOverview} we will discuss more about the \textit{line number} and \textit{local variable attribute}.
 
 \section{Javassist}
 \label{sec:javassist}
-\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}~\cite{Chib00}~\cite{Chib03}, a subproject of Jboss, is a class library which enables manipulation of the Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way. Examples of this manipulation include defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. A tutorial for using Javassist\footnote{\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}} is available online and was used as a starting point for this work.
+\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}~\cite{Chib00}~\cite{Chib03}, a subproject of Jboss, is a \ugh{class} library which enables manipulation of the Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way. Examples of this manipulation include defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. A tutorial for using Javassist\footnote{\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}} is available online and was used as a starting point for this work.
 
 \begin{figure}[H]
 \centering
@@ -174,12 +175,12 @@ Underneath the instructions we find the \textit{line number table}. It maps the 
   \label{fig:bytecodeModificationLevels}
 \end{figure}
 
-Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level (See \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
+Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level (See \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.}\brs{not sure how this figure shows 2 levels of apis}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
 
-At this point, let us look at a small example of how the bytecode manipulation works.
+At this point, let us look at a small example\brs{what example?} of how the bytecode manipulation works.
 
 \renewcommand\lstlistingname{Code}
-\begin{Java}[caption={Javassist example. This example is taken from the Javassist tutorial.}, label={code:javassistExample}][H]
+\begin{Java}[caption={Javassist example. This example is taken from the Javassist tutorial.\brs{never mentioned in text}}, label={code:javassistExample}][H]
 ClassPool pool = ClassPool.getDefault();
 CtClass cc = pool.get("test.Rectangle");
 cc.setSuperclass(pool.get("test.Point"));
@@ -191,7 +192,7 @@ cc.writeFile();
 	
 	\item The class \textit{CtClass} (compile-time class) represents the class file meaning that all manipulations are performed on the \textit{CtClass} object. We obtain a reference to the \textit{CtClass} object representing the \code{test.Rectangle} class by invoking the \code{get()} method on the \textit{ClassPool} instance.
 	
-	\item In this example the superclass of \code{test.Rectangle} is simply changed to \code{test.Point}.
+	\item In this example \chg{the superclass of \code{test.Rectangle} is simply changed to \code{test.Point}}{the only bytecode modification done is changing the superclass of \code{test.Rectangle} to \code{test.Point}}.
 	\item Once the bytecode modification is done, the method call \code{writeFile()} on the instance of \textit{CtClass} is necessary to make sure that the changes are reflected on the original class file.
 \end{enumerate}
  
@@ -202,7 +203,7 @@ cc.writeFile();
   \label{fig:javassistModules}
 \end{figure}
 
-\figref{javassistModules}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} gives an overview of how the main part of bytecode manipulation with Javassist is built up. The \textit{ClassPool} is simply a container of multiple \textit{CtClasses}. As described before \textit{CtClass} represents class files on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors, fields, method invocations, local variables \etc But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of the method body or at the end or at a specific line. The next example shows how to add code using Javassist.
+\figref{javassistModules}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} gives an overview of how the main part of bytecode manipulation with Javassist is built up. The \textit{ClassPool} is simply a container of multiple \textit{CtClasses}. As described before \textit{CtClass} represents class files on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors, fields, method invocations, local variables \etc But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of the method body\chg{ or}{, } at the end or at a specific line. The next example shows how to add code using Javassist.
 
 \begin{Java}[caption={Initial code.}, label={code:initialCode}][H]
 public static void main(String[] args) {
@@ -219,7 +220,7 @@ public static void main(java.lang.String[]);
   8: return
 \end{JVMIS}
 
-We want to add one line of code at the beginning of \coderef{initialCode}. \bytecoderef{initialBytecode} is the corresponding bytecode of \coderef{initialCode}.
+We want to add one line of code at the beginning of \ins{the main method in} \coderef{initialCode}. \bytecoderef{initialBytecode} is the corresponding bytecode of \coderef{initialCode}.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Bytecode modifier.}, label={code:bytecodeModifier}][H]
@@ -240,7 +241,7 @@ public class BytecodeModifier {
 
 With \coderef{bytecodeModifier} we obtain a \textit{CtClass} object \code{cc} at line 5 which represents the class to be modified. At line 7 we get the method we want to modify by adding some source code: \code{System.out.println(``This is the inserted code.'');}. Javassist takes a \textit{java.lang.String} object, compiles it automatically and adds it into the bytecode at the specified location, in our situation at the beginning of the \code{main()} method.
 
-Below the result, how the \code{main()} method looks like after the modification. At line 2 we see the inserted code. 
+Below \ins{is} the result\chg{,}{\ie} how the \code{main()} method looks like after the modification\brs{this is not really true since the source code was not modified. Say that this main method is equivalent to what we achieved with javastis}. At line 2 we see the inserted code. 
 
 \begin{Java}[caption={Instrumented code: Decompiled with JAD (\secref{jad})}, label={code:instrumentedCodeDecompiled}][H]
 public static void main(String args[]) {
@@ -249,7 +250,7 @@ public static void main(String args[]) {
 }
 \end{Java}
 
-And of course the \bytecoderef{modifiedBytecode} has changed since Javassist added additional bytecode. The pc-interval [0,3,5] represents the added code.
+And of course the \bytecoderef{modifiedBytecode} has changed since Javassist added additional bytecode. The pc-interval [0,3,5] \brs{not a fan on the [] notation, easily confused with references, use something else} represents the added code.
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[caption={Modified bytecode.}, label={bytecode:modifiedBytecode}, breaklines=true][H]
@@ -275,9 +276,9 @@ public static void main(java.lang.String[]);
 
 \section{JAD}
 \label{sec:jad}
-Java Decompier (JAD)\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and a Eclipse plugin for the programming language Java. A decompiler is a program that takes an executable file as input, and attempts to create a high level, compatible source file. If the source file is compiled again, it will produce an executable program that behaves the same way as the original one. It is often used in software reverse engineering.
+Java Decompier (JAD)\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and \chg{a}{an} Eclipse plugin for the programming language Java. A decompiler is a program that takes an executable file as input, and attempts to create a high level, compatible source file. If the source file is compiled again, it will produce an executable program that behaves the same way as the original one. It is often used in software reverse engineering.
 
-The example \bytecoderef{jad} is decompiled by JAD and the result is the source code right under the example. It is also a good opportunity to present how bytecode looks like.
+The example \bytecoderef{jad} is decompiled by JAD and the result is the source code right under the example. It is also a good opportunity to present \chg{how}{what} bytecode looks like\brs{looks like -> what, behaves, works, any other action -> how. Also, didn't we have a whole section on bytecode? why is now a good opportunity to present what it looks like? we saw a ton of it 2 sections ago!}.
 
 \begin{JVMIS}[caption={Bytecode example.}, label={bytecode:jad}, breaklines=true]
 public void itemStateChanged(java.awt.event.ItemEvent e);
@@ -309,7 +310,7 @@ public void itemStateChanged(ItemEvent e) {
 }
 \end{Java}
 
-JAD is in no way a dependency of NullSpy but it was a big help during the implementation phase. Since after running NullSpy on a project only the modified bytecode is available. The use of JAD is for the sake of debugging Nullspy; to check whether the modification by Javassist, \ie inserting source code, has succeeded. Another way to check the result for correctness is looking at bytecode itself but that would have taken a lot more effort and time.
+JAD is in no way a dependency of NullSpy but it was a big help during the implementation phase\del{.} Since after running NullSpy on a project only the modified bytecode is available. The use of JAD is for the sake of debugging Nullspy; to check whether the modification by Javassist, \ie inserting source code, \chg{has succeeded}{was successful}. Another way to check the result for correctness is looking at bytecode itself but that would have taken a lot more effort and time.
 
 \chapter{NullSpy}
 As explained in \charef{introduction}, this project is about providing the user with an additional stack trace containing the information on where the null is assigned to the variable that caused the \npe. In short, the exact location of where a variable was assigned null will be revealed. We will use the term \mr to refer to the variable or object a method is invoked on and that caused the \npe.

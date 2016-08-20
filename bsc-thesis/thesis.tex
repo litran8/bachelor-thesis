@@ -521,7 +521,7 @@ The other information we need in addition to the line number are:
 		\item localVariableType
 		\item startPc
 		\item storePc
-		\item afterPc
+		\item afterPc (right before this pos additional bytecode is inserted)
 		\item className
 		\item behavior
 		\item localVariableAttributeIndex
@@ -534,9 +534,9 @@ The other information we need in addition to the line number are:
 
 \subsubsection{Instance and Class/Static variable (Field)}
 \label{subsec:field}
-Although Javassist does not support the access to local variable it provides a way for fields. Javassist allows modifying an expression in a method body with the class \code{Javassist.expt.ExprEditor}. In our case we only want to extract some information about the fields instead of any modification, nevertheless this class can be used appropriately. What it does is to scan the bytecodes on instructions like \textit{``putfield"} or \textit{``putstatic"}.
+Although Javassist does not support the access to local variable it provides a way for fields. Javassist allows modifying an expression in a method body with the class \code{Javassist.expt.ExprEditor}. In our case we only want to extract some information about the fields instead of any modification, nevertheless this class can be used appropriately. What it does is to scan the bytecodes on instructions like \textit{``putfiel''} or \textit{``putstatic''}.
 
-There are only two instructions that indicates an access to a field, but there are actually many different types. To get the meaning of different types see the following list:
+There are only two instructions that indicates an access to a field, but there are actually many different type of fields. To get the meaning of different types see the following list:
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
@@ -555,25 +555,24 @@ There are only two instructions that indicates an access to a field, but there a
 	\label{box:fieldKeywords}
 \end{figure}
 	
-Depending on the category the field belongs, different kind of information is stored. For fields 1-2 following information is needed and stored:
+Depending on the category the field belongs to, different kind of information is stored. Number 1\&2 indicate fields of the current analyzed class and the others are from nested or other classes. For fields 1\&2 following information is needed and stored:
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
 	\begin{boxedminipage}{\textwidth}
 \begin{itemize}
 		\itemsep8pt
-    \item fieldID (which is field or localVar)
-		\item fieldname
+    \item variableID (distinguishes whether the variable is a field or a local variable)
+		\item fieldName
 		\item fieldType
 		\item fieldDeclaringClassName (in which class it is instantiated)
 		\item isFieldStatic
 		\item fieldLineNumber
-		\item startPosition (nonstatic: this; static: value loading bytecode for assigning to the field)
-		\item storePosistion (putfield/putstatic)
-		\item afterStorePosition (right before this pos additional bytecode is inserted)
-		\item classWhereFieldIsAccessed (in this case the same as fieldDeclaringClassName)
-		\item behavior (method where it is accessed)
-		\item indirectVariable (null - explained immediately)
+		\item startPc 
+		\item storePc
+		\item afterPc (right before this pos additional bytecode is inserted)
+		\item classWhereFieldIsAccessed
+		\item behavior
    \end{itemize}
 	\end{boxedminipage}
 	\caption{Variable information (I).}

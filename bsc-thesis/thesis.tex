@@ -33,7 +33,7 @@ Nowadays, practically all Java developers are at some point confronted with \npe
 
 To better understand occurrences of \npes we present two different situations in which a \npe can be thrown.
 
-\begin{Java}[caption={\Npe example (I).\brs{why is code not floating? Apply globaly.}}, label={code:npeExampleMethodReceiver}]
+\begin{Java}[caption={\Npe example (I).}, label={code:npeExampleMethodReceiver}]
 public void drop(...) {
 	..
 	try {
@@ -121,9 +121,9 @@ This chapter provides a short overview of technologies used in the implementatio
 \label{sec:bytecode}
 The backbone of NullSpy is analysis and modification of Java bytecode. Java bytecode is an abstract machine language that the stack-based Java virutal machine (JVM) can understand and execute. The instructions JVM executes are \eg \textit{aload\_0}, \textit{putfield}, \textit{invokevirtual} and so on.
 
-Since bytecode plays an important role in our project, we will describe the Java bytecode and explain some terms we will use often in this thesis. We start with an easy \textit{HelloWorld} bytecode example \bytecoderef{helloWorld} to make it easier to understand.
+Since bytecode plays an important role in our project, we will describe the Java bytecode and explain some terms we will use often in this thesis. We start with an easy \textit{HelloWorld} source code and its \bytecoderef{helloWorld} example to make it easier to understand.
 
-\begin{Java}[caption={Hello World example\brs{mentioned way to late in text}}, label={code:helloWorld}][H]
+\begin{Java}[caption={Hello World example.\brs{mentioned way to late in text}\lt{don't understand...}}, label={code:helloWorld}][H]
 public class HelloWorld {
 	private String hello = "Hello World!";
 
@@ -135,7 +135,7 @@ public class HelloWorld {
 \end{Java}
 
 \renewcommand\lstlistingname{Bytecode}
-\begin{JVMIS}[caption={Bytecode of \coderef{helloWorld}}, label={bytecode:helloWorld}, breaklines=true][H]
+\begin{JVMIS}[caption={Bytecode of \coderef{helloWorld}.}, label={bytecode:helloWorld}, breaklines=true][H]
 public void say();
 	 0  aload_0 [this]
 	 1  getfield HelloWorld.hello : java.lang.String [14]
@@ -155,7 +155,7 @@ public void say();
 
 We are going to look only at the bytecode of method \code{say()}. Those green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} as a synonym for those instructions since it is a number that represents the operation to perform.
 
-On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that \ugh{indicates where a computer is located in its program sequence}\brs{what?}. It is also called instruction pointer. We use these pcs also as an index in to the bytecode. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis.
+On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that \ugh{indicates where a computer is located in its program sequence}\brs{what?}\lt{after executing an instruction it increments. like this we always know where the computer is located in his work sequence. should i take this out or rephrase it?}. It is also called instruction pointer. We use these pcs also as an index in to the bytecode. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis.
 
 Going back to the example shown in \bytecoderef{helloWorld}, we can see on the right-side  the name and type of variables, or in case of an invocation the behavior/method name and the parameters it takes \etc. In \secref{lowLevelOverview} we will see how this information is used.
 
@@ -163,7 +163,7 @@ Underneath the instructions we find the \textit{line number table}. It maps the 
 
 \section{Javassist}
 \label{sec:javassist}
-\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}~\cite{Chib00}~\cite{Chib03}, a subproject of Jboss, is a \ugh{class}\lt{\url{http://jboss-javassist.github.io/javassist/} describes Javassist as a class library} library which enables manipulation of the Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way. Examples of this manipulation include defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. A tutorial for using Javassist\footnote{\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}} is available online and was used as a starting point for this work.
+\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}~\cite{Chib00}~\cite{Chib03}, a subproject of Jboss, is a \ugh{class}\lt{\url{http://jboss-javassist.github.io/javassist/} describes Javassist as a class library. delete class and just use library?} library which enables manipulation of the Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way. Examples of this manipulation include defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. A tutorial for using Javassist\footnote{\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}} is available online and was used as a starting point for this work.
 
 \begin{figure}[H]
 \centering
@@ -172,7 +172,7 @@ Underneath the instructions we find the \textit{line number table}. It maps the 
   \label{fig:bytecodeModificationLevels}
 \end{figure}
 
-Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level (See \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.}\brs{not sure how this figure shows 2 levels of apis}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
+Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level (See \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.}\brs{not sure how this figure shows 2 levels of apis}\lt{Javasist is positioned in the middle. That means it is able to use the low level (bytecode) and the high level (source cole) api. remove this picture or describe it?}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
 
 At this point, let us look at the small example \coderef{javassistExample}\footnote{Example taken from Javassist tutorial.} of how the bytecode manipulation works.
 
@@ -217,7 +217,7 @@ public static void main(java.lang.String[]);
   8: return
 \end{JVMIS}
 
-We want to add one line of code at the beginning of the main method in \coderef{initialCode}. \bytecoderef{initialBytecode} is the corresponding bytecode of \coderef{initialCode}.
+We want to add one line of code at the beginning of the \code{main()} method in \coderef{initialCode}. \bytecoderef{initialBytecode} is the corresponding bytecode of \coderef{initialCode}.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Bytecode modifier.}, label={code:bytecodeModifier}][H]
@@ -1028,7 +1028,7 @@ Happily, we could say here that we successfully managed to meet the main purpose
 
 \item Again collecting data, but this time about variable assignments namely local variables and fields. Here next to the static bytecode analysis additional instructions are inserted to the class files to check right after the assignment if the variable is assigned to the special value \code{null}. If this is the case everything about the variable is stored in a HashMap which serves for a comparison too. It is stored in a HashMap because if a variable is assigned to another object than null, it will be deleted from the HashMap.
 
-\item NullSpy does only handle the uncaught \npe which means we can wrap up the main method with a catch block. In this catch block the class name and the line number where the \npe occurred is extracted from the stack trace. This information is passed to a method in which the parameter helps to find the guilty \mr. With the hit the exact location where that variable was set to null can be derived from the HashMap.
+\item NullSpy does only handle the uncaught \npe which means we can wrap up the \code{main()} method with a catch block. In this catch block the class name and the line number where the \npe occurred is extracted from the stack trace. This information is passed to a method in which the parameter helps to find the guilty \mr. With the hit the exact location where that variable was set to null can be derived from the HashMap.
 
 \item All the additional needed classes are added to the project after it is modified and stored in a folder the user has chosen. Being able to run the modified project of course a jar file is created. In our case JHotDraw already provides a \textit{build.xml} which we had to alternate a little bit.
 \end{enumerate}

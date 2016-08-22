@@ -145,8 +145,8 @@
 \renewcommand{\lstlistingname}{Code}% Listing -> Algorithm
 \renewcommand{\lstlistlistingname}{List of \lstlistingname s}% List of Listings -> List of Algorithms
 
-\lstnewenvironment{Java}[1][H]
-{\lstset{
+\lstnewenvironment{Java}[1][H] {
+\lstset{
 	language=Java,
 	basicstyle=\footnotesize\ttfamily,
 	keywordstyle=\color{javapurple}\bfseries,
@@ -164,7 +164,8 @@
 	captionpos=b,
 	frame=single,
 	%float,
-	#1
+	#1,
+	escapeinside={(@}{@)}
 }}
 {}
 

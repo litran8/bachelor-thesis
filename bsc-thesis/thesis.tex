@@ -494,7 +494,7 @@ After extracting the slot (\ie index: 2) of the local variable we will get the f
   [pc: 16, line: 30]
 \end{JVMIS}
 
-Each method of a class file does not only hold a local variable table but also another attribute called line number attribute. This is the mapping table from pc to source code line number. That means after getting the pc of the local variable assignment we can obtain the right line number. The line number is essential for constructing the link which is added to the common exception stack trace.
+Each method of a class file does not only hold a local variable table but also another attribute called line number attribute. This is the mapping table from pc to source code line number. That means after getting the pc of the local variable assignment we can obtain the right line number. The line number is essential for constructing the link which will be added to the common exception stack trace.
 
 The other information we need in addition to the line number are: 
 
@@ -522,9 +522,9 @@ The other information we need in addition to the line number are:
 
 \subsubsection{Instance and Class/Static variable (Field)}
 \label{subsec:field}
-Although Javassist does not support the access to local variable it provides a way for fields. Javassist allows modifying an expression in a method body with the class \code{Javassist.expt.ExprEditor}. In our case we only want to extract some information about the fields instead of any modification, nevertheless this class can be used appropriately. What it does is to scan the bytecodes on instructions like \textit{``putfiel''} or \textit{``putstatic''}.
+Although Javassist does not support the access to local variable it provides a way for fields. Javassist allows modifying an expression in a method body with the class \code{Javassist.expt.ExprEditor}. In our case we only want to extract some information about the fields instead of any modification, nevertheless this class can be used appropriately. What it does is to scan the bytecodes on instructions like \textit{``putfield''} for instance or \textit{``putstatic''} for static variables.
 
-There are only two instructions that indicates an access to a field, but there are actually many different type of fields. To get the meaning of different types see the following list:
+There are only two instructions that indicates an access to a field, but there are actually many different types of field. To get the meaning of different types see the following list:
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
@@ -543,7 +543,7 @@ There are only two instructions that indicates an access to a field, but there a
 	\label{box:fieldKeywords}
 \end{figure}
 	
-Depending on the category the field belongs to, different kind of information is stored. Number 1\&2 indicate fields of the current analyzed class and the others are from nested or other classes. For fields 1\&2 following information is needed and stored:
+Depending on the category a field belongs to, different kind of information is stored about it. Number 1 in \boxref{fieldKeywords} indicates fields of the current analyzed class and number 3-5 are from nested or other classes. Number 2 can be static fields either of the current analyzed class or others classes. For field accessing 1\&2 following information is needed and stored:
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
@@ -559,7 +559,7 @@ Depending on the category the field belongs to, different kind of information is
 		\item startPc 
 		\item storePc
 		\item afterPc (right before this pos additional bytecode is inserted)
-		\item classWhereFieldIsAccessed
+		\item classWhereFieldIsAccessed (current analyzed class)
 		\item behavior
    \end{itemize}
 	\end{boxedminipage}
@@ -567,15 +567,16 @@ Depending on the category the field belongs to, different kind of information is
 	\label{box:variableInfo1}
 \end{figure}
 
-In NullSpy we call these fields \textit{``directFields"}. Reading \textit{``direct"} implicates that there must be something like \textit{``indirectFields"}, and that is right. As \textit{``indirectFields"} the fields 3-4 are numbered among. Everything before the instruction \textit{putfield} is termed as \textit{``indirectVariable"}. For those fields more data are needed to store for their identification. Nearly the same as above, except:
+In NullSpy we use the term \textit{member field} to describe a field of another class than the class being analyzed. Such fields are listed as number 3-5 in \boxref{fieldKeywords}. 
+We call everything before the instruction \textit{putfield} \textit{``member object''}. For those fields more data are needed to store for their identification.  Nearly the same as above, except:
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
 	\begin{boxedminipage}{\textwidth}
 \begin{itemize}
 \itemsep8pt
-      \item classWhereFieldIsAccessed (can be differend than fieldDeclaringClassName)
-\item indirectVariable:
+      \item classWhereFieldIsAccessed (can be different than the current analyzed class)
+\item indirectVariable: \lt{change to member object? also in code?}
 \begin{itemize}
 \item indirectVariableName
 \item indirectVariableType
@@ -589,10 +590,10 @@ In NullSpy we call these fields \textit{``directFields"}. Reading \textit{``dire
 	\label{box:variableInfo2}
 \end{figure}
 
-With a syntactic example we show how the instructions \textit{``putfield"} and \textit{``putstatic"} are used:
+With a syntactic example \coderef{fieldExample} we show how the instructions \textit{``putfield''} and \textit{``putstatic''} are used:
 
 \renewcommand\lstlistingname{Code}
-\begin{Java}[caption={Example: \textit{``putfield"} and \textit{``putstatic"}.}, label={code:instrExample}]
+\begin{Java}[caption={Example: \textit{``putfield''} and \textit{``putstatic''}.}, label={code:fieldExample}]
 public class A {
 
 	private B b = new B();
@@ -602,17 +603,19 @@ public class A {
 		
 		// |...|: value assigned
 		
-		// directFields
+		// fields
 		this.b = ...; // aload_0, |...|, putfield
 		b2 = ...; // |...|, putstatic
 
 		B b3 = new B();
 		
-		// indirectFields
+		// indirectFields (@\lt{member fields?}@)
 		b3.c = ...; // aload.*, (getfield)*, |...|, putfield
 		b3.c.d = ...
+		
 		b.c = ...; // aload_0, (getfield)+, |...|, putfield
 		b.c.d = ...;
+		
 		b2.c = ...; // getstatic, (getfield)*, |...|, putfield
 		b2.c.d = ...;
 	}
@@ -620,26 +623,96 @@ public class A {
 
 public class B {						
 	public C c = new C();																
-	...										
+	..									
 }				
 
 public class C {
 	public D d = new D();
-	...	
+	..
 }
 
 public class D {
-	...
+	..
 }
 \end{Java}
 
-Once the bytecode is modified, the way to get the data of fields needs some adaptation (see \subsecref{variableDifficulties}).
+While getting the data we are interested in to identify a field we encountered some difficulties which we will discuss in a separate subsection.
+
+Already mentioned before every time finding an assignment either of a local variable or a field, NullSpy enters bytecode to check the variable whether it is null. If the variable is assigned null, NullSpy stores all the data about it in a HashMap. How we insert bytecode is described next.  
 
 \subsection{Bytecode Adaptation}
 \label{bytecodeAdaptation}
-Each time encountering a variable assignment we first extract the needed data and directly after this we adapt the class file by adding extra bytecode right after the assignment bytecode to check whether the variable is null or not. If it is null, the information collected before is stored either into the \textit{``localVariableMap"} or into a \textit{``fieldMap"} which are HashMaps.
+Each time encountering a variable assignment we first extract the needed data and then we  adapt the class file by adding extra bytecode right after the assignment. The function of the entered bytecode is checking whether the variable is null or not. If it is null, the information collected before is stored either into the \textit{``localVariableMap''} or into a \textit{``fieldMap''} which are HashMaps.
 
-The added bytecode represents a static method of a class named \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}.} which will be added to the modified project after class file modification is done. Depending on the kind of variable analyzed at the moment different bytecode is constructed, meaning different method with different parameter/variable data is added.
+The added bytecode represents a static method of a class named \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}.} which will be added to the modified project after class file modification is done. Depending on the kind of variable analyzed at the moment different bytecode is constructed, which means the bytecode represents different methods which accepts different parameter/variable data.
+
+In \secref{javassist} we mentioned that the library makes it possible to modify bytecode either with the source- or bytecode-level API. Due to a limitation of Javassist (\secref{limitations}) we modify the class file at bytecode-level by creating a \textit{bytecode-array} and include it in the file. \coderef{bytecodeCreation} shows the way how the inserted bytecode is created.
+
+\lt{enter code byteceode construction}
+\begin{Java}[caption={Inserted bytecode(-array) creation.}, label={code:bytecodeCreation}, firstnumber=1]
+private byte[] getInsertCodeByteArray(Variable var) {
+	Bytecode testMethodByteCode = new Bytecode(cp);
+
+	testMethodByteCode.addLdc(behavior.getDeclaringClass()
+		.getName());
+	testMethodByteCode.addLdc(behavior.getName());
+	testMethodByteCode.addLdc(behavior.getSignature());
+	testMethodByteCode.addLdc(varID);
+	testMethodByteCode.addLdc(varName);
+	testMethodByteCode.addLdc(varType);
+	
+	Field field = (Field) var;
+
+	String classNameInWhichFieldIsInstantiated = field
+		.getFieldDeclaringClassName();
+
+	testMethodByteCode.addLdc(field.getFieldDeclaringClassName());
+
+	// int 1 -> static, 0 -> nonStatic
+	testMethodByteCode.addOpcode(Opcode.BIPUSH);
+	if (field.isStatic()) {
+		testMethodByteCode.add(1);
+	} else {
+		testMethodByteCode.add(0);
+	}
+	
+	testMethodByteCode.addAload(0);
+	testMethodByteCode.addGetfield(
+		classNameInWhichFieldIsInstantiated, varName, varType);
+
+	addIntegerToBytecode(testMethodByteCode, var.getVarLineNr());
+	addIntegerToBytecode(testMethodByteCode, var.getStartPos());
+	addIntegerToBytecode(testMethodByteCode, var.getStorePos());
+	addIntegerToBytecode(testMethodByteCode, var.getAfterPos());
+		
+	CtClass variableTester = ClassPool.getDefault().get(
+			"ch.unibe.scg.nullSpy.runtimeSupporter.VariableTester");
+	CtClass str = ClassPool.getDefault().get("java.lang.String");
+	CtClass object = ClassPool.getDefault().get("java.lang.Object");
+		
+	testMethodByteCode.addInvokestatic(variableTester,
+		"testDirectField", CtClass.voidType, new CtClass[] {
+			str, str, str, str, str, str, str,
+			CtClass.intType, object, CtClass.intType,
+			CtClass.intType, CtClass.intType,
+			CtClass.intType });
+								
+	byte[] byteCode = testMethodByteCode.get();
+
+	return byteCode;
+}
+\end{Java}
+
+\coderef{bytecodeCreation} is a code snippet from class \code{VariableTester}\textsuperscript{\ref{package1}} which NullSpy adds to the project after the bytecode modification. This snippet creates the static method invocation that tests whether a field is null. The header of that method is presented in 
+
+\begin{Java}[caption={Check field method header.}, label={code:checkFieldMethodHeader}, firstnumber=31]
+public static void testDirectField(String classNameInWhichVarIsUsed,
+			String behaviorName, String behaviorSignature, String varID,
+			String varName, String varType, String varDeclaringClassName,
+			int isStatic, Object varValue, int varLineNr, int startPos,
+			int storePos, int afterPos) {...}
+\end{Java}
+
 
 There were again some challenges we had to get over, like getting the wanted data after an instrumentation and entering the additional code in the right position of the bytecode sequence (\subsecref{bytecodeAdaptationDifficulties}).
 
@@ -674,28 +747,6 @@ Image image = Iconkit.instance().registerAndLoadImage(
 [pc: 3, line: 32]
 [pc: 11, line: 31]
 \end{JVMIS}
-
-
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=\linewidth]{multipleLine/pic4-1}
-%\caption{Method invocation split in two lines example.}
-%  \label{fig:pic4-1}
-%\end{figure}
-
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=\linewidth]{multipleLine/pic4-2}
-%\caption{Bytecode to \figref{pic4-1}.}
-%  \label{fig:pic4-2}
-%\end{figure}
-
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=0.3\linewidth]{multipleLine/pic4-3}
-%\caption{Line number table/interval to \figref{pic4-1}.}
-%  \label{fig:pic4-3}
-%\end{figure}
 
 Figure shows a normal method invocation which is split into two lines in source code. This cannot be figured out by just looking at the bytecode therefore the line number attribute (\coderef{lineNrTable}) has to be consulted too. There is no \mr in the figure because the \mr would contain a method invocation itself, what is not supported in NullSpy. Another \mrs NullSpy does not support are elements of collections due to its complex structures that can be stored in the collections.
 

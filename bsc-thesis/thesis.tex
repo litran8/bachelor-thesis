@@ -458,7 +458,7 @@ In the next two subsections we will look at how those information about the assi
 
 \subsubsection{Local Variable}
 \label{subsubsec:localVariable}
-Unfortunately, Javassist does not provide any support for gaining information about local variables that is why getting the needed data we had to understand how bytecode is constructed. At this point we would like to give a small bytecode introduction.
+Unfortunately, Javassist does not provide any support for gaining information about local variables\ins{.} \chg{that}{This} is why \chg{getting}{to get} the needed data we had to understand how \ins{the} bytecode is constructed. At this point we \del{would like to} give a small bytecode introduction\brs{shouldn't this be in the technical background}.
 
 \begin{figure}[H]
 \centering
@@ -467,7 +467,7 @@ Unfortunately, Javassist does not provide any support for gaining information ab
   \label{fig:localVarCreationBytecode}
 \end{figure}
 
-If a local variable is created, the value assigned to it is pushed onto the operand stack as we can see in \figref{localVarCreationBytecode}\footnote{Figure taken from \href{http://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html}{blog.jamesdbloom.com}.}. With the bytecode instruction \textit{``astore.*"} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables is composed of one, or in some cases two bytes. There are reserved machine commands for the first four local variables, index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted. In addition to storing local variable loading it from the local variable array is possible too, but of course again only with the local variable slot number.
+If a local variable is created, the value assigned to it is pushed onto the operand stack as we can see in \figref{localVarCreationBytecode}\footnote{Figure taken from \href{http://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html}{blog.jamesdbloom.com}.}. With the bytecode instruction \textit{``astore.*"} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables \chg{is}{are} composed of one, or in some cases two bytes. There are reserved \ugh{machine commands} for the first four local variables, index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted. In addition to storing local variable loading it from the local variable array is possible too, but of course again only with the local variable slot number. \brs{no idea what this paragraph is about}
 
 With this short introduction understanding the local variable table should be easier. Each method of a class file contains a local variable table (see \bytecoderef{localVarTable}) with which many information can be read out, \ie the lifespan of a local variable, what it is called, in which slot it is stored and what type it has.
 

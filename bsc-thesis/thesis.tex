@@ -7,17 +7,17 @@
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \chapter*{\centering Abstract}
 \begin{quotation}
-\noindent 
+\noindent
 A previous study found out that \npe are the most frequently occurring and difficult to debug exceptions in Java projects. They are difficult to debug because the developer is only provided with a stack trace to where the exception was thrown. This only gives insight into the effect of the fault but not into its cause.
 
-The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the \npe was actually set to null. We attempt to achieve this goal by instrumenting java source code striving for a minimal execution overhead. 
+The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the \npe was actually set to null. We attempt to achieve this goal by instrumenting java source code striving for a minimal execution overhead.
 
-By tracking the null assignments through static analysis and instrumentation of the bytecode we can achieve a more efficient debugging process after an occurrence of a \npe. 
+By tracking the null assignments through static analysis and instrumentation of the bytecode we can achieve a more efficient debugging process after an occurrence of a \npe.
 \end{quotation}
 \clearpage
 
 
-% C O N T E N T S 
+% C O N T E N T S
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \tableofcontents
 
@@ -57,11 +57,11 @@ Assume that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Cod
 public class DrawApplication {
 	..
 	private IconkitManager (@\textbf{fManager}@);
-	
+
 	public static void main(String[] args) {
 		open(...);
 	}
-	
+
 	protected void open(...) {
 		..
 		setIconkit(createIconkit());
@@ -69,12 +69,12 @@ public class DrawApplication {
 		setTool(...);
 		..
 	}
-		
+
 	protected Iconkit createIconkit() {
 		(@\textbf{fManager}@) = getIconkitManager();
 		..
 	}
-	
+
 	public void setTool(...) {
 		..
 		(@\textbf{fManager}@).getComponent();
@@ -84,7 +84,7 @@ public class DrawApplication {
 }
 \end{Java}
 
-A more complicated way a \npe can be triggered is when it involves variables with larger scopes such as class members. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation. 
+A more complicated way a \npe can be triggered is when it involves variables with larger scopes such as class members. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation.
 
 The \code{main()} method calls the method \code{open()} that invokes some other methods. Two of those method invocations are interesting in our case, namely \code{createIconkit()} at line 12 and \code{setTool()} at line 14. The latter will cause the \npe.
 
@@ -186,13 +186,13 @@ cc.writeFile();
 
 \begin{enumerate}
 	\item First a \textit{ClassPool} object that controls bytecode modification with Javassist is obtained. With the \textit{ClassPool} a class file (``.class'') can be read on demand for constructing a \textit{CtClass} object.
-	
+
 	\item The class \textit{CtClass} (compile-time class) represents the class file meaning that all manipulations are performed on the \textit{CtClass} object. We obtain a reference to the \textit{CtClass} object representing the \code{test.Rectangle} class by invoking the \code{get()} method on the \textit{ClassPool} instance.
-	
+
 	\item In this example the only bytecode modification done is changing the superclass of \code{test.Rectangle} to \code{test.Point}.
 	\item Once the bytecode modification is done, the method call \code{writeFile()} on the instance of \textit{CtClass} is necessary to make sure that the changes are reflected on the original class file.
 \end{enumerate}
- 
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{javassistModules}
@@ -230,7 +230,7 @@ public class BytecodeModifier {
 		behavior.insertBefore("System.out.println(\"This is the inserted code.\");");
 
 		cc.writeFile();
-		
+
 		//...
 	}
 }
@@ -238,7 +238,7 @@ public class BytecodeModifier {
 
 With \coderef{bytecodeModifier} we obtain a \textit{CtClass} object \code{cc} at line 5 which represents the class to be modified. At line 7 we get the method we want to modify by adding some source code: \code{System.out.println(``This is the inserted code.'');}. Javassist takes a \textit{java.lang.String} object, compiles it automatically and adds it into the bytecode at the specified location, in our situation at the beginning of the \code{main()} method.
 
-\coderef{instrumentedCodeDecompiled} is the result \ie the \code{main()} method equivalent to what we achieved with Javassist. At line 2 we see the inserted code. 
+\coderef{instrumentedCodeDecompiled} is the result \ie the \code{main()} method equivalent to what we achieved with Javassist. At line 2 we see the inserted code.
 
 \begin{Java}[caption={Instrumented code: Decompiled with JAD (\secref{jad})}, label={code:instrumentedCodeDecompiled}][H]
 public static void main(String args[]) {
@@ -333,7 +333,7 @@ The general approach of NullSpy is to statically analyze a project and instrumen
 
 \del{Once the project modification is done it is stored in a destination folder the user has chosen before.} We provide the option to choose the destination is because in case the developer does not want to overwrite the original project with the modified one. This means that the updated bytecode can be stored in another location, keeping the original class files intact. Of course the original project can be replaced by the modified one too. But the developer has to think carefully about it because once replaced, the additional bytecode stays there and the execution time is slightly different than it was before. To get rid of the additional bytecode, the developer has to recompile the source code to get the original class files when needed. This has to be done every time when NullSpy is used on the project.\brs{this belongs where you explain the parameters}
 
-\brs{missing from this section: how is loading done? how is storing done? seems trivial I know, but should be explained. ``Loading is done by traversing all the subfolders of the folder given as a parameter, and extracting all the .class files bla bla bla... Storing is done by recreating the structure from the source folder in the destination folder and storing the modified class files as explained in Subsection 2.2''} 
+\brs{missing from this section: how is loading done? how is storing done? seems trivial I know, but should be explained. ``Loading is done by traversing all the subfolders of the folder given as a parameter, and extracting all the .class files bla bla bla... Storing is done by recreating the structure from the source folder in the destination folder and storing the modified class files as explained in Subsection 2.2''}
 
 \section{Low Level Overview}
 \label{sec:lowLevelOverview}
@@ -394,7 +394,7 @@ protected void open(org.jhotdraw.framework.DrawingView newDrawingView);
  146  invokevirtual org.jhotdraw.application.DrawApplication.getDesktop() : org.jhotdraw.contrib.Desktop [271]
  149  checkcast java.awt.Component [274]
  152  ldc_w <String "Center"> [276]
- 155  invokevirtual javax.swing.JPanel.add(java.awt.Component, java.lang.Object) : void [254] 
+ 155  invokevirtual javax.swing.JPanel.add(java.awt.Component, java.lang.Object) : void [254]
  ...
 \end{JVMIS}
 
@@ -418,7 +418,7 @@ In step 1 we had \ugh{big troubles} getting the right interval of the \mr. By on
 
 Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*"}. There are exactly five \chg{kinds of}{such} bytecode instruction\ins{s}: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamic\ins{ly}-typed languages\footnote{Language whose type checking is \del{usually} performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports\ins{ java,} \chg{the}{a} \textit{static\ins{lly}-typed} language\footnote{Language whose type checking is performed at compile time.} \del{Java}.
 
-In case of the \textit{invokestatic} instruction we do not have a \mr \brs{why?}. That is why NullSpy treats it extraordinary \chg{like}{by} ignoring it completely or wrap\ins{ing} it as a \ugh{possible \mr when it is actually a parameter of a method invocation}\brs{this does not make sense to me. if it's a parameter it could be a \mr?}. \chg{In}{For} all other \chg{cases}{invocation bytecodes} we \del{normally }use \chg{the}{our} algorithm to get the \mr. 
+In case of the \textit{invokestatic} instruction we do not have a \mr \brs{why?}. That is why NullSpy treats it extraordinary \chg{like}{by} ignoring it completely or wrap\ins{ing} it as a \ugh{possible \mr when it is actually a parameter of a method invocation}\brs{this does not make sense to me. if it's a parameter it could be a \mr?}. \chg{In}{For} all other \chg{cases}{invocation bytecodes} we \del{normally }use \chg{the}{our} algorithm to get the \mr.
 
 \brs{the algorithm is very poorly explained, i still have no idea how you get from pc-interval to any useful information}
 
@@ -504,7 +504,7 @@ After extracting the slot (\ie index: 2) of the local variable we will get the f
 
 Each method of a class file does not only hold a local variable table but also another attribute called line number attribute. This is the mapping table from pc to source code line number. That means after getting the pc of the local variable assignment we can obtain the right line number. The line number is essential for constructing the link which will be added to the common exception stack trace.
 
-The other information we need in addition to the line number are: 
+The other information we need in addition to the line number are:
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
@@ -550,7 +550,7 @@ There are only two instructions that indicates an access to a field, but there a
 	\caption{Field keywords.}
 	\label{box:fieldKeywords}
 \end{figure}
-	
+
 Depending on the category a field belongs to, different kind of information is stored about it. Number 1 in \boxref{fieldKeywords} indicates fields of the current analyzed class and number 3-5 are from nested or other classes. Number 2 can be static fields either of the current analyzed class or others classes. For field accessing 1\&2 following information is needed and stored:
 
 \begin{figure}[H]
@@ -564,7 +564,7 @@ Depending on the category a field belongs to, different kind of information is s
 		\item fieldDeclaringClassName (in which class it is instantiated)
 		\item isFieldStatic
 		\item fieldLineNumber
-		\item startPc 
+		\item startPc
 		\item storePc
 		\item afterPc (right before this pos additional bytecode is inserted)
 		\item classWhereFieldIsAccessed (current analyzed class)
@@ -575,7 +575,7 @@ Depending on the category a field belongs to, different kind of information is s
 	\label{box:variableInfo1}
 \end{figure}
 
-In NullSpy we use the term \textit{member field} to describe a field of another class than the class being analyzed. Such fields are listed as number 3-5 in \boxref{fieldKeywords}. 
+In NullSpy we use the term \textit{member field} to describe a field of another class than the class being analyzed. Such fields are listed as number 3-5 in \boxref{fieldKeywords}.
 We call everything before the instruction \textit{putfield} \textit{``member object''}. For those fields more data are needed to store for their identification.  Nearly the same as above, except:
 
 \begin{figure}[H]
@@ -608,31 +608,31 @@ public class A {
 	private static B b2;
 
 	public void x() {
-		
+
 		// |...|: value assigned
-		
+
 		// fields
 		this.b = ...; // aload_0, |...|, putfield
 		b2 = ...; // |...|, putstatic
 
 		B b3 = new B();
-		
+
 		// indirectFields (@\lt{member fields?}@)
 		b3.c = ...; // aload.*, (getfield)*, |...|, putfield
 		b3.c.d = ...
-		
+
 		b.c = ...; // aload_0, (getfield)+, |...|, putfield
 		b.c.d = ...;
-		
+
 		b2.c = ...; // getstatic, (getfield)*, |...|, putfield
 		b2.c.d = ...;
 	}
 }
 
-public class B {						
-	public C c = new C();																
-	..									
-}				
+public class B {
+	public C c = new C();
+	..
+}
 
 public class C {
 	public D d = new D();
@@ -646,7 +646,7 @@ public class D {
 
 While getting the data we are interested in to identify a field we encountered some difficulties which we will discuss in a separate subsection.
 
-Already mentioned before every time finding an assignment either of a local variable or a field, NullSpy enters bytecode to check the variable whether it is null. If the variable is assigned null, NullSpy stores all the data about it in a HashMap. How we insert bytecode is described next.  
+Already mentioned before every time finding an assignment either of a local variable or a field, NullSpy enters bytecode to check the variable whether it is null. If the variable is assigned null, NullSpy stores all the data about it in a HashMap. How we insert bytecode is described next.
 
 \subsection{Bytecode Adaptation}
 \label{bytecodeAdaptation}
@@ -668,7 +668,7 @@ private byte[] getInsertCodeByteArray(Variable var) {
 	testMethodByteCode.addLdc(varID);
 	testMethodByteCode.addLdc(varName);
 	testMethodByteCode.addLdc(varType);
-	
+
 	Field field = (Field) var;
 
 	String classNameInWhichFieldIsInstantiated = field
@@ -683,7 +683,7 @@ private byte[] getInsertCodeByteArray(Variable var) {
 	} else {
 		testMethodByteCode.add(0);
 	}
-	
+
 	testMethodByteCode.addAload(0);
 	testMethodByteCode.addGetfield(
 		classNameInWhichFieldIsInstantiated, varName, varType);
@@ -692,26 +692,26 @@ private byte[] getInsertCodeByteArray(Variable var) {
 	addIntegerToBytecode(testMethodByteCode, var.getStartPos());
 	addIntegerToBytecode(testMethodByteCode, var.getStorePos());
 	addIntegerToBytecode(testMethodByteCode, var.getAfterPos());
-		
+
 	CtClass variableTester = ClassPool.getDefault().get(
 			"ch.unibe.scg.nullSpy.runtimeSupporter.VariableTester");
 	CtClass str = ClassPool.getDefault().get("java.lang.String");
 	CtClass object = ClassPool.getDefault().get("java.lang.Object");
-		
+
 	testMethodByteCode.addInvokestatic(variableTester,
 		"testDirectField", CtClass.voidType, new CtClass[] {
 			str, str, str, str, str, str, str,
 			CtClass.intType, object, CtClass.intType,
 			CtClass.intType, CtClass.intType,
 			CtClass.intType });
-								
+
 	byte[] byteCode = testMethodByteCode.get();
 
 	return byteCode;
 }
 \end{Java}
 
-\coderef{bytecodeCreation} is a code snippet from class \code{VariableTester}\textsuperscript{\ref{package1}} which NullSpy adds to the project after the bytecode modification. This snippet creates the static method invocation that tests whether a field is null. The header of that method is presented in 
+\coderef{bytecodeCreation} is a code snippet from class \code{VariableTester}\textsuperscript{\ref{package1}} which NullSpy adds to the project after the bytecode modification. This snippet creates the static method invocation that tests whether a field is null. The header of that method is presented in
 
 \begin{Java}[caption={Check field method header.}, label={code:checkFieldMethodHeader}, firstnumber=31]
 public static void testDirectField(String classNameInWhichVarIsUsed,
@@ -936,23 +936,23 @@ By using the algorithm we only get the interval from pc 19-32, but actually pc 1
 \begin{Java}[caption={Multiple line interval algorithm.}, label={alg:multipleLineAlg}]
 i = index in line number attribute which contains the invoke.* opcode
 
-if (lineNrAttribute[j>i] <= lineNrAttribute[i]) {	
-			
+if (lineNrAttribute[j>i] <= lineNrAttribute[i]) {
+
 	if (isAlternating(i,j))
 		return getAlternatingInterval(i, j);
-		
+
 	// non-alternating
 	b = j which has the smallest line number after j;
 	a = corresponding index to b; // index<k which has the same line number as b||k
-	return getNonAlternatingInterval(a, b);	
-	
+	return getNonAlternatingInterval(a, b);
+
 } else if (lineNrAttribute[j<i] == lineNrAttribute[i]) {
 
 		b = i;
 		a = j;
 		return getInterval(a, b);
-		
-}	
+
+}
 \end{Java}
 
 This pseudocode will give a very rough idea how the invocation interval can be read out. The detailed implementation can be seen in the classes \code{MultipleLineManager}\footnote{\label{package2}In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.} and \code{MethodInvocationAnalyzer}\textsuperscript{\ref{package2}}.
@@ -1010,7 +1010,7 @@ The last limitation we want to discuss here is that unfortunately NullSpy is not
 
 \chapter{Validation}
 \label{ch:validation}
-This chapter will provide some numbers to compare the execution time each project takes, the original and the instrumented one. To get the numbers we instrumented the example project JHotDraw. 
+This chapter will provide some numbers to compare the execution time each project takes, the original and the instrumented one. To get the numbers we instrumented the example project JHotDraw.
 
 \section{JHotDraw}
 \label{sec:jhotdraw}
@@ -1063,7 +1063,7 @@ How did we get the numbers? First of all, of course another executable jar file 
 \begin{table}[H]
 	\centering
 	\begin{tabular}{ | S[table-format=1.4] | S[table-format=1.6] |}
-		\hline	
+		\hline
 		\textbf{Original project} & \textbf{Modified project}\\ \hline
 		7.2041	&	7.566834 \\
 		\hline
@@ -1120,7 +1120,7 @@ Debugging: It is not as easy as it seems. Sometimes it took hours to find the ca
 
 Coding beautifully the way so that it will not smell was another challenge due to lack of experience. Sometimes I tended to put everything in one class instead of abiding by the single responsibility principle. Therefore, refactoring the whole project multiple times was necessarily which also took some time. Best before starting to code is to clearly thinking through what is needed, how the structure should look like and what kind of responsibility each class of the project should take for gaining time for other things.
 
-We also came in contact with the building XML file and the jar file. Concerning the XML file, we gained experience by learning a new language by modifying it that it also creates a jar file out of the modified project. 
+We also came in contact with the building XML file and the jar file. Concerning the XML file, we gained experience by learning a new language by modifying it that it also creates a jar file out of the modified project.
 
 \chapter {Anleitung zu wissenschaftlichen Arbeiten}
 NullSpy is a program which helps Java developers to find the root of \npes by providing an additional link next to the common stack trace. The key idea behind NullSpy is to help developers to save time fixing bugs which are caused by \npe. Of course this approach tries to provide this service by keeping the overhead to a minimum. To demonstrate how NullSpy works, this chapter serves as a small tutorial that takes JHotDraw as the testing project to show the feature of NullSpy.
@@ -1150,8 +1150,8 @@ Running the tests of JHotdraw with the commando line the location of libraries `
 \thispagestyle{empty}
 \null\vfill
 \begin{center}
-''Ich erkl\"are hiermit, dass ich diese Arbeit selbstst\"andig verfasst und  keine  anderen  als  die  angegebenen  Quellen  benutzt  habe. 
-Alle Stellen, die w\"ortlich oder sinngem\"ass aus Quellen entnommen  wurden,  habe  ich  als  solche  gekennzeichnet.  Mir  ist  bekannt,  dass  andernfalls  der  Senat  gem\"ass  Artikel 36  Absatz 1 Buchstabe 
+''Ich erkl\"are hiermit, dass ich diese Arbeit selbstst\"andig verfasst und  keine  anderen  als  die  angegebenen  Quellen  benutzt  habe.
+Alle Stellen, die w\"ortlich oder sinngem\"ass aus Quellen entnommen  wurden,  habe  ich  als  solche  gekennzeichnet.  Mir  ist  bekannt,  dass  andernfalls  der  Senat  gem\"ass  Artikel 36  Absatz 1 Buchstabe
 r  des  Gesetzes  vom  5. September 1996  \"uber  die  Universit\"at zum Entzug des auf  Grund dieser Arbeit verliehenen Titels berechtigt ist.“
 \end{center}
 \vfill

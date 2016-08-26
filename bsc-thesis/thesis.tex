@@ -51,7 +51,7 @@ public void drop(...) {
 }
 \end{Java}
 
-Assume that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value from the return value of the function \code{DNDHelper.processReceivedData()}. This means that the same variable \code{ff} is \code{null} at line 9 and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5. This is a very simple example and the easiest way to produce a \npe.
+Assume that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value from the return value of the function \code{DNDHelper.processReceivedData()}. This means that the same variable \code{ff} is \code{null} at line 9 and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5. \del{This is a very simple example and the easiest way to produce a \npe}.
 
 \begin{Java}[caption={\Npe example (II).}, label={code:npeExampleFieldAccess}]
 public class DrawApplication {

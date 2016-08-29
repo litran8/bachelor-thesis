@@ -590,7 +590,7 @@ We call everything before the instruction \textit{putfield} \textit{``member obj
 	\label{box:variableInfo2}
 \end{figure}
 
-With a syntactic example \coderef{fieldExample} we show how the instructions \textit{``putfield''} and \textit{``putstatic''} are used:
+The syntactic example \coderef{fieldExample} shows how the instructions \textit{``putfield''} and \textit{``putstatic''} are used:
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Example: \textit{``putfield''} and \textit{``putstatic''}.}, label={code:fieldExample}]
@@ -648,7 +648,6 @@ The added bytecode represents a static method of a class named \code{VariableTes
 
 In \secref{javassist} we mentioned that the library makes it possible to modify bytecode either with the source- or bytecode-level API. Due to a limitation of Javassist (\secref{limitations}) we modify the class file at bytecode-level by creating a \textit{bytecode-array} and include it in the file. \coderef{bytecodeCreation} shows the way how the inserted bytecode is created.
 
-\lt{enter code byteceode construction}
 \begin{Java}[caption={Inserted bytecode(-array) creation.}, label={code:bytecodeCreation}, firstnumber=1]
 private byte[] getInsertCodeByteArray(Variable var) {
 	Bytecode testMethodByteCode = new Bytecode(cp);

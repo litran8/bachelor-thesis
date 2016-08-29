@@ -300,13 +300,13 @@ public void itemStateChanged(ItemEvent e) {
 JAD is in no way a dependency of NullSpy but it was a big help during the implementation phase since after running NullSpy on a project only the modified bytecode is available. The use of JAD is for the sake of debugging Nullspy; to check whether the modification by Javassist, \ie inserting source code, was successful. Another way to check the result for correctness is looking at bytecode itself but that would have taken a lot more effort and time.
 
 \chapter{NullSpy}
-As explained in \charef{introduction}, this project is about providing the user with an additional stack trace containing the information on where the null is assigned to the variable that caused the \npe. In short, the exact location of where a variable was assigned null will be revealed. We will use the term \mr to refer to the variable or object a method is invoked on and that caused the \npe.
+As explained in \charef{introduction}, this project is about providing the user with an additional stack trace containing the information on where the null is assigned to the variable that caused the \npe. \del{In short, the exact location of where a variable was assigned null will be revealed.} \ugh{We will use the term \mr to refer to the variable or object a method is invoked on and that caused the \npe}\brs{Put this where you first time use \mr, here it's completely void of context}.
 
-Here we give a short overview of how we implemented the core of NullSpy. We will also address the challenges (\secref{challenges}) we encountered during the implementation as well as the limitations of the tool (\secref{limitations}).
+\chg{Here}{In this chapter} we give a \del{short} overview of how we implementeddel{the core of} NullSpy. We will also address the challenges (\secref{challenges}) we encountered during the implementation as well as the limitations of the tool (\secref{limitations}).
 
 \section{High Level Overview}
 \label{sec:highLevelOverview}
-The general approach of NullSpy is to statically analyze a project and instrument the bytecode. We can take the three basic steps of NullSpy from \figref{highLevelOverview}: \textit{load, modify, store}. NullSpy is not a GUI but a console application which takes two parameters. The first argument NullSpy needs is the path to the \textit{bin}-folder of the original project and the second one is the destination where the developer wants to store the modified project.
+The general approach of NullSpy is to statically analyze a project and instrument the bytecode. We can take the three basic steps of NullSpy from \figref{highLevelOverview}: \textit{load, modify, store}. NullSpy is \del{not a GUI but} a console application which takes two parameters. The first argument \ins{to }NullSpy \del{needs} is the path to the \textit{bin}-folder\brs{not all projects neceserally have a bin folder, so you should say something like ``the folder containing the compiled class files '} of the original project and the second one is the destination where the \ugh{developer}\brs{do you mean user?} wants to store the modified project.
 
 \begin{figure}[H]
 \centering
@@ -315,28 +315,31 @@ The general approach of NullSpy is to statically analyze a project and instrumen
   \label{fig:highLevelOverview}
 \end{figure}
 
-Those three steps of NullSpy are described in \boxref{abstractSteps}:
+\brs{move here the stuff from the paragraph before about the three steps. You talk abou the 3 steps, then about the console and parameters, then back to the 3 steps, stay on topic}Those three steps of NullSpy are described in \boxref{abstractSteps}\brs{why box? just use enumeration.}:
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
 	\begin{boxedminipage}{\textwidth}
 \begin{enumerate}
 \itemsep8pt
-      \item Input: Load compiled class files of project we wish for being able to track the null assignments into NullSpy.
-      \item Modification: The modification part contains the dealing with the bytecode instrumentation and adding modules to the project that handles the inserted code.
-			\item Output: Store modified class files to the chosen folder.
+	\item Input: Load compiled class files of \ins{the }project \del{we wish for being able to track the null assignments }into NullSpy.
+	\item Modification: The modification part \del{contains the }deal\chg{ing}{s} with the bytecode instrumentation and adding modules to the project that \chg{handles}{supports} the inserted code.
+	\item Output: Store modified class files to the chosen \ins{output }folder.
    \end{enumerate}
 	\end{boxedminipage}
 	\caption{NullSpy abstract steps.}
 	\label{box:abstractSteps}
 \end{figure}
 
-Once the project modification is done it is stored in a destination folder the user has chosen before. We provide the option to choose the destination is because in case the developer does not want to overwrite the original project with the modified one. This means that the updated bytecode can be stored in another location, keeping the original class files intact. Of course the original project can be replaced by the modified one too. But the developer has to think carefully about it because once replaced, the additional bytecode stays there and the execution time is slightly different than it was before. To get rid of the additional bytecode, the developer has to recompile the source code to get the original class files when needed. This has to be done every time when NullSpy is used on the project.
+\del{Once the project modification is done it is stored in a destination folder the user has chosen before.} We provide the option to choose the destination is because in case the developer does not want to overwrite the original project with the modified one. This means that the updated bytecode can be stored in another location, keeping the original class files intact. Of course the original project can be replaced by the modified one too. But the developer has to think carefully about it because once replaced, the additional bytecode stays there and the execution time is slightly different than it was before. To get rid of the additional bytecode, the developer has to recompile the source code to get the original class files when needed. This has to be done every time when NullSpy is used on the project.\brs{this belongs where you explain the parameters}
+
+\brs{missing from this section: how is loading done? how is storing done? seems trivial I know, but should be explained. ``Loading is done by traversing all the subfolders of the folder given as a parameter, and extracting all the .class files bla bla bla... Storing is done by recreating the structure from the source folder in the destination folder and storing the modified class files as explained in Subsection 2.2''} 
 
 \section{Low Level Overview}
 \label{sec:lowLevelOverview}
 
-In this section we will focus on the second abstract step of NullSpy, namely the modification step. \figref{modificationModules} shows that NullSpy contains three different modules in total. That means each class file of the loaded project will get in touch with each of these modules. The first thing we do with the loaded class file is extracting data from its bytecode, then do some instrumentation and at the end adding a run time supporter module to the project.
+\ugh{In this section we will focus on the second abstract step of NullSpy, namely the modification step.}\brs{what does second abstract step mean? just say we focus on the bytecode modification.}  \figref{modificationModules} shows that NullSpy contains three different modules in total. That means each class file of the loaded project will \chg{get in touch}{will be run through} with each of these modules. The first thing we do with the loaded class file is extracting data from its bytecode, then do \chg{some}{the} instrumentation and at the end \chg{adding a}{we add the} run time supporter module to the project.
+\brs{the order of the steps in the text does not mach the order in the picture, please update the picture}
 
 \begin{figure}[H]
 \centering
@@ -345,27 +348,27 @@ In this section we will focus on the second abstract step of NullSpy, namely the
   \label{fig:modificationModules}
 \end{figure}
 
-We will look at these modules more detailed and explain what they are all about.
+We will look at these modules \ins {in }more detail\del{ed} and explain what \chg{they are all about}{each one does}.
 
 \subsection{\MR Data Collection}
 \label{subsec:methodReceiver}
-A big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information from is the \mr. We use the term \mr to refer to variables on which methods are performed. A small example makes is easier to understand: The \mr in code \code{var.method()} is \code{var}.
+A big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information \chg{from}{about} is the \mr. We use the term \mr to refer to variables on which methods are \chg{performed}{invoked, or whose fields are accessed}.\ugh{ A small example makes is easier to understand: The \mr in code \code{var.method()} is \code{var}}.
 
-We use the class library Javassist (\secref{javassist}) to extract data from bytecode. Unfortunately, Javassist does not provide the function to directly get information about the \mr. What kind of information we need will be listed later in this section. To put it another way, with Javassist we cannot extract the \mrs from bytecode. That is why we implemented our own algorithm to get the \mrs. The algorithm contains following steps:
+We use the \ugh{class}\brs{I'm not sure what you mean by class library... are there method libraries or something?} library Javassist (\secref{javassist}) to extract data from bytecode. Unfortunately, Javassist does not provide the function\ins{ality} to directly get information about the \mr. \chg{What kind of}{The exact} information we need \chg{will be}{is}\brs{will be is future tense and I understand that the reader will read it in the future, but it's already listed now, and if the reader wants to skip ahead she can} listed later in this section. To put it another way, with Javassist we cannot\ins{ directly} extract the \mrs from bytecode. That is why we implemented our own algorithm to get the \mrs. The algorithm contains following steps:
 
 \begin{figure}[H]
 \renewcommand\figurename{Algorithm}
 	\begin{boxedminipage}{\textwidth}
 		\begin{enumerate}
 \itemsep8pt
-      \item Getting pc-interval of method invocation
+      \item Getting \ins{the }pc-interval of method invocation
       \item Storing all possible \mr interval within the interval of step 1 into an ArrayList
 			\item Getting the number of parameters, the method invocation takes
 			\item Traversing back the ArrayList the amount of parameters obtained in step 3
 			\item Result: \mr interval (pc-interval: see \secref{bytecode})
    \end{enumerate}
 	\end{boxedminipage}
-	\caption{\Mr algorithm.}
+	\caption{\Mr algorithm.\brs{very unclear, I have no idea what all this means}}
 	\label{alg:methodReceiverAlg}
 \end{figure}
 
@@ -380,7 +383,7 @@ protected void open(final DrawingView newDrawingView) {
 }
 \end{Java}
 
-We are only looking at line 6 in \coderef{methodReceiverAlgDemoCode}.
+We are only looking at line 6\brs{um... the example has only 5 lines of code...} in \coderef{methodReceiverAlgDemoCode}.
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[caption={Bytecode of \coderef{methodReceiverAlgDemoCode}.}, label={bytecode:methodReceiverAlgDemoBytecode}, breaklines=true]
@@ -407,24 +410,26 @@ protected void open(org.jhotdraw.framework.DrawingView newDrawingView);
 			\item Result: \newline 144 = \code{activePanel}
 		\end{enumerate}
 	\end{boxedminipage}
-	\caption{Extract \mr example.}
+	\caption{Extract \mr example.\brs{how is this an algorithm?}}
 	\label{box:extractMethodReceiverExample}
 \end{figure}
 
-In step 1 we had big troubles getting the right interval of the \mr. By only statically analyzing the bytecode it is unapparent where the \mr is situated exactly in bytecode. But more about the challenges we encountered in \subsecref{methodReceiverDifficulties}.
+In step 1 we had \ugh{big troubles} getting the right interval of the \mr. By only statically analyzing the bytecode it is unapparent where \ins{exactly} the \mr is situated \del{exactly} in bytecode. \del{But} more about the challenges we encountered \ins{can be found }in \subsecref{methodReceiverDifficulties}.
 
-Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*"}. There are exactly five kinds of bytecode instruction: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamic-typed languages\footnote{Language whose type checking is usually performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports the \textit{static-typed} language\footnote{Language whose type checking is performed at compile time.} Java.
+Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*"}. There are exactly five \chg{kinds of}{such} bytecode instruction\ins{s}: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamic\ins{ly}-typed languages\footnote{Language whose type checking is \del{usually} performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports\ins{ java,} \chg{the}{a} \textit{static\ins{lly}-typed} language\footnote{Language whose type checking is performed at compile time.} \del{Java}.
 
-In case of the \textit{invokestatic} instruction we do not have a \mr. That is why NullSpy treats it extraordinary like ignoring it completely or wrap it as a possible \mr when it is actually a parameter of a method invocation. In all other cases we normally use the algorithm to get the \mr. 
+In case of the \textit{invokestatic} instruction we do not have a \mr \brs{why?}. That is why NullSpy treats it extraordinary \chg{like}{by} ignoring it completely or wrap\ins{ing} it as a \ugh{possible \mr when it is actually a parameter of a method invocation}\brs{this does not make sense to me. if it's a parameter it could be a \mr?}. \chg{In}{For} all other \chg{cases}{invocation bytecodes} we \del{normally }use \chg{the}{our} algorithm to get the \mr. 
 
-After getting the pc-interval of a \mr we gather data about it and store them in an external \textit{csv} file due to performance and overhead minimization. The following list will list the information which is stored about the \mr.
+\brs{the algorithm is very poorly explained, i still have no idea how you get from pc-interval to any useful information}
+
+After getting the pc-interval of a \mr we gather data about it and store them in an external \textit{csv} file \ugh{due to performance and overhead minimization}\brs{what? why? performance as compared to what?}. The following list \chg{will list}{shows} the information which is stored about the \mr.
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
 	\begin{boxedminipage}{\textwidth}
 		\begin{itemize}
 		\itemsep8pt
-    \item nr (\mrs are counted)
+    \item \ugh{nr}\brs{really? nr?} (\mrs are counted)
 		\item lineNumber
 		\item variableID (whether it is a local variable or a field)
 		\item variableType
@@ -442,15 +447,18 @@ After getting the pc-interval of a \mr we gather data about it and store them in
 
 We will talk about the purpose why these information about the \mr are needed later in this section.
 
+\brs{after reading this subsection I realised it's really hard to follow these details without knowing why we need them. We should have a short overview of the entire process at the beggining of the section, so that the reader has some idea of what's going on and why we need to do this. As it is now, he just has to trust us that this needs to be done, and that's not good.}
+
 \subsection{Variable Data Collection}
 \label{subsec:variable}
-Data about the \mrs plus information about the variables which are assigned an object are needed in NullSpy. In section before we were looking for instructions which matches the regex \textit{``invoke.*''} for finding \mrs in bytecode. This time we are looking for following regexs \textit{``astore.*''} and \textit{``put.*''}. The former refers to local variable assignments and the latter to field assignments. After finding one of the assignment NullSpy gathers data about the variable because NullSpy inserts bytecode right after the assignment which represents a method invocation that needs the gained data as parameters. The inserted bytecode represents a test method which tests whether the value assigned to the variable is null and store the gathered information about it. Unlike in getting information about the \mr in \subsecref{methodReceiver} the data about the variables are stored in a HashMap.
+\ugh{Data about the \mrs plus information about the variables which are assigned an object are needed in NullSpy.} In \ins{the }section before we were looking for instructions which matches the regex \textit{``invoke.*''} for finding \mrs in bytecode. This time we are looking for \chg{following}{the} regexs \textit{``astore.*''} and \textit{``put.*''}. The former refers to local variable assignments and the latter to field assignments. \ugh{After finding one of the assignment NullSpy gathers data about the variable because NullSpy inserts bytecode right after the assignment which represents a method invocation that needs the gained data as parameters. The inserted bytecode represents a test method which tests whether the value assigned to the variable is null and store the gathered information about it}\brs{this is why we need the short overview at the beginning, than we would not need these half baked explanations here and there}. Unlike in getting information about the \mr in \subsecref{methodReceiver} the data about the variables are stored in a HashMap.
+
 
 In the next two subsections we will look at how those information about the assigned variables are extracted. Due to different variable types and the limitation of Javassist, the way of gathering information about the assignments is performed differently.
 
 \subsubsection{Local Variable}
 \label{subsubsec:localVariable}
-Unfortunately, Javassist does not provide any support for gaining information about local variables that is why getting the needed data we had to understand how bytecode is constructed. At this point we would like to give a small bytecode introduction.
+Unfortunately, Javassist does not provide any support for gaining information about local variables\ins{.} \chg{that}{This} is why \chg{getting}{to get} the needed data we had to understand how \ins{the} bytecode is constructed. At this point we \del{would like to} give a small bytecode introduction\brs{shouldn't this be in the technical background}.
 
 \begin{figure}[H]
 \centering
@@ -459,7 +467,7 @@ Unfortunately, Javassist does not provide any support for gaining information ab
   \label{fig:localVarCreationBytecode}
 \end{figure}
 
-If a local variable is created, the value assigned to it is pushed onto the operand stack as we can see in \figref{localVarCreationBytecode}\footnote{Figure taken from \href{http://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html}{blog.jamesdbloom.com}.}. With the bytecode instruction \textit{``astore.*"} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables is composed of one, or in some cases two bytes. There are reserved machine commands for the first four local variables, index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted. In addition to storing local variable loading it from the local variable array is possible too, but of course again only with the local variable slot number.
+If a local variable is created, the value assigned to it is pushed onto the operand stack as we can see in \figref{localVarCreationBytecode}\footnote{Figure taken from \href{http://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html}{blog.jamesdbloom.com}.}. With the bytecode instruction \textit{``astore.*"} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables \chg{is}{are} composed of one, or in some cases two bytes. There are reserved \ugh{machine commands} for the first four local variables, index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted. In addition to storing local variable loading it from the local variable array is possible too, but of course again only with the local variable slot number. \brs{no idea what this paragraph is about}
 
 With this short introduction understanding the local variable table should be easier. Each method of a class file contains a local variable table (see \bytecoderef{localVarTable}) with which many information can be read out, \ie the lifespan of a local variable, what it is called, in which slot it is stored and what type it has.
 

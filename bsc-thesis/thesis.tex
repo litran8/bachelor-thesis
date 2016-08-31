@@ -190,7 +190,7 @@ cc.writeFile();
 	\item The class \textit{CtClass} (compile-time class) represents the class file meaning that all manipulations are performed on the \textit{CtClass} object. We obtain a reference to the \textit{CtClass} object representing the \code{test.Rectangle} class by invoking the \code{get()} method on the \textit{ClassPool} instance.
 	
 	\item In this example the only bytecode modification done is changing the superclass of \code{test.Rectangle} to \code{test.Point}.
-	\item Once the bytecode modification is done, the method call \code{writeFile()} on the instance of \textit{CtClass} is necessary to make sure that the changes are reflected on the original class file.
+	\item Once the bytecode modification is done, the method call \code{writeFile()} on the instance of \textit{CtClass} is necessary to make sure that the changes are reflected on the original class file. The method \code{writeFile()} converts the modified \textit{CtClass} object into a class file and stores it on a local disk.
 \end{enumerate}
  
 \begin{figure}[H]
@@ -333,7 +333,9 @@ NullSpy contains three basic steps which we can see in \figref{highLevelOverview
 	\label{list:abstractSteps}
 \end{figure}
 
-\brs{missing from this section: how is loading done? how is storing done? seems trivial I know, but should be explained. ``Loading is done by traversing all the subfolders of the folder given as a parameter, and extracting all the .class files bla bla bla... Storing is done by recreating the structure from the source folder in the destination folder and storing the modified class files as explained in Subsection 2.2''} 
+Loading is done by traversing all the subfolders of the folder given as a parameter, and extracting all the \textit{.class} files. NullSpy modifies the class file directly when it is loaded. As soon as the modification is done, the class file is stored to the destination folder which is represented by the second parameter of NullSpy. 
+
+Storing is done by recreating the structure from the source folder in the destination folder and storing the modified class files similarly as explained in \secref{javassist}. In \secref{javassist} we store the modified class file on a local disk. This way the original class file remains intact. In our case we write the modified class file in the destination folder not only on a local disk. This way the original project can be overwritten as explained before.
 
 \section{Low Level Overview}
 \label{sec:lowLevelOverview}
@@ -353,23 +355,28 @@ We will look at these modules in more detail and explain what each one does.
 \label{subsec:methodReceiver}
 A big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr. We use the term \mr to refer to variables on which methods are invoked, or whose fields are accessed.\ugh{ A small example makes is easier to understand: The \mr in code \code{var.method()} is \code{var}}.
 
-We use the library Javassist (\secref{javassist}) to extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get information about the \mr. The exact information we need is listed later in this section. To put it another way, with Javassist we cannot directly extract the \mrs from bytecode. That is why we implemented our own algorithm to get the \mrs. The algorithm contains following steps:
+We use the library Javassist (\secref{javassist}) to extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get information about the \mr. The exact information we need is listed later in this section. To put it another way, with Javassist we cannot directly extract the \mrs from bytecode. We need the exact pc-interval of the \mr to extract the right data from bytecode. That is why we implemented our own algorithm to get the \mrs. While iterating through the bytecode NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''} and uses the algorithm to get the right pc-interval. The algorithm contains following steps:
 
 \begin{figure}[H]
 \renewcommand\figurename{Algorithm}
 	\begin{boxedminipage}{\textwidth}
 		\begin{enumerate}
 \itemsep8pt
-      \item Getting the pc-interval of method invocation
-      \item Storing all possible \mr interval within the interval of step 1 into an ArrayList
-			\item Getting the number of parameters, the method invocation takes
-			\item Traversing back the ArrayList the amount of parameters obtained in step 3
-			\item Result: \mr interval (pc-interval: see \secref{bytecode})
+      \item \textbf{Getting the pc-interval of method invocation:}\\
+			The bytecode of a simple method invocation is constructed as following: first the \mr is pushed on the operand stack, than the parameters the method call needs and last the opcode \textit{``invoke.*''} is pushed onto the stack. The pc-interval of a method invocation contains all the pcs starting from the start-pc of the \mr up to the pc of the corresponding opcode \textit{``invoke.*''}. The use of corresponding is explained in step 4.
+      \item \textbf{Storing all possible \mr intervals within the interval of step 1 into an ArrayList}\\
+			Since we cannot get the exact pc-interval of the \mr yet or we even do not know whether there exists\footnotemark one for the method invocation we are looking at, NullSpy stores every pc-interval which can be a \mr candidate within the pc-interval gained in step 1. Possible \mr candidates are the parameters and the \mr itself. If there is a \mr its pc-interval is stored, the pc-interval of each parameter the method invocation takes are also stored into an ArrayList. Every pc-interval receives the roll of a possible \mr candidate. Parameters can also be another method invocation not only simple variables.
+			\item \textbf{Getting the number of parameters, the method invocation takes}\\
+			Javassist offers the functionality to count the number of parameters a method invocation has by analyzing its signature. The signature is a \textit{String} that contains the parameter and the return type of the method call.
+			\item \textbf{Traversing back the ArrayList the amount of parameters}\\
+			To be sure not to mistaken a parameter as the \mr we traverse back the ArrayList the number of parameters the method invocation takes. Traversing back is necessarily to detect nested method invocations. The meaning of nested invocations is \eg a method invocation that has a parameter which is again a method invocation.
+			\item \textbf{Result: \mr interval (pc-interval: see \secref{bytecode})}
    \end{enumerate}
 	\end{boxedminipage}
-	\caption{\Mr algorithm.\brs{very unclear, I have no idea what all this means}}
+	\caption{\Mr algorithm.\brs{very unclear, I have no idea what all this means}\lt{clearer now?}}
 	\label{alg:methodReceiverAlg}
 \end{figure}
+\footnotetext{Static method invocations do not have \mrs.}
 
 A small example how \algref{methodReceiverAlg} is used (code snippet from JHotDraw):
 
@@ -398,30 +405,32 @@ protected void open(org.jhotdraw.framework.DrawingView newDrawingView);
 \end{JVMIS}
 
 \begin{figure}[H]
-\renewcommand\figurename{Algorithm}
+\renewcommand\figurename{Example}
 	\begin{boxedminipage}{\textwidth}
 		\begin{enumerate}
 			\itemsep8pt
-			\item pc-interval: \newline 144-155 (cut everything off what has nothing to do with the method invocation)
-			\item ArrayList: \newline [144,[145,149],152]
+			\item pc-interval: \newline <144-155>
+			\item ArrayList: \newline <144,<145,149>,152>
 			\item Number of parameters: \newline 2
-			\item Traversing back the amount of parameters: \newline [152] (1) ; [145,149] (2)
-			\item Result: \newline 144 = \code{activePanel}
+			\item Traversing back the amount of parameters: \newline <152> (1) ; <145,149> (2)
+			\item Result: \newline 144 = \code{activePanel} = \mr
 		\end{enumerate}
 	\end{boxedminipage}
-	\caption{Extract \mr example.\brs{how is this an algorithm?}}
+	\caption{Extract \mr example.}
 	\label{box:extractMethodReceiverExample}
 \end{figure}
 
 In step 1 we had troubles getting the right interval of the \mr. By only statically analyzing the bytecode it is unapparent where exactly the \mr is situated in bytecode. More about the challenges we encountered can be found in \subsecref{methodReceiverDifficulties}.
 
-Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*"}. There are exactly five such bytecode instructions: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamicly-typed languages\footnote{Language whose type checking is performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports java, a \textit{staticlly-typed} language\footnote{Language whose type checking is performed at compile time.}.
+Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*''}. There are exactly five such bytecode instructions: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamicly-typed languages\footnote{Language whose type checking is performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports java, a \textit{staticlly-typed} language\footnote{Language whose type checking is performed at compile time.}.
 
-In case of the \textit{invokestatic} instruction we do not have a \mr \brs{why?}. That is why NullSpy treats it extraordinary by ignoring it completely or wraping it as a \ugh{possible \mr when it is actually a parameter of a method invocation}\brs{this does not make sense to me. if it's a parameter it could be a \mr?}. For all other invocation bytecodes we use our algorithm to get the \mr. 
+In case of the simple stand-alone \textit{invokestatic} instruction we do not have a \mr because static method invocations do not have a \mr. Like this NullSpy ignores the instruction \textit{invokestatic}. But if the static method call is a parameter of another method call NullSpy wraps it as a \mr candidate. We do this because we traverse back the list that holds all possible \mr pc-intervalls as explained in \algref{methodReceiverAlg}.
 
 \brs{the algorithm is very poorly explained, i still have no idea how you get from pc-interval to any useful information}
 
-After getting the pc-interval of a \mr we gather data about it and store them in an external \textit{csv} file due to overhead minimization. The following list shows the information which is stored about the \mr.
+As soon as we have the \mr pc-interval we can extract information about the \mr from the bytecode. By calling the method \code{constantPool.getFieldrefName(index)} we get the name of the field/\mr. The parameter \code{index} is obtained by \code{codeIterator.u16bitAt(pc+1)}. To be able to get the parameter \code{index} we need the exact pc-interval of the \mr.
+
+We store the data we gathered about the \mr in an external \textit{csv} file due to overhead minimization. The following list shows the information which is stored about the \mr.
 
 \begin{figure}[H]
 \renewcommand\figurename{List}

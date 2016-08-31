@@ -51,20 +51,16 @@ public void drop(...) {
 }
 \end{Java}
 
-Assume that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value from the return value of the function \code{DNDHelper.processReceivedData()}. This means that the same variable \code{ff} is \code{null} at line 9 and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5. \del{This is a very simple example and the easiest way to produce a \npe}.
+Assume that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value from the return value of the function \code{DNDHelper.processReceivedData()}. This means that the same variable \code{ff} is \code{null} at line 9 and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5. 
 
 \begin{Java}[caption={\Npe example (II).}, label={code:npeExampleFieldAccess}]
 public class DrawApplication {
 	..
 	private IconkitManager (@\textbf{fManager}@);
 
-	public static void main(String[] args) {
-		open(...);
-	}
-
 	protected void open(...) {
 		..
-		setIconkit(createIconkit());
+		createIconkit();
 		..
 		setTool(...);
 		..
@@ -73,6 +69,10 @@ public class DrawApplication {
 	protected Iconkit createIconkit() {
 		(@\textbf{fManager}@) = getIconkitManager();
 		..
+	}
+	
+	protected getIconkitManager() {
+		return null;
 	}
 
 	public void setTool(...) {
@@ -86,20 +86,19 @@ public class DrawApplication {
 
 A more complicated way a \npe can be triggered is when it involves variables with larger scopes such as class members. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation.
 
-The \code{main()} method calls the method \code{open()} that invokes some other methods. Two of those method invocations are interesting in our case, namely \code{createIconkit()} at line 12 and \code{setTool()} at line 14. The latter will cause the \npe.
+The \code{open()} method calls the methods \code{createIconkit()} at line 7 and \code{setTool()} at line 9. The former will initiate the field \code{fManager} (line 3) and the latter will cause the \npe.
 
-We assume that the field \code{fManager} (line 4) is initialized with the value \textbf{null} by invoking \code{getIconkitManager()} at line 19 in method \code{createIconkit()} (line 18).
+By calling \code{createIconkit()} the field is assigned to the method \code{getIconkitManager()} at line 14 which just returns the \textbf{null} value at line 19.
 
-In method \code{setTool(...)} (line 23) the \npe is finally thrown by the attempt to access a field at line 25. The resulting \npe stack trace is shown in \boxref{stackTrace}:
+In method \code{setTool()} (line 22) the \npe is finally thrown by the attempt to access the field at line 24. The resulting \npe stack trace is shown in \boxref{stackTrace}:
 
 \begin{figure}[H]
 \renewcommand\figurename{Box}
 	\begin{boxedminipage}{\textwidth}
 		\color{cadmiumred}
 		Exception in thread "main" \textcolor{blue}{java.lang.NullPointerException}\newline
-		\tab at org.jhotdraw.application.DrawApplication.setTool(\textcolor{blue}{DrawApplication.java:25})\newline
-		\tab at org.jhotdraw.application.DrawApplication.open(\textcolor{blue}{DrawApplication.java:14})\newline
-		\tab at org.jhotdraw.application.DrawApplication.open(\textcolor{blue}{DrawApplication.java:7})\newline
+		\tab at org.jhotdraw.application.DrawApplication.setTool(\textcolor{blue}{DrawApplication.java:24})\newline
+		\tab at org.jhotdraw.application.DrawApplication.open(\textcolor{blue}{DrawApplication.java:9})\newline
 	 \tab ...
 	\end{boxedminipage}
 	\caption{Stack trace of a \npe.}
@@ -108,7 +107,21 @@ In method \code{setTool(...)} (line 23) the \npe is finally thrown by the attemp
 
 In \boxref{stackTrace} we can see that the stack trace does not track to the location where the variable is assigned the null value. We call this location the root of an exception. That means the Java developer has to debug his/her way to the exception root.
 
-At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. In other words the main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to , once an unhandled \npe has occurred, present the developers the exact location of the null assignment next to the ordinary stack trace.
+At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. In other words the main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developers the exact location of the null assignment next to the ordinary stack trace as shown in \boxref{stackTrace2}.
+
+\begin{figure}[H]
+\renewcommand\figurename{Box}
+	\begin{boxedminipage}{\textwidth}
+		\color{cadmiumred}
+		Field this.fManager at line 14 is null: (\textcolor{blue}{DrawApplication.java: 14})\\
+		Exception in thread "main" \textcolor{blue}{java.lang.NullPointerException}\\
+		\tab at org.jhotdraw.application.DrawApplication.setTool(\textcolor{blue}{DrawApplication.java:24})\\
+		\tab at org.jhotdraw.application.DrawApplication.open(\textcolor{blue}{DrawApplication.java:9})\\
+	 \tab ...
+	\end{boxedminipage}
+	\caption{Stack trace of a \npe with NullSpy.}
+	\label{box:stackTrace2}
+\end{figure}
 
 In this thesis we explain how the goal mentioned above is achieved and we also discuss the challenges, the limitations and performance impact of the approach.
 
@@ -121,9 +134,9 @@ This chapter provides a short overview of technologies used in the implementatio
 \label{sec:bytecode}
 The backbone of NullSpy is analysis and modification of Java bytecode. Java bytecode is an abstract machine language that the stack-based Java virutal machine (JVM) can understand and execute. The instructions JVM executes are \eg \textit{aload\_0}, \textit{putfield}, \textit{invokevirtual} and so on.
 
-Since bytecode plays an important role in our project, we will describe the Java bytecode and explain some terms we will use often in this thesis. We start with an easy \textit{HelloWorld} source code and its \bytecoderef{helloWorld} example to make it easier to understand.
+Since bytecode plays an important role in our project, we will describe the Java bytecode and explain some terms we will use often in this thesis. We start with an easy \textit{HelloWorld} source code (\coderef{helloWorld}) and its \bytecoderef{helloWorld} example to make it easier to understand.
 
-\begin{Java}[caption={Hello World example.\brs{mentioned way to late in text}\lt{don't understand...}}, label={code:helloWorld}][H]
+\begin{Java}[caption={Hello World example.}, label={code:helloWorld}][H]
 public class HelloWorld {
 	private String hello = "Hello World!";
 
@@ -155,7 +168,7 @@ public void say();
 
 We are going to look only at the bytecode of method \code{say()}. Those green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} as a synonym for those instructions since it is a number that represents the operation to perform.
 
-On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that \ugh{indicates where a computer is located in its program sequence}\brs{what?}\lt{after executing an instruction it increments. like this we always know where the computer is located in his work sequence. should i take this out or rephrase it?}. It is also called instruction pointer. We use these pcs also as an index in to the bytecode. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis.
+On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that \ugh{indicates the position a computer is in its program sequence}\brs{what?}\lt{better?}. It is also called instruction pointer. We use these pcs also as an index in to the bytecode. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis.
 
 Going back to the example shown in \bytecoderef{helloWorld}, we can see on the right-side  the name and type of variables, or in case of an invocation the behavior/method name and the parameters it takes \etc. In \secref{lowLevelOverview} we will see how this information is used.
 
@@ -165,6 +178,8 @@ Underneath the instructions we find the \textit{line number table}. It maps the 
 \label{sec:javassist}
 \textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}~\cite{Chib00}~\cite{Chib03}, a subproject of Jboss, is a library which enables manipulation of the Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way. Examples of this manipulation include defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. A tutorial for using Javassist\footnote{\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}} is available online and was used as a starting point for this work.
 
+Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level. Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{javassistLevel}
@@ -172,7 +187,7 @@ Underneath the instructions we find the \textit{line number table}. It maps the 
   \label{fig:bytecodeModificationLevels}
 \end{figure}
 
-Unlike many other libraries Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level (See \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.}\brs{not sure how this figure shows 2 levels of apis}\lt{Javasist is positioned in the middle. That means it is able to use the low level (bytecode) and the high level (source cole) api. remove this picture or describe it?}). Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
+In \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} the term \textit{``Low Level''} is used for \textit{bytecode}-level and \textit{``High Level''} for \textit{source}-level. Using the libraries \textit{ASM} and \textit{BCEL} the user has to construct bytecode itself and is not able to only write simple source code to modify a class file. The library \textit{AspectJ} on the other hand only allows the user to write source code which is than translated into bytecode. This way of course the user is limited by the functionality of the library \textit{AspectJ}. \textit{Javassist} and \textit{CGLIB} provide the user the choice of whether to work on \textit{bytecode}- or \textit{source}-level, or even on both.
 
 At this point, let us look at the small example \coderef{javassistExample}\footnote{Example taken from Javassist tutorial.} of how the bytecode manipulation works.
 

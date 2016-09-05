@@ -168,7 +168,7 @@ public void say();
 
 We are going to look only at the bytecode of method \code{say()}. Those green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} as a synonym for those instructions since it is a number that represents the operation to perform.
 
-On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that \ugh{indicates the position a computer is in its program sequence}\brs{what?}\lt{better?}. It is also called instruction pointer. We use these pcs also as an index in to the bytecode. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis.
+On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that \ugh{indicates where a computer is situated in its program sequence}\brs{what?}\lt{better?}. It is also called instruction pointer. We use these pcs also as an index in the bytecode. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis.
 
 Going back to the example shown in \bytecoderef{helloWorld}, we can see on the right-side  the name and type of variables, or in case of an invocation the behavior/method name and the parameters it takes \etc. In \secref{lowLevelOverview} we will see how this information is used.
 
@@ -355,7 +355,7 @@ Storing is done by recreating the structure from the source folder in the destin
 \section{Low Level Overview}
 \label{sec:lowLevelOverview}
 
-In this section we will focus on the bytecode modification. \figref{modificationModules} shows that NullSpy contains three different modules in total. That means each class file of the loaded project will will be run through with each of these modules. The first thing we do with the loaded class file is extracting data from its bytecode, then do the instrumentation and at the end we add the run time supporter module to the project.
+In this section we will focus on the bytecode modification. \figref{modificationModules} shows that NullSpy contains three different modules in total. That means each class file of the loaded project will be run through with each of these modules. The first thing we do with the loaded class file is extracting data from its bytecode, then do the instrumentation and at the end we add the run time supporter module to the project.
 
 \begin{figure}[H]
 \centering
@@ -366,9 +366,40 @@ In this section we will focus on the bytecode modification. \figref{modification
 
 We will look at these modules in more detail and explain what each one does.
 
+\subsection{Process Flow}
+\label{processFlow}
+In this short and rough overview of the entire process we explain the reason why we have to extract data from bytecode and what they are used for. Details are discussed in the following subsections.
+
+From the stack trace of a \npe we can obtain three information, namely the class name, method name and the line number of where the \npe happened. But the aim of NullSpy is to reveal the location of the null assignment of the variable that caused the \npe. To achieve this goal we need to extract information from bytecode and compare them with each other to get the right location of the null assignment.
+
+The first step in the modification part is to extract information about the \mr. We use the term \mr to refer to variables on which methods are invoked, or whose fields are accessed. The same data like obtained from the \npe stack trace and other values \eg the variable name, variable type \etc are stored.
+
+The second step is to collect information about the null assignment. If a variable is assigned an object we gather data about the variable from the bytecode. The most important information obtained is the line number of the null assignment. Right after the assignment and the data collection NullSpy inserts some bytecode that represents a method call which is managed by the \textit{run time supporter}. This method takes those extracted information as parameters and checks whether the variable is assigned null. If it is assigned null the information about the variable is stored.
+
+At the end of the bytecode modification part we wrap the \code{main()} method into a \textit{try-catch-block}. In the \textit{catch-block} those three information (class name, method name, line number) mentioned before are extracted from the \npe stack trace. These information are also passed on to a static method of the \textit{run time supporter}. This method compares the parameters with the stored information about the \mrs. If there is a match regarding the comparison NullSpy creates a variable identification with the information about the matched \mr. With this id another comparison is performed. This time NullSpy compares the id with the information stored about the null assignment. The result will be the stored entry about the null assignment of the variable that caused the \npe. From the entry we extract the line number of the assignment and create the additional link that reveals the location of the null assignment. This link of course is then added to the common \npe stack trace.
+
+Finally we add the \textit{run time supporter} module to the modified project.
+
+The way how we extract and store all those data are discussed in the following sections.
+
 \subsection{\MR Data Collection}
 \label{subsec:methodReceiver}
-A big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr. We use the term \mr to refer to variables on which methods are invoked, or whose fields are accessed.\ugh{ A small example makes is easier to understand: The \mr in code \code{var.method()} is \code{var}}.
+As mentioned in \subsecref{processFlow}, a big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr. A small syntactic example (\coderef{methodReceiverExample}) makes is easier to understand. \Mrs in \coderef{methodReceiverExample} are the two variables \code{var} at line 8 and \code{field} at line 9.
+
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={\Mr example.}, label={code:methodReceiverExample}]
+public class A {
+
+	private Object (@\textbf{field}@) = new Object();
+	
+	public static void main() {
+		Object (@\textbf{var}@) = new Object();
+		
+		(@\textbf{var}@).toString();	// variable on which method is invoked
+		(@\textbf{field}@).toString();	// field access
+	}
+}
+\end{Java}
 
 We use the library Javassist (\secref{javassist}) to extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get information about the \mr. The exact information we need is listed later in this section. To put it another way, with Javassist we cannot directly extract the \mrs from bytecode. We need the exact pc-interval of the \mr to extract the right data from bytecode. That is why we implemented our own algorithm to get the \mrs. While iterating through the bytecode NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''} and uses the algorithm to get the right pc-interval. The algorithm contains following steps:
 
@@ -452,7 +483,7 @@ We store the data we gathered about the \mr in an external \textit{csv} file due
 	\begin{boxedminipage}{\textwidth}
 		\begin{itemize}
 		\itemsep8pt
-    \item \ugh{nr}\brs{really? nr?} (\mrs are counted)
+    \item counter (\mrs are counted)
 		\item lineNumber
 		\item variableID (whether it is a local variable or a field)
 		\item variableType
@@ -741,7 +772,6 @@ public static void testDirectField(String classNameInWhichVarIsUsed,
 			int isStatic, Object varValue, int varLineNr, int startPos,
 			int storePos, int afterPos) {...}
 \end{Java}
-
 
 There were again some challenges we had to get over, like getting the wanted data after an instrumentation and entering the additional code in the right position of the bytecode sequence (\subsecref{bytecodeAdaptationDifficulties}).
 

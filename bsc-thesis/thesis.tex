@@ -367,7 +367,7 @@ In this section we will focus on the bytecode modification. \figref{modification
 We will look at these modules in more detail and explain what each one does.
 
 \subsection{Process Flow}
-\label{processFlow}
+\label{subsec:processFlow}
 In this short and rough overview of the entire process we explain the reason why we have to extract data from bytecode and what they are used for. Details are discussed in the following subsections.
 
 From the stack trace of a \npe we can obtain three information, namely the class name, method name and the line number of where the \npe happened. But the aim of NullSpy is to reveal the location of the null assignment of the variable that caused the \npe. To achieve this goal we need to extract information from bytecode and compare them with each other to get the right location of the null assignment.
@@ -409,14 +409,14 @@ We use the library Javassist (\secref{javassist}) to extract data from bytecode.
 		\begin{enumerate}
 \itemsep8pt
       \item \textbf{Getting the pc-interval of method invocation:}\\
-			The bytecode of a simple method invocation is constructed as following: first the \mr is pushed on the operand stack, than the parameters the method call needs and last the opcode \textit{``invoke.*''} is pushed onto the stack. The pc-interval of a method invocation contains all the pcs starting from the start-pc of the \mr up to the pc of the corresponding opcode \textit{``invoke.*''}. The use of corresponding is explained in step 4.
+			The bytecode of a simple method invocation is constructed as following: first the \mr is pushed on the operand stack, than the parameters the method call needs and last the opcode \textit{``invoke.*''} is pushed onto the stack. The pc-interval of a method invocation contains all the pcs starting from the start-pc of the \mr up to the pc of the corresponding opcode \textit{``invoke.*''}. The use of the term corresponding is explained in step 4.
       \item \textbf{Storing all possible \mr intervals within the interval of step 1 into an ArrayList}\\
 			Since we cannot get the exact pc-interval of the \mr yet or we even do not know whether there exists\footnotemark one for the method invocation we are looking at, NullSpy stores every pc-interval which can be a \mr candidate within the pc-interval gained in step 1. Possible \mr candidates are the parameters and the \mr itself. If there is a \mr its pc-interval is stored, the pc-interval of each parameter the method invocation takes are also stored into an ArrayList. Every pc-interval receives the roll of a possible \mr candidate. Parameters can also be another method invocation not only simple variables.
 			\item \textbf{Getting the number of parameters, the method invocation takes}\\
 			Javassist offers the functionality to count the number of parameters a method invocation has by analyzing its signature. The signature is a \textit{String} that contains the parameter and the return type of the method call.
 			\item \textbf{Traversing back the ArrayList the amount of parameters}\\
 			To be sure not to mistaken a parameter as the \mr we traverse back the ArrayList the number of parameters the method invocation takes. Traversing back is necessarily to detect nested method invocations. The meaning of nested invocations is \eg a method invocation that has a parameter which is again a method invocation.
-			\item \textbf{Result: \mr interval (pc-interval: see \secref{bytecode})}
+			\item \textbf{Result: \mr interval (pc-interval)}
    \end{enumerate}
 	\end{boxedminipage}
 	\caption{\Mr algorithm.\brs{very unclear, I have no idea what all this means}\lt{clearer now?}}
@@ -474,7 +474,7 @@ In case of the simple stand-alone \textit{invokestatic} instruction we do not ha
 
 \brs{the algorithm is very poorly explained, i still have no idea how you get from pc-interval to any useful information}\lt{see next paragraph}
 
-As soon as we have the \mr pc-interval we can extract information about the \mr from the bytecode. By calling the method \code{constantPool.getFieldrefName(index)} we get the name of the field/\mr. The parameter \code{index} is obtained by \code{codeIterator.u16bitAt(pc+1)}. To be able to get the parameter \code{index} we need the exact pc-interval of the \mr.
+As soon as we have the \mr pc-interval we can extract information about the \mr from the bytecode. By calling the method \code{constantPool.getFieldrefName(index)} we get the name of the \mr. The parameter \code{index} is obtained by \code{codeIterator.u16bitAt(pc+1)}. To be able to get the parameter \code{index} we need the exact pc-interval of the \mr.
 
 We store the data we gathered about the \mr in an external \textit{csv} file due to overhead minimization. The following list shows the information which is stored about the \mr.
 
@@ -501,11 +501,9 @@ We store the data we gathered about the \mr in an external \textit{csv} file due
 
 We will talk about the purpose why these information about the \mr are needed later in this section.
 
-\brs{after reading this subsection I realised it's really hard to follow these details without knowing why we need them. We should have a short overview of the entire process at the beggining of the section, so that the reader has some idea of what's going on and why we need to do this. As it is now, he just has to trust us that this needs to be done, and that's not good.}
-
 \subsection{Variable Data Collection}
 \label{subsec:variable}
-\ugh{Data about the \mrs plus information about the variables which are assigned an object are needed in NullSpy.} In the section before we were looking for instructions which matches the regex \textit{``invoke.*''} for finding \mrs in bytecode. This time we are looking for the regexs \textit{``astore.*''} and \textit{``put.*''}. The former refers to local variable assignments and the latter to field assignments. \ugh{After finding one of the assignment NullSpy gathers data about the variable because NullSpy inserts bytecode right after the assignment which represents a method invocation that needs the gained data as parameters. The inserted bytecode represents a test method which tests whether the value assigned to the variable is null and store the gathered information about it}\brs{this is why we need the short overview at the beginning, than we would not need these half baked explanations here and there}. Unlike in getting information about the \mr in \subsecref{methodReceiver} the data about the variables are stored in a HashMap.
+The section before we were looking for instructions which matches the regex \textit{``invoke.*''} to detect \mrs in bytecode. This time we are looking for the regexs \textit{``astore.*''} and \textit{``put.*''}. The former refers to local variable assignments and the latter to field assignments. Unlike the information collection about the \mr in \subsecref{methodReceiver} the data about the variables are stored in a HashMap.
 
 In the next two subsections we will look at how those information about the assigned variables are extracted. Due to different variable types and the limitation of Javassist, the way of gathering information about the assignments is performed differently.
 
@@ -520,7 +518,7 @@ Unfortunately, Javassist does not provide any support for gaining information ab
   \label{fig:localVarCreationBytecode}
 \end{figure}
 
-If a local variable is created, the value assigned to it is pushed onto the operand stack as we can see in \figref{localVarCreationBytecode}\footnote{Figure taken from \href{http://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html}{blog.jamesdbloom.com}.}. With the bytecode instruction \textit{``astore.*"} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables are composed of one, or in some cases two bytes. There are reserved \ugh{machine commands} for the first four local variables, index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted. In addition to storing local variable loading it from the local variable array is possible too, but of course again only with the local variable slot number. \brs{no idea what this paragraph is about}
+If a local variable is created, the value assigned to it is pushed onto the operand stack as we can see in \figref{localVarCreationBytecode}\footnote{Figure taken from \href{http://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html}{blog.jamesdbloom.com}.}. With the bytecode instruction \textit{``astore.*''} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables are composed of one, or in some cases two bytes. There are reserved instructions for the first four created local variables. These instructions are index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted.\brs{no idea what this paragraph is about}
 
 With this short introduction understanding the local variable table should be easier. Each method of a class file contains a local variable table (see \bytecoderef{localVarTable}) with which many information can be read out, \ie the lifespan of a local variable, what it is called, in which slot it is stored and what type it has.
 

@@ -40,7 +40,7 @@
 \usepackage{mdwlist}        % support for better spaced lists
 % allows for temporary adjustment of side margins
 \usepackage{chngpage}
-\usepackage[normalem]{ulem} 
+\usepackage[normalem]{ulem}
 
 % lina entered
 \usepackage{indentfirst}
@@ -273,10 +273,7 @@
 \newcommand{\thesisauthor}{Lina Tran}
 \newcommand{\thesisauthorOrigin}{Biel/Bienne BE, Switzerland}
 \newcommand{\thesisleiter}{Prof.\ Dr.\ Oscar Nierstrasz}
-\newcommand{\thesisasst}{	\begin{center}
-														Nevena Milojkovi\'{c}\\
-														Boris Spasojevi\'{c}
-													\end{center}}
+\newcommand{\thesisasst}{Nevena Milojkovi\'{c}, Boris Spasojevi\'{c}}
 \newcommand{\thesisurl}{http://scg.unibe.ch/}
 \newcommand{\thesissubtitle}{An approach to show the exact location where a value was referenced to null}
 \newcommand{\thesisdate}{31. July 2016}
@@ -308,29 +305,29 @@
 % D O C U M E N T
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \begin{document}
-
+\linespread{0.8}
 % T I T L E
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \begin{titlepage}
-	\begin{center} 
-	
-		\begin{figure}[t]  
-			\vspace*{-2cm}        % to move header logo at the top 
+	\begin{center}
+
+		\begin{figure}[t]
+			\vspace*{-2cm}        % to move header logo at the top
 			\center{\includegraphics[scale=0.5]{logos/UNI_Bern.png}}
-			\vspace{1in}     
+			\vspace{0.7in}
 		\end{figure}
 
     \thispagestyle{empty}
-    
+
     {\bfseries\Huge \thesistitle \par
     \Large \vspace{0.1in} \thesissubtitle \par}
 
-    \vspace{0.3in} 
+    \vspace{0.3in}
     \LARGE{\textbf{Bachelor Thesis} \\}
-    \vspace{0.4in}
+    \vspace{0.3in}
 
     {\Large \thesisauthor \par from \par \thesisauthorOrigin}
-    
+
     \vspace{0.3in}
     {\Large Faculty of Science \\
             University of Bern \par}
@@ -342,8 +339,9 @@
       {\Large \thesisasst} \par
    \vspace{0.1in}
     {\Large Software Composition Group \par Institute for Computer Science \par University of Bern, Switzerland \par}
-		
+
   %\vspace{0.5in}
-	
+
 	\end{center}
 \end{titlepage}
+\linespread{1}

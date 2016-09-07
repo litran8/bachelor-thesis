@@ -51,7 +51,7 @@ public void drop(...) {
 }
 \end{Java}
 
-Assume that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet \ins{is a modified version of code }taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value from the return value of the function \code{DNDHelper.processReceivedData()}. This means that the same variable \code{ff} is \code{null} at line 9 and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5. 
+Assume that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value from the return value of the function \code{DNDHelper.processReceivedData()}. This means that the same variable \code{ff} is \code{null} at line 9 and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5. 
 
 \begin{Java}[caption={\Npe example (II).}, label={code:npeExampleFieldAccess}]
 public class DrawApplication {
@@ -86,11 +86,11 @@ public class DrawApplication {
 
 A more complicated way a \npe can be triggered is when it involves variables with larger scopes such as class members. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation.
 
-The \code{open()} method calls the methods \code{createIconkit()} at line 7 and \code{setTool()} at line 9. The former will \chg{initiate}{initialize} the field \code{fManager} (line 3) and the latter will cause the \npe.
+The \code{open()} method calls the methods \code{createIconkit()} at line 7 and \code{setTool()} at line 9. The former will initialize the field \code{fManager} (line 3) and the latter will cause the \npe.
 
-By calling \code{createIconkit()} the \ugh{field is assigned to the method} \code{getIconkitManager()} at line 14 which just returns the \textbf{null} value at line 19.
+By calling \code{createIconkit()} the field is assigned \textbf{null} by calling \code{getIconkitManager()} at line 14 which just returns the \textbf{null} value at line 19.
 
-In \ins{the} method \code{setTool()} (line 22) the \npe is finally \chg{thrown}{caused} by the attempt to access the field at line 24. The resulting \npe stack trace is shown in \boxref{stackTrace}:
+In the method \code{setTool()} (line 22) the \npe is finally caused by the attempt to access the field at line 24. The resulting \npe stack trace is shown in \boxref{stackTrace}:
 
 \begin{figure}[H]
 \renewcommand\figurename{Box}
@@ -107,7 +107,7 @@ In \ins{the} method \code{setTool()} (line 22) the \npe is finally \chg{thrown}{
 
 In \boxref{stackTrace} we can see that the stack trace does not track to the location where the variable is assigned the null value. We call this location the root of an exception. That means the Java developer has to debug his/her way to the exception root.
 
-At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. \del{In other words }the main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developers the exact location of the null assignment next to the ordinary stack trace as shown in \boxref{stackTrace2}.
+At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developers the exact location of the null assignment next to the ordinary stack trace as shown in \boxref{stackTrace2}.
 
 \begin{figure}[H]
 \renewcommand\figurename{Box}
@@ -134,7 +134,7 @@ This chapter provides a short overview of technologies used in the implementatio
 \label{sec:bytecode}
 The backbone of NullSpy is analysis and modification of Java bytecode. Java bytecode is an abstract machine language that the stack-based Java virutal machine (JVM) can understand and execute. \ugh{The instructions JVM executes are \eg \textit{aload\_0}, \textit{putfield}, \textit{invokevirtual} and so on}\brs{pointless, you should say that the JVM keeps a stack and that each instruction modifies the stack, that the instructions have an opcode and a string representation.}.
 
-Since bytecode plays an important role in our project, we will describe the Java bytecode and explain some terms we will use often in this thesis. We start with an easy \textit{HelloWorld} source code \ins{example}(\coderef{helloWorld}) and its \ins{bytecode (}\bytecoderef{helloWorld} \ins{)} \del{example} \del{to make it easier to understand}. \brs{Is this really byte code? Looks to me like a human readable presentation of the bytecode or something, i doubt the JVM parses this}
+Since bytecode plays an important role in our project, we will describe the Java bytecode and explain some terms we will use often in this thesis. We start with an easy \textit{HelloWorld} source code example (\coderef{helloWorld}) and its bytecode (\bytecoderef{helloWorld}). \brs{Is this really byte code? Looks to me like a human readable presentation of the bytecode or something, i doubt the JVM parses this}\lt{yes? show eclipse!}
 
 \begin{Java}[caption={Hello World example.}, label={code:helloWorld}][H]
 public class HelloWorld {
@@ -166,7 +166,7 @@ public void say();
 			[pc: 5, pc: 13] local: result index: 1 type: java.lang.String
 \end{JVMIS}
 
-We are going to look only at the bytecode of method \code{say()}. \chg{Those}{The} green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} as a synonym for those instructions since it is a number that represents the operation to perform.
+We are going to look only at the bytecode of method \code{say()}. The green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} as a synonym for those instructions since it is a number that represents the operation to perform.
 
 On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that contains the address (location) of the instruction being executed at the current time. It is also called instruction pointer. We use these pcs also as an index in the bytecode. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis. \brs{introduce the <> syntax }
 
@@ -178,7 +178,7 @@ Underneath the instructions\brs{why are there no line numbers in bytecode? it wo
 \label{sec:javassist}
 \textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}~\cite{Chib00}~\cite{Chib03}, a subproject of Jboss, is a library which enables manipulation of the Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way. Examples of this manipulation include defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. A tutorial for using Javassist\footnote{\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}} is available online and was used as a starting point for this work.
 
-Unlike many other \ins{bytecode manipulation }libraries\ins{,} Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level. Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
+Unlike many other bytecode manipulation libraries, Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level. Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
 
 \begin{figure}[H]
 \centering
@@ -187,9 +187,9 @@ Unlike many other \ins{bytecode manipulation }libraries\ins{,} Javassist offers 
   \label{fig:bytecodeModificationLevels}
 \end{figure}
 
-In \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} the term \textit{``Low Level''} is used for \textit{bytecode}-level and \textit{``High Level''} for \textit{source}-level. Using the libraries \textit{ASM} and \textit{BCEL} \brs{links or refs to these libs}the user has to construct bytecode itself and is not able to only write simple source code to modify a class file. The library \textit{AspectJ} on the other hand only allows the user to write source code which is than translated into bytecode. This way of course the user is limited by the functionality of the library \textit{AspectJ}. \textit{Javassist}\brs{not consistent, sometimes textit sometimes not. I don't see why it should be textit, I receomend droping it} and \textit{CGLIB} provide the user the choice of whether to work on \textit{bytecode}- or \textit{source}-level, or even on both. \brs{this whole story about ``levels'' is important because...}
+In \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} the term \textit{``Low Level''} is used for \textit{bytecode}-level and \textit{``High Level''} for \textit{source}-level. Using the libraries \textit{ASM} and \textit{BCEL} \brs{links or refs to these libs}the user has to construct bytecode itself and is not able to only write simple source code to modify a class file. The library \textit{AspectJ} on the other hand only allows the user to write source code which is than translated into bytecode. This way of course the user is limited by the functionality of the library \textit{AspectJ}. \textit{Javassist}\brs{not consistent, sometimes textit sometimes not. I don't see why it should be textit, I receomend droping it} and \textit{CGLIB} provide the user the choice of whether to work on \textit{bytecode}- or \textit{source}-level, or even on both. \brs{this whole story about ``levels'' is important because...}\lt{figure shows that javassist can use both apis.. take out?}
 
-At this point, let us look at the small example \ins{shown in} \coderef{javassistExample}\footnote{Example taken from Javassist tutorial.} of how the bytecode manipulation \ins{with javasist} works. \ins{We go through the example line by line.}
+At this point, let us look at the small example shown in \coderef{javassistExample}\footnote{Example taken from Javassist tutorial.} of how the bytecode manipulation with javasist works. We go through the example line by line.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Javassist example.}, label={code:javassistExample}][H]
@@ -200,11 +200,11 @@ cc.writeFile();
 \end{Java}
 
 \begin{enumerate}
-	\item First a \textit{ClassPool} object that controls bytecode modification \del{with Javassist} is obtained. With the \textit{ClassPool} \ins{object} a class file (``.class'') can be read on demand for constructing a \textit{CtClass} object.
+	\item First a \textit{ClassPool} object that controls bytecode modification is obtained. With the \textit{ClassPool} object a class file (``.class'') can be read on demand for constructing a \textit{CtClass} object.
 
-	\item The class \textit{CtClass} (compile-time class) represents the class file\ins{.}\chg{meaning}{This means} that all manipulations are performed on the \textit{CtClass} object. We obtain a reference to the \textit{CtClass} object representing the \code{test.Rectangle} class by invoking the \code{get()} method on the \textit{ClassPool} instance.
+	\item The class \textit{CtClass} (compile-time class) represents the class file. This means that all manipulations are performed on the \textit{CtClass} object. We obtain a reference to the \textit{CtClass} object representing the \code{test.Rectangle} class by invoking the \code{get()} method on the \textit{ClassPool} instance.
 
-	\item In this example the only bytecode modification done is changing the superclass of \code{test.Rectangle} to \code{test.Point}.\ins{This does not serve any purpose and is only illustrative}
+	\item In this example the only bytecode modification done is changing the superclass of \code{test.Rectangle} to \code{test.Point}. This does not serve any purpose and is only illustrative.
 	\item Once the bytecode modification is done, the method call \code{writeFile()} on the instance of \textit{CtClass} is necessary to make sure that the changes are reflected on the original class file. The method \code{writeFile()} converts the modified \textit{CtClass} object into a class file and stores it on a local disk.
 \end{enumerate}
 
@@ -215,7 +215,7 @@ cc.writeFile();
   \label{fig:javassistModules}
 \end{figure}
 
-\figref{javassistModules}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} gives an overview of how the main part of bytecode manipulation with Javassist is built up. The \textit{ClassPool} is simply a container of multiple \textit{CtClasses}. As described before \textit{CtClass} represents \ins{a }class file\del{s} on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors, fields, method invocations, local variables \etc But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of the method body, at the end or at a specific line. The next example shows how to add code using Javassist.
+\figref{javassistModules}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} gives an overview of how the main part of bytecode manipulation with Javassist is built up. The \textit{ClassPool} is simply a container of multiple \textit{CtClasses}. As described before \textit{CtClass} represents a class file on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors, fields, method invocations, local variables \etc But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of the method body, at the end or at a specific line. The next example shows how to add code using Javassist.
 
 \begin{Java}[caption={Initial code.}, label={code:initialCode}][H]
 public static void main(String[] args) {
@@ -251,7 +251,7 @@ public class BytecodeModifier {
 }
 \end{Java}
 
-With \coderef{bytecodeModifier} we obtain a \textit{CtClass} object \code{cc} at line 5\brs{update lines pls} which represents the class to be modified. At line 7 we get the method we want to modify by adding some source code: \code{System.out.println(``This is the inserted code.'');}. Javassist takes a \textit{java.lang.String} object, compiles it automatically and adds it into the bytecode at the specified location, in our situation at the beginning of the \code{main()} method.
+With \coderef{bytecodeModifier} we obtain a \textit{CtClass} object \code{cc} at line 4 which represents the class to be modified. At line 7 we get the method we want to modify by adding some source code: \code{System.out.println(``This is the inserted code.'');}. Javassist takes a \textit{java.lang.String} object, compiles it automatically and adds it into the bytecode at the specified location, in our situation at the beginning of the \code{main()} method.
 
 \coderef{instrumentedCodeDecompiled} is the result \ie the \code{main()} method equivalent to what we achieved with Javassist. At line 2 we see the inserted code.
 
@@ -323,9 +323,9 @@ In this chapter we give an overview of how we implemented NullSpy. We will also 
 
 \section{High Level Overview}
 \label{sec:highLevelOverview}
-The general approach of NullSpy is to statically analyze a project and instrument the bytecode. NullSpy is a console application which takes two \chg{parameters}{arguments}. The first argument to NullSpy is the path to the folder containing the compiled class files of the original project and the second one is the destination where the user wants to store the modified \chg{project}{class files}.
+The general approach of NullSpy is to statically analyze a project and instrument the bytecode. NullSpy is a console application which takes two arguments. The first argument to NullSpy is the path to the folder containing the compiled class files of the original project and the second one is the destination where the user wants to store the modified class files.
 
-We provide the option to choose the destination \del{is because} in case the developer does not want to overwrite the original project with the modified one. This means that the updated bytecode can be stored in another location, keeping the original class files intact. Of course the original project can be replaced by the modified one too. But the developer has to think carefully about it because once replaced, the additional bytecode stays there and the execution time is slightly different than it was before. To get rid of the additional bytecode, the developer has to recompile the source code to get the original class files when needed. \ugh{This has to be done every time when NullSpy is used on the project}\brs{what? you mean every time the developer overrides the original class files and wants them back, not every time one runs NullSpy?}.
+We provide the option to choose the destination in case the developer does not want to overwrite the original project with the modified one. This means that the updated bytecode can be stored in another location, keeping the original class files intact. Of course the original project can be replaced by the modified one too. But the developer has to think carefully about it because once replaced, the additional bytecode stays there and the execution time is slightly different than it was before. To get rid of the additional bytecode, the developer has to recompile the source code to get the original class files when needed.
 
 \begin{figure}[H]
 \centering
@@ -350,9 +350,9 @@ NullSpy contains three basic steps which we can see in \figref{highLevelOverview
 	\label{list:abstractSteps}
 \end{figure}
 
-Loading is done by traversing all the subfolders of the folder given as a parameter, and extracting all the \textit{.class} files. NullSpy modifies the class file directly when it is loaded. As soon as the modification is done, the class file is stored to the destination folder \chg{which is represented by}{\ie} the second parameter of NullSpy. 
+Loading is done by traversing all the subfolders of the folder given as a parameter, and extracting all the \textit{.class} files. NullSpy modifies the class file directly when it is loaded. As soon as the modification is done, the class file is stored to the destination folder \ie the second parameter of NullSpy. 
 
-Storing is done by recreating the structure from the source folder in the destination folder and storing the modified class files \chg{similarly}{using the Javasist API} as explained in \secref{javassist}. \del{In secref{javassist} we store the modified class file on a local disk. This way the original class file remains intact. In our case we write the modified class file in the destination folder not only on a local disk. This way the original project can be overwritten as explained before.} \brs{what? not only on a local disk? what does that even mean}
+Storing is done by recreating the structure from the source folder in the destination folder and storing the modified class files using the Javasist API as explained in \secref{javassist}. \del{In secref{javassist} we store the modified class file on a local disk. This way the original class file remains intact. In our case we write the modified class file in the destination folder not only on a local disk. This way the original project can be overwritten as explained before.} \brs{what? not only on a local disk? what does that even mean}\lt{ask, javassist tutorial store on local disk, here write new file or overwrite}
 
 \section{Low Level Overview}
 \label{sec:lowLevelOverview}
@@ -386,7 +386,7 @@ The way how we extract and store all those data are discussed in the following s
 
 \subsection{\MR Data Collection}
 \label{subsec:methodReceiver}
-As mentioned in \subsecref{processFlow}, a big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr. A small \chg{syntactic}{synthetic} example (\coderef{methodReceiverExample}) makes is easier to understand. \Mrs in \coderef{methodReceiverExample} are the two variables \code{var} at line 8 and \code{field} at line 9.
+As mentioned in \subsecref{processFlow}, a big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr. A small synthetic example (\coderef{methodReceiverExample}) makes is easier to understand. \Mrs in \coderef{methodReceiverExample} are the two variables \code{var} at line 8 and \code{field} at line 9.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={\Mr example.}, label={code:methodReceiverExample}]
@@ -637,7 +637,7 @@ We call everything before the instruction \textit{putfield} \textit{``member obj
 	\label{box:variableInfo2}
 \end{figure}
 
-The syntactic example \coderef{fieldExample} shows how the instructions \textit{``putfield''} and \textit{``putstatic''} are used:
+The synthetic example \coderef{fieldExample} shows how the instructions \textit{``putfield''} and \textit{``putstatic''} are used:
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Example: \textit{``putfield''} and \textit{``putstatic''}.}, label={code:fieldExample}]

@@ -168,11 +168,11 @@ public void say();
 
 We are going to look only at the bytecode of method \code{say()}. \chg{Those}{The} green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} as a synonym for those instructions since it is a number that represents the operation to perform.
 
-On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that \ugh{indicates where a computer is situated in its program sequence}\brs{what?}\lt{better?}. It is also called instruction pointer. We use these pcs also as an index in the bytecode. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis.
+On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that \ugh{indicates where a computer is situated in its program sequence}\brs{what?}\lt{better?}. It is also called instruction pointer. We use these pcs also as an index in the bytecode. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis. \brs{introduce the <> syntax }
 
 Going back to the example shown in \bytecoderef{helloWorld}, we can see on the right-side  the name and type of variables, or in case of an invocation the behavior/method name and the parameters it takes \etc. In \secref{lowLevelOverview} we will see how this information is used.
 
-Underneath the instructions\brs{why are there no line numbers in bytecode? it would help here} we find the \textit{line number table}. It maps the pc to the source code line. The numbers at the end of the lines in \boxref{stackTrace} indicate the lines of code that caused the \npe. The information the \textit{line number table} holds is used to recover where the null was assigned. In \secref{lowLevelOverview} we will discuss more about the \textit{line number} and \textit{local variable attribute}.
+Underneath the instructions\brs{why are there no line numbers in bytecode? it would help here} we find the \textit{line number table}\footnote{In the jargon of Javasist, this is also called the line number attribute.}. It maps the pc to the source code line. The numbers at the end of the lines in \boxref{stackTrace} indicate the lines of code that caused the \npe. The information the \textit{line number table} holds is used to recover where the null was assigned. In \secref{lowLevelOverview} we will discuss more about the \textit{line number} and \textit{local variable attribute}.
 
 \section{Javassist}
 \label{sec:javassist}
@@ -386,7 +386,7 @@ The way how we extract and store all those data are discussed in the following s
 
 \subsection{\MR Data Collection}
 \label{subsec:methodReceiver}
-As mentioned in \subsecref{processFlow}, a big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr. A small syntactic example (\coderef{methodReceiverExample}) makes is easier to understand. \Mrs in \coderef{methodReceiverExample} are the two variables \code{var} at line 8 and \code{field} at line 9.
+As mentioned in \subsecref{processFlow}, a big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr. A small \chg{syntactic}{synthetic} example (\coderef{methodReceiverExample}) makes is easier to understand. \Mrs in \coderef{methodReceiverExample} are the two variables \code{var} at line 8 and \code{field} at line 9.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={\Mr example.}, label={code:methodReceiverExample}]
@@ -403,30 +403,36 @@ public class A {
 }
 \end{Java}
 
-We use the library Javassist (\secref{javassist}) to extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get information about the \mr. The exact information we need is listed later in this section. To put it another way, with Javassist we cannot directly extract the \mrs from bytecode. We need the exact pc-interval of the \mr to extract the right data from bytecode. That is why we implemented our own algorithm to get the \mrs. While iterating through the bytecode NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''} and uses the algorithm to get the right pc-interval. The algorithm contains following steps:
+\brs{add a field access to the example: m.foo;}
 
-\begin{figure}[H]
-\renewcommand\figurename{Algorithm}
-	\begin{boxedminipage}{\textwidth}
-		\begin{enumerate}
-\itemsep8pt
-      \item \textbf{Getting the pc-interval of method invocation:}\\
-			The bytecode of a simple method invocation is constructed as following: first the \mr is pushed on the operand stack, than the parameters the method call needs and last the opcode \textit{``invoke.*''} is pushed onto the stack. The pc-interval of a method invocation contains all the pcs starting from the start-pc of the \mr up to the pc of the corresponding opcode \textit{``invoke.*''}. The use of the term corresponding is explained in step 4.
-      \item \textbf{Storing all possible \mr intervals within the interval of step 1 into an ArrayList}\\
-			Since we cannot get the exact pc-interval of the \mr yet or we even do not know whether there exists\footnotemark one for the method invocation we are looking at, NullSpy stores every pc-interval which can be a \mr candidate within the pc-interval gained in step 1. Possible \mr candidates are the parameters and the \mr itself. If there is a \mr its pc-interval is stored, the pc-interval of each parameter the method invocation takes are also stored into an ArrayList. Every pc-interval receives the roll of a possible \mr candidate. Parameters can also be another method invocation not only simple variables.
-			\item \textbf{Getting the number of parameters, the method invocation takes}\\
-			Javassist offers the functionality to count the number of parameters a method invocation has by analyzing its signature. The signature is a \textit{String} that contains the parameter and the return type of the method call.
-			\item \textbf{Traversing back the ArrayList the amount of parameters}\\
-			To be sure not to mistaken a parameter as the \mr we traverse back the ArrayList the number of parameters the method invocation takes. Traversing back is necessarily to detect nested method invocations. The meaning of nested invocations is \eg a method invocation that has a parameter which is again a method invocation.
-			\item \textbf{Result: \mr interval (pc-interval)}
-   \end{enumerate}
-	\end{boxedminipage}
-	\caption{\Mr algorithm.\brs{very unclear, I have no idea what all this means}\lt{clearer now?}}
-	\label{alg:methodReceiverAlg}
-\end{figure}
-\footnotetext{Static method invocations do not have \mrs.}
+We use the library Javassist (\secref{javassist}) to extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get information about the \mr. The exact information we need is listed later in this section\brs{add forward reference}. \del{To put it another way, with Javassist we cannot directly extract the \mrs from bytecode.} 
 
-A small example how \algref{methodReceiverAlg} is used (code snippet from JHotDraw):
+This is why we implemented our own algorithm to get the \mrs. We need the exact pc-interval of the \mr to extract the right data from bytecode. As we discuss the steps of the algorithm we will be showing the result of each step when applied to the example source code and bytecode shown in \coderef{methodReceiverAlgDemoCode} and \bytecoderef{methodReceiverAlgDemoBytecode}. The algorithm contains following steps:
+
+While iterating through the bytecode NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''} and uses the algorithm to get the right pc-interval.
+
+%\begin{figure}[H]
+%\renewcommand\figurename{Algorithm}
+%	\begin{boxedminipage}{\textwidth}
+%		\begin{enumerate}
+%\itemsep8pt
+\textbf{Finding the invocation bytecode}
+While iterating through the bytecode NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation for which we are trying to find the \mr. We call the pc of the invocation the end-pc. In our example, the end-pc is 155, since we are interested in the receiver of the \textit{add} method.
+
+\textbf{Finding the start-pc}
+We locate the pc at which the bytecode for source code line of the invocation begins. We call this the start-pc. This is done using the line number table mentioned in \secref{bla}. This table is omitted from our example for simplicity and the start-pc in is 144.
+
+\textbf{Defining the outermost pc interval}
+We define the outermost pc interval as the interval starting with the start-pc and ending with the end-pc. We know that the \mr is located in this interval. In our example, this is <144, 155>.
+
+\textbf{Getting the number of parameters for the method}
+Javassist offers the functionality to count the number of parameters a method invocation has by analyzing the method signature. The signature is a \textit{String} that contains the parameter and the return type of the method call. Our example method takes 2 parameters.
+
+\textbf{Extracting candidate \mr pc intervals}
+The outermost interval could contain other invocations, which could have \mrs of their own. This is visible in our example, where the getDesktop invocation (pc 146) is embedded in our outermost interval. For this reason, we explored all possible bytecode combinations of \mrs and developed a system for identifying such embedded call sights. \ugh{More about this system can be found in the appendix}. This system allows us to split the outermost pc interval into candidate \mr pc intervals. In our example, the outermost pc interval is divided into \{<144,144>,<145,149>,<152,152>\}.
+
+\textbf{Finding the actual \mr} 
+Since the candidate pc intervals end with the arguments of the method, and we know that the method expects $N$ arguments, we can ignore the last $N$ candidate pc intervals. The one before them is the actual \mr pc interval. In other words, the $N$-th to last candidate is the actual \mr pc interval. In our example, since the method takes 2 arguments, the actual \mr pc interval is <144,144>.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Code snippet to demonstrate \algref{methodReceiverAlg}.}, label={code:methodReceiverAlgDemoCode}]
@@ -436,8 +442,6 @@ protected void open(final DrawingView newDrawingView) {
 	//...
 }
 \end{Java}
-
-We are only looking at line 3 in \coderef{methodReceiverAlgDemoCode}.
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[caption={Bytecode of \coderef{methodReceiverAlgDemoCode}.}, label={bytecode:methodReceiverAlgDemoBytecode}, breaklines=true]
@@ -452,29 +456,11 @@ protected void open(org.jhotdraw.framework.DrawingView newDrawingView);
  ...
 \end{JVMIS}
 
-\begin{figure}[H]
-\renewcommand\figurename{Example}
-	\begin{boxedminipage}{\textwidth}
-		\begin{enumerate}
-			\itemsep8pt
-			\item pc-interval: \newline <144-155>
-			\item ArrayList: \newline <144,<145,149>,152>
-			\item Number of parameters: \newline 2
-			\item Traversing back the amount of parameters: \newline <152> (1) ; <145,149> (2)
-			\item Result: \newline 144 = \code{activePanel} = \mr
-		\end{enumerate}
-	\end{boxedminipage}
-	\caption{Extract \mr example.}
-	\label{box:extractMethodReceiverExample}
-\end{figure}
-
 In step 1 we had troubles getting the right interval of the \mr. By only statically analyzing the bytecode it is unapparent where exactly the \mr is situated in bytecode. More about the challenges we encountered can be found in \subsecref{methodReceiverDifficulties}.
 
 Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*''}. There are exactly five such bytecode instructions: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamicly-typed languages\footnote{Language whose type checking is performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports java, a \textit{staticlly-typed} language\footnote{Language whose type checking is performed at compile time.}.
 
-In case of the simple stand-alone \textit{invokestatic} instruction we do not have a \mr because static method invocations do not have a \mr. Like this NullSpy ignores the instruction \textit{invokestatic}. But if the static method call is a parameter of another method call NullSpy wraps it as a \mr candidate. We do this because we traverse back the list that holds all possible \mr pc-intervalls as explained in \algref{methodReceiverAlg}.
-
-\brs{the algorithm is very poorly explained, i still have no idea how you get from pc-interval to any useful information}\lt{see next paragraph}
+\ugh{In case of the simple stand-alone \textit{invokestatic} instruction we do not have a \mr because static method invocations do not have a \mr.}\brs{they DO have a receiver, but it can never be null} Because of this, NullSpy ignores the instruction \textit{invokestatic}. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate.
 
 As soon as we have the \mr pc-interval we can extract information about the \mr from the bytecode. By calling the method \code{constantPool.getFieldrefName(index)} we get the name of the \mr. The parameter \code{index} is obtained by \code{codeIterator.u16bitAt(pc+1)}. To be able to get the parameter \code{index} we need the exact pc-interval of the \mr.
 
@@ -501,7 +487,7 @@ We store the data we gathered about the \mr in an external \textit{csv} file due
 	\label{box:methodReceiverInfo}
 \end{figure}
 
-We will talk about the purpose why these information about the \mr are needed later in this section.
+%We will talk about the purpose why these information about the \mr are needed later in this section.
 
 \subsection{Variable Data Collection}
 \label{subsec:variable}

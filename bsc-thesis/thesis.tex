@@ -51,7 +51,7 @@ public void drop(...) {
 }
 \end{Java}
 
-Assume that in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value from the return value of the function \code{DNDHelper.processReceivedData()}. This means that the same variable \code{ff} is \code{null} at line 9 and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5. 
+Assume that in the example shown in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value from the return value of the function \code{DNDHelper.processReceivedData()}. This means that the same variable \code{ff} is \code{null} at line 9 and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5. 
 
 \begin{Java}[caption={\Npe example (II).}, label={code:npeExampleFieldAccess}]
 public class DrawApplication {
@@ -132,9 +132,9 @@ This chapter provides a short overview of technologies used in the implementatio
 
 \section{Bytecode}
 \label{sec:bytecode}
-The backbone of NullSpy is analysis and modification of Java bytecode. Java bytecode is an abstract machine language that the stack-based Java virutal machine (JVM) can understand and execute. \ugh{The instructions JVM executes are \eg \textit{aload\_0}, \textit{putfield}, \textit{invokevirtual} and so on}\brs{pointless, you should say that the JVM keeps a stack and that each instruction modifies the stack, that the instructions have an opcode and a string representation.}.
+The backbone of NullSpy is analysis and modification of Java bytecode. Java bytecode is an abstract machine language that the stack-based Java virutal machine (JVM) can understand and execute. A JVM keeps an operand stack which is modified every time the JVM executes an instruction. The instruction is represented by an opcode which also has an string representation.
 
-Since bytecode plays an important role in our project, we will describe the Java bytecode and explain some terms we will use often in this thesis. We start with an easy \textit{HelloWorld} source code example (\coderef{helloWorld}) and its bytecode (\bytecoderef{helloWorld}). \brs{Is this really byte code? Looks to me like a human readable presentation of the bytecode or something, i doubt the JVM parses this}\lt{yes? show eclipse!}
+Since bytecode plays an important role in our project, we will describe the Java bytecode and explain some terms we use often in this thesis. We start with an easy \textit{HelloWorld} source code example (\coderef{helloWorld}) and its bytecode (\bytecoderef{helloWorld}). 
 
 \begin{Java}[caption={Hello World example.}, label={code:helloWorld}][H]
 public class HelloWorld {
@@ -148,31 +148,56 @@ public class HelloWorld {
 \end{Java}
 
 \renewcommand\lstlistingname{Bytecode}
-\begin{JVMIS}[caption={Bytecode of \coderef{helloWorld}.}, label={bytecode:helloWorld}, breaklines=true][H]
-public void say();
-	 0  aload_0 [this]
-	 1  getfield HelloWorld.hello : java.lang.String [14]
-	 4  astore_1 [result]
-	 5  getstatic java.lang.System.out : java.io.PrintStream [21]
-	 8  aload_1 [result]
-	 9  invokevirtual java.io.PrintStream.println(java.lang.String) : void [27]
-	12  return
-		Line numbers:
-			[pc: 0, line: 5]
-			[pc: 5, line: 6]
-			[pc: 12, line: 7]
-		Local variable table:
-			[pc: 0, pc: 13] local: this index: 0 type: HelloWorld
-			[pc: 5, pc: 13] local: result index: 1 type: java.lang.String
+\begin{JVMIS}[numbers=left, caption={Bytecode of \coderef{helloWorld}.}, label={bytecode:helloWorld}, breaklines=true][H]
+// Compiled from HelloWorld.java (version 1.8 : 52.0, super bit)
+public class HelloWorld {
+  
+  // Field descriptor #6 Ljava/lang/String;
+  private java.lang.String hello;
+  
+  // Method descriptor #8 ()V
+  // Stack: 2, Locals: 1
+  public HelloWorld();
+     0  aload_0 [this]
+     1  invokespecial java.lang.Object() [10]
+     4  aload_0 [this]
+     5  ldc <String "Hello World!"> [12]
+     7  putfield HelloWorld.hello : java.lang.String [14]
+    10  return
+      Line numbers:
+        [pc: 0, line: 1]
+        [pc: 4, line: 2]
+        [pc: 10, line: 1]
+      Local variable table:
+        [pc: 0, pc: 11] local: this index: 0 type: HelloWorld
+  
+  // Method descriptor #8 ()V
+  // Stack: 2, Locals: 2
+  public void say();
+     0  aload_0 [this]
+     1  getfield HelloWorld.hello : java.lang.String [14]
+     4  astore_1 [result]
+     5  getstatic java.lang.System.out : java.io.PrintStream [21]
+     8  aload_1 [result]
+     9  invokevirtual java.io.PrintStream.println(java.lang.String) : void [27]
+    12  return
+      Line numbers:
+        [pc: 0, line: 5]
+        [pc: 5, line: 6]
+        [pc: 12, line: 7]
+      Local variable table:
+        [pc: 0, pc: 13] local: this index: 0 type: HelloWorld
+        [pc: 5, pc: 13] local: result index: 1 type: java.lang.String
+}
 \end{JVMIS}
 
-We are going to look only at the bytecode of method \code{say()}. The green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} as a synonym for those instructions since it is a number that represents the operation to perform.
+We are going to look only at the bytecode of method \code{say()} which is represented by the lines 25-39 in \bytecoderef{helloWorld}. The green words in \bytecoderef{helloWorld} are called Java bytecode instructions. We will also use the term \textit{opcode} referring to individual instructions. Multiple opcode instructions are referred to as bytecode.
 
-On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that contains the address (location) of the instruction being executed at the current time. It is also called instruction pointer. We use these pcs also as an index in the bytecode. The instructions from pc 0 to pc 4 in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis. \brs{introduce the <> syntax }
+On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that contains the address (location) of the instruction being executed at the current time. It is also called instruction pointer. We use these pcs also as an index in the bytecode. The instructions from pc 0 to pc 4 (lines 26-28) in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis. We use the syntax ``<,>'' to represent the pc-interval. For the example just mentioned before the pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts and the latter one where it ends, both included.
 
 Going back to the example shown in \bytecoderef{helloWorld}, we can see on the right-side  the name and type of variables, or in case of an invocation the behavior/method name and the parameters it takes \etc. In \secref{lowLevelOverview} we will see how this information is used.
 
-Underneath the instructions\brs{why are there no line numbers in bytecode? it would help here} we find the \textit{line number table}\footnote{In the jargon of Javasist, this is also called the line number attribute.}. It maps the pc to the source code line. The numbers at the end of the lines in \boxref{stackTrace} indicate the lines of code that caused the \npe. The information the \textit{line number table} holds is used to recover where the null was assigned. In \secref{lowLevelOverview} we will discuss more about the \textit{line number} and \textit{local variable attribute}.
+Underneath the instructions from line 33-36 in \bytecoderef{helloWorld} we find the \textit{line number table}\footnote{In the jargon of Javasist, this is also called the line number attribute.}. It maps the pc to the source code line. The numbers at the end of the lines in \boxref{stackTrace} indicate the lines of code that caused the \npe. The information the \textit{line number table} holds is used to recover where the null was assigned. In \secref{lowLevelOverview} we will discuss more about the \textit{line number} and \textit{local variable table}.
 
 \section{Javassist}
 \label{sec:javassist}
@@ -180,14 +205,14 @@ Underneath the instructions\brs{why are there no line numbers in bytecode? it wo
 
 Unlike many other bytecode manipulation libraries, Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level. Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.8\linewidth]{javassistLevel}
-\caption{Bytecode modification levels.}
-  \label{fig:bytecodeModificationLevels}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=0.8\linewidth]{javassistLevel}
+%\caption{Bytecode modification levels.}
+  %\label{fig:bytecodeModificationLevels}
+%\end{figure}
 
-In \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} the term \textit{``Low Level''} is used for \textit{bytecode}-level and \textit{``High Level''} for \textit{source}-level. Using the libraries \textit{ASM} and \textit{BCEL} \brs{links or refs to these libs}the user has to construct bytecode itself and is not able to only write simple source code to modify a class file. The library \textit{AspectJ} on the other hand only allows the user to write source code which is than translated into bytecode. This way of course the user is limited by the functionality of the library \textit{AspectJ}. \textit{Javassist}\brs{not consistent, sometimes textit sometimes not. I don't see why it should be textit, I receomend droping it} and \textit{CGLIB} provide the user the choice of whether to work on \textit{bytecode}- or \textit{source}-level, or even on both. \brs{this whole story about ``levels'' is important because...}\lt{figure shows that javassist can use both apis.. take out?}
+%In \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} the term \textit{``Low Level''} is used for \textit{bytecode}-level and \textit{``High Level''} for \textit{source}-level. Using the libraries \textit{ASM} and \textit{BCEL} \brs{links or refs to these libs}the user has to construct bytecode itself and is not able to only write simple source code to modify a class file. The library \textit{AspectJ} on the other hand only allows the user to write source code which is than translated into bytecode. This way of course the user is limited by the functionality of the library \textit{AspectJ}. \textit{Javassist}\brs{not consistent, sometimes textit sometimes not. I don't see why it should be textit, I receomend droping it} and \textit{CGLIB} provide the user the choice of whether to work on \textit{bytecode}- or \textit{source}-level, or even on both. \brs{this whole story about ``levels'' is important because...}\lt{figure shows that javassist can use both apis.. take out?}
 
 At this point, let us look at the small example shown in \coderef{javassistExample}\footnote{Example taken from Javassist tutorial.} of how the bytecode manipulation with javasist works. We go through the example line by line.
 
@@ -253,9 +278,7 @@ public class BytecodeModifier {
 
 With \coderef{bytecodeModifier} we obtain a \textit{CtClass} object \code{cc} at line 4 which represents the class to be modified. At line 7 we get the method we want to modify by adding some source code: \code{System.out.println(``This is the inserted code.'');}. Javassist takes a \textit{java.lang.String} object, compiles it automatically and adds it into the bytecode at the specified location, in our situation at the beginning of the \code{main()} method.
 
-\coderef{instrumentedCodeDecompiled} is the result \ie the \code{main()} method equivalent to what we achieved with Javassist. At line 2 we see the inserted code.
-
-\brs{Um... no... The result is the bytecode, the code is what we wish to achieve, or, as you said in the caption, a decompilation of the result.}
+The source code at line 2 shown in \coderef{instrumentedCodeDecompiled} is the decompiled form of the result \ie the \code{main()} method equivalent to what we achieved with Javassist. The actual result, the modified bytecode shown in \bytecoderef{modifiedBytecode}, is the pc-interval <0,5>.
 
 \begin{Java}[caption={Instrumented code: Decompiled with JAD (\secref{jad})}, label={code:instrumentedCodeDecompiled}][H]
 public static void main(String args[]) {
@@ -263,8 +286,6 @@ public static void main(String args[]) {
 	System.out.println("This is an example class.");
 }
 \end{Java}
-
-And of course the \bytecoderef{modifiedBytecode} has changed since Javassist added additional bytecode. The pc-interval <0,3,5> represents the added code.
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[caption={Modified bytecode.}, label={bytecode:modifiedBytecode}, breaklines=true][H]
@@ -282,7 +303,7 @@ public static void main(java.lang.String[]);
 \label{sec:jad}
 Java Decompier (JAD)\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and an Eclipse plugin for the programming language Java. A decompiler is a program that takes an executable file as input, and attempts to create a high level, compatible source file. If the source file is compiled again, it will produce an executable program that behaves the same way as the original one. It is often used in software reverse engineering.
 
-The example \bytecoderef{jad} is decompiled by JAD and the result is the source code right under the example.\brs{is it? don't count on positions when using float}
+The example \bytecoderef{jad} is decompiled by JAD and the result is the source code shown in \coderef{decompiledBytecode}.
 
 \begin{JVMIS}[caption={Bytecode example.}, label={bytecode:jad}, breaklines=true]
 public void itemStateChanged(java.awt.event.ItemEvent e);
@@ -317,7 +338,7 @@ public void itemStateChanged(ItemEvent e) {
 JAD is in no way a dependency of NullSpy but it was a big help during the implementation phase since after running NullSpy on a project only the modified bytecode is available. The use of JAD is for the sake of debugging Nullspy; to check whether the modification by Javassist, \ie inserting source code, was successful. Another way to check the result for correctness is looking at bytecode itself but that would have taken a lot more effort and time.
 
 \chapter{NullSpy}
-As explained in \charef{introduction}, this project is about providing the user with an additional stack trace \brs{not true, in chapter 1 (box 1.2) you just showed the location not the stack trace} containing the information on where the null is assigned to the variable that caused the \npe.
+As explained in \charef{introduction}, this project is about providing the user with an additional link next to the common stack trace containing the information/location of where the null is assigned to the variable that caused the \npe.
 
 In this chapter we give an overview of how we implemented NullSpy. We will also address the challenges (\secref{challenges}) we encountered during the implementation as well as the limitations of the tool (\secref{limitations}).
 
@@ -386,26 +407,52 @@ The way how we extract and store all those data are discussed in the following s
 
 \subsection{\MR Data Collection}
 \label{subsec:methodReceiver}
-As mentioned in \subsecref{processFlow}, a big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr. A small synthetic example (\coderef{methodReceiverExample}) makes is easier to understand. \Mrs in \coderef{methodReceiverExample} are the two variables \code{var} at line 8 and \code{field} at line 9.
+As mentioned in \subsecref{processFlow}, a big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr. A small synthetic example (\coderef{methodReceiverExample}) makes is easier to understand. \Mrs in \coderef{methodReceiverExample} are the variables \code{var} at line 9, \code{field} at line 10 and \code{b.foo} at line 11.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={\Mr example.}, label={code:methodReceiverExample}]
 public class A {
 
 	private Object (@\textbf{field}@) = new Object();
+	private Object b = new B();
 	
 	public static void main() {
 		Object (@\textbf{var}@) = new Object();
 		
 		(@\textbf{var}@).toString();	// variable on which method is invoked
 		(@\textbf{field}@).toString();	// field access
+		(@\textbf{b.foo}@).toString(); // field access
 	}
+}
+
+public class B {
+	public Object foo = new Object();
+	..
 }
 \end{Java}
 
-\brs{add a field access to the example: m.foo;}
+We use the library Javassist (\secref{javassist}) to extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get information about the \mr. The exact information we need is listed in this \boxref{methodReceiverInfo}.
 
-We use the library Javassist (\secref{javassist}) to extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get information about the \mr. The exact information we need is listed later in this section\brs{add forward reference}. \del{To put it another way, with Javassist we cannot directly extract the \mrs from bytecode.} 
+\begin{figure}[H]
+\renewcommand\figurename{List}
+	\begin{boxedminipage}{\textwidth}
+		\begin{itemize}
+		\itemsep8pt
+    \item counter (\mrs are counted)
+		\item lineNumber
+		\item variableID (whether it is a local variable or a field)
+		\item variableType
+		\item isVariableStatic
+		\item classWhereVariableIsAccessed
+		\item behavior (method)
+		\item behaviorSignature
+		\item localVariableAttributIndex (if variable is a local variable, else ``empty string'')
+		\item fieldDeclaringClassName (if variable is a field, else ``empty string'')
+   \end{itemize}
+	\end{boxedminipage}
+	\caption{\Mr information.}
+	\label{box:methodReceiverInfo}
+\end{figure}
 
 This is why we implemented our own algorithm to get the \mrs. We need the exact pc-interval of the \mr to extract the right data from bytecode. As we discuss the steps of the algorithm we will be showing the result of each step when applied to the example source code and bytecode shown in \coderef{methodReceiverAlgDemoCode} and \bytecoderef{methodReceiverAlgDemoBytecode}. The algorithm contains following steps:
 
@@ -460,7 +507,7 @@ In step 1 we had troubles getting the right interval of the \mr. By only statica
 
 Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*''}. There are exactly five such bytecode instructions: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamicly-typed languages\footnote{Language whose type checking is performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports java, a \textit{staticlly-typed} language\footnote{Language whose type checking is performed at compile time.}.
 
-\ugh{In case of the simple stand-alone \textit{invokestatic} instruction we do not have a \mr because static method invocations do not have a \mr.}\brs{they DO have a receiver, but it can never be null} Because of this, NullSpy ignores the instruction \textit{invokestatic}. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate.
+\ugh{In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but it can be ignored because static method invocations do not have a \mr.}\brs{they DO have a receiver, but it can never be null} Because of this, NullSpy ignores the instruction \textit{invokestatic}. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate.
 
 As soon as we have the \mr pc-interval we can extract information about the \mr from the bytecode. By calling the method \code{constantPool.getFieldrefName(index)} we get the name of the \mr. The parameter \code{index} is obtained by \code{codeIterator.u16bitAt(pc+1)}. To be able to get the parameter \code{index} we need the exact pc-interval of the \mr.
 
@@ -486,8 +533,6 @@ We store the data we gathered about the \mr in an external \textit{csv} file due
 	\caption{\Mr information.}
 	\label{box:methodReceiverInfo}
 \end{figure}
-
-%We will talk about the purpose why these information about the \mr are needed later in this section.
 
 \subsection{Variable Data Collection}
 \label{subsec:variable}

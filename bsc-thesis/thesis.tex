@@ -373,7 +373,9 @@ NullSpy contains three basic steps which we can see in \figref{highLevelOverview
 
 Loading is done by traversing all the subfolders of the folder given as a parameter, and extracting all the \textit{.class} files. NullSpy modifies the class file directly when it is loaded. As soon as the modification is done, the class file is stored to the destination folder \ie the second parameter of NullSpy. 
 
-Storing is done by recreating the structure from the source folder in the destination folder and storing the modified class files using the Javasist API as explained in \secref{javassist}. \del{In secref{javassist} we store the modified class file on a local disk. This way the original class file remains intact. In our case we write the modified class file in the destination folder not only on a local disk. This way the original project can be overwritten as explained before.} \brs{what? not only on a local disk? what does that even mean}\lt{ask, javassist tutorial store on local disk, here write new file or overwrite}
+Storing is done by recreating the structure from the source folder in the destination folder and storing the modified class files using the Javasist API. 
+
+%\del{In secref{javassist} we store the modified class file on a local disk. This way the original class file remains intact. In our case we write the modified class file in the destination folder not only on a local disk. This way the original project can be overwritten as explained before.} \brs{what? not only on a local disk? what does that even mean}\lt{ask, javassist tutorial store on local disk, here write new file or overwrite}
 
 \section{Low Level Overview}
 \label{sec:lowLevelOverview}
@@ -431,7 +433,7 @@ public class B {
 }
 \end{Java}
 
-We use the library Javassist (\secref{javassist}) to extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get information about the \mr. The exact information we need is listed in this \boxref{methodReceiverInfo}.
+We use the library Javassist to extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get information about the \mr. The exact information we need is listed in \listref{methodReceiverInfo} and it is stored in an external \textit{csv} file due to overhead minimization.
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
@@ -451,35 +453,28 @@ We use the library Javassist (\secref{javassist}) to extract data from bytecode.
    \end{itemize}
 	\end{boxedminipage}
 	\caption{\Mr information.}
-	\label{box:methodReceiverInfo}
+	\label{list:methodReceiverInfo}
 \end{figure}
 
 This is why we implemented our own algorithm to get the \mrs. We need the exact pc-interval of the \mr to extract the right data from bytecode. As we discuss the steps of the algorithm we will be showing the result of each step when applied to the example source code and bytecode shown in \coderef{methodReceiverAlgDemoCode} and \bytecoderef{methodReceiverAlgDemoBytecode}. The algorithm contains following steps:
 
-While iterating through the bytecode NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''} and uses the algorithm to get the right pc-interval.
+\textbf{Finding the invocation bytecode}\\
+While iterating through the bytecode NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation for which we are trying to find the \mr. We call the pc of the invocation the end-pc. In our example, the end-pc is 155, since we are interested in the receiver of the \code{add} method.
 
-%\begin{figure}[H]
-%\renewcommand\figurename{Algorithm}
-%	\begin{boxedminipage}{\textwidth}
-%		\begin{enumerate}
-%\itemsep8pt
-\textbf{Finding the invocation bytecode}
-While iterating through the bytecode NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation for which we are trying to find the \mr. We call the pc of the invocation the end-pc. In our example, the end-pc is 155, since we are interested in the receiver of the \textit{add} method.
+\textbf{Finding the start-pc}\\
+We locate the pc at which the bytecode for source code line of the invocation begins. We call this the start-pc. This is done using the line number table mentioned in \secref{bytecode}. This table is omitted from our example for simplicity and the start-pc is 144.
 
-\textbf{Finding the start-pc}
-We locate the pc at which the bytecode for source code line of the invocation begins. We call this the start-pc. This is done using the line number table mentioned in \secref{bla}. This table is omitted from our example for simplicity and the start-pc in is 144.
+\textbf{Defining the outermost pc-interval}\\
+We define the outermost pc-interval as the interval starting with the start-pc and ending with the end-pc. We know that the \mr is located in this interval. In our example, this is <144,155>.
 
-\textbf{Defining the outermost pc interval}
-We define the outermost pc interval as the interval starting with the start-pc and ending with the end-pc. We know that the \mr is located in this interval. In our example, this is <144, 155>.
-
-\textbf{Getting the number of parameters for the method}
+\textbf{Getting the number of parameters for the method}\\
 Javassist offers the functionality to count the number of parameters a method invocation has by analyzing the method signature. The signature is a \textit{String} that contains the parameter and the return type of the method call. Our example method takes 2 parameters.
 
-\textbf{Extracting candidate \mr pc intervals}
-The outermost interval could contain other invocations, which could have \mrs of their own. This is visible in our example, where the getDesktop invocation (pc 146) is embedded in our outermost interval. For this reason, we explored all possible bytecode combinations of \mrs and developed a system for identifying such embedded call sights. \ugh{More about this system can be found in the appendix}. This system allows us to split the outermost pc interval into candidate \mr pc intervals. In our example, the outermost pc interval is divided into \{<144,144>,<145,149>,<152,152>\}.
+\textbf{Extracting candidate \mr pc-intervals}\\
+The outermost interval <144,155> could contain other invocations, which could have \mrs of their own. This is visible in our example, where the \code{getDesktop} invocation (pc 146) is embedded in our outermost interval. For this reason, we explored all possible bytecode combinations of \mrs and developed a system for identifying such embedded call sights. More about this system can be found in the appendix (\ref{cha:bytecodeCombinations}). This system allows us to split the outermost pc-interval into candidate \mr pc-intervals. In our example, the outermost pc-interval is divided into \{<144,144>,<145,149>,<152,152>\}.
 
-\textbf{Finding the actual \mr} 
-Since the candidate pc intervals end with the arguments of the method, and we know that the method expects $N$ arguments, we can ignore the last $N$ candidate pc intervals. The one before them is the actual \mr pc interval. In other words, the $N$-th to last candidate is the actual \mr pc interval. In our example, since the method takes 2 arguments, the actual \mr pc interval is <144,144>.
+\textbf{Finding the actual \mr}\\
+Since the candidate pc-intervals end with the arguments of the method, and we know that the method expects $N$ arguments, we can ignore the last $N$ candidate pc-intervals. The one before them is the actual \mr pc-interval. In other words, the $N$-th to last candidate is the actual \mr pc-interval. In our example, since the method takes 2 arguments, the actual \mr pc-interval is <144,144>.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Code snippet to demonstrate \algref{methodReceiverAlg}.}, label={code:methodReceiverAlgDemoCode}]
@@ -503,36 +498,13 @@ protected void open(org.jhotdraw.framework.DrawingView newDrawingView);
  ...
 \end{JVMIS}
 
-In step 1 we had troubles getting the right interval of the \mr. By only statically analyzing the bytecode it is unapparent where exactly the \mr is situated in bytecode. More about the challenges we encountered can be found in \subsecref{methodReceiverDifficulties}.
+We had troubles getting the right outermost pc-interval of the \mr. By only statically analyzing the bytecode it is unapparent where exactly the \mr is situated in bytecode. More about the challenges we encountered can be found in \subsecref{methodReceiverDifficulties}.
 
 Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*''}. There are exactly five such bytecode instructions: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamicly-typed languages\footnote{Language whose type checking is performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports java, a \textit{staticlly-typed} language\footnote{Language whose type checking is performed at compile time.}.
 
 \ugh{In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but it can be ignored because static method invocations do not have a \mr.}\brs{they DO have a receiver, but it can never be null} Because of this, NullSpy ignores the instruction \textit{invokestatic}. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate.
 
 As soon as we have the \mr pc-interval we can extract information about the \mr from the bytecode. By calling the method \code{constantPool.getFieldrefName(index)} we get the name of the \mr. The parameter \code{index} is obtained by \code{codeIterator.u16bitAt(pc+1)}. To be able to get the parameter \code{index} we need the exact pc-interval of the \mr.
-
-We store the data we gathered about the \mr in an external \textit{csv} file due to overhead minimization. The following list shows the information which is stored about the \mr.
-
-\begin{figure}[H]
-\renewcommand\figurename{List}
-	\begin{boxedminipage}{\textwidth}
-		\begin{itemize}
-		\itemsep8pt
-    \item counter (\mrs are counted)
-		\item lineNumber
-		\item variableID (whether it is a local variable or a field)
-		\item variableType
-		\item isVariableStatic
-		\item classWhereVariableIsAccessed
-		\item behavior (method)
-		\item behaviorSignature
-		\item localVariableAttributIndex (if variable is a local variable, else ``empty string'')
-		\item fieldDeclaringClassName (if variable is a field, else ``empty string'')
-   \end{itemize}
-	\end{boxedminipage}
-	\caption{\Mr information.}
-	\label{box:methodReceiverInfo}
-\end{figure}
 
 \subsection{Variable Data Collection}
 \label{subsec:variable}
@@ -1204,22 +1176,6 @@ Coding beautifully the way so that it will not smell was another challenge due t
 
 We also came in contact with the building XML file and the jar file. Concerning the XML file, we gained experience by learning a new language by modifying it that it also creates a jar file out of the modified project.
 
-\chapter {Anleitung zu wissenschaftlichen Arbeiten}
-NullSpy is a program which helps Java developers to find the root of \npes by providing an additional link next to the common stack trace. The key idea behind NullSpy is to help developers to save time fixing bugs which are caused by \npe. Of course this approach tries to provide this service by keeping the overhead to a minimum. To demonstrate how NullSpy works, this chapter serves as a small tutorial that takes JHotDraw as the testing project to show the feature of NullSpy.
-
-\section{Installation}
-\label{sec:installation}
-For this tutorial JHotDraw is needed. In order to download it, visit the following site and download ``JHotDraw6.0 beta 1" (version we worked with during the implementation of NullSpy):\\
-\href{http://www.jhotdraw.org}{www.jhotdraw.org}\\
-Unpack the archive and store it to a location of your choice. To be able to run JHotDraw additional libraries are used, that are not included in JHotDraw itself. Following libraries are to be downloaded:\\
-``batik-all-1.7": \href{http://www.java2s.com/Code/Jar/b/Downloadbatikall17jar.htm}{www.java2s.com/Code/Jar/b/Downloadbatikall17jar}\\
-``jdo": \href{http://www.java2s.com/Code/Jar/j/Downloadjdojar.htm}{www.java2s.com/Code/Jar/j/Downloadjdojar}\\
-Again unpack those archives and store them in a lib folder in your JHodDraw project.
-
-Running the tests of JHotdraw with the commando line the location of libraries ``hamcrest" and ``junit" are needed, which are normally also downloaded when the programming environment Eclipse\footnote{Can be downloaded here: \href{https://eclipse.org/downloads/}{www.eclipse.org/downloads}} is downloaded.
-
-
-
 
 
 %END Doc
@@ -1227,6 +1183,80 @@ Running the tests of JHotdraw with the commando line the location of libraries `
 
 \bibliography{scg}
 \bibliographystyle{plain}
+
+\begin{appendices}
+
+% A N L E I T U N G  Z U  W I S S E N S C H A F T L I C H E N  A R B E I T E N
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+\chapter {Anleitung zu wissenschaftlichen Arbeiten}
+NullSpy is a program which helps Java developers to find the root of \npes by providing an additional link next to the common stack trace. The key idea behind NullSpy is to help developers to save time fixing bugs which are caused by \npe. Of course this approach tries to provide this service by keeping the overhead to a minimum. To demonstrate how NullSpy works, this chapter serves as a small tutorial that takes JHotDraw as the testing project to show the feature of NullSpy.
+
+\section{Installation}
+\label{sec:installation}
+For this tutorial JHotDraw is needed. In order to download it, visit the following site and download ``JHotDraw6.0 beta 1'' (version we worked with during the implementation of NullSpy):\\
+\href{http://www.jhotdraw.org}{www.jhotdraw.org}\\
+Unpack the archive and store it to a location of your choice. To be able to run JHotDraw additional libraries are used, that are not included in JHotDraw itself. Following libraries are to be downloaded:\\
+``batik-all-1.7'': \href{http://www.java2s.com/Code/Jar/b/Downloadbatikall17jar.htm}{www.java2s.com/Code/Jar/b/Downloadbatikall17jar}\\
+``jdo'': \href{http://www.java2s.com/Code/Jar/j/Downloadjdojar.htm}{www.java2s.com/Code/Jar/j/Downloadjdojar}\\
+Again unpack those archives and store them in a lib folder in your JHodDraw project.
+
+Running the tests of JHotdraw with the commando line the location of libraries ``hamcrest'' and ``junit'' are needed, which are normally also downloaded when the programming environment Eclipse\footnote{Can be downloaded here: \href{https://eclipse.org/downloads/}{www.eclipse.org/downloads}} is downloaded.
+
+\chapter{Bytecode combinations of \mrs}
+\label{cha:bytecodeCombinations}
+In \subsecref{methodReceiver} we discussed about extracting all possible combinations of \mrs which are embedded in the outermost interval. We developed a system for identifying them by using the following list shown in \listref{methodReceiverTemplate}.
+
+\begin{figure}[H]
+\renewcommand\figurename{List}
+	\begin{boxedminipage}{\textwidth}
+		\begin{itemize}
+		\itemsep8pt
+		\item local variable
+		\begin{itemize}
+			\item aload													y
+			\item aload.getfield 								y	
+			\item aload.getfield.getfield...		y	(if fields are public)
+			\item aload.getstatic								n	(aload = ref, getstatic = arg)
+			\item aload.aload\_0									n	(aload = ref, this.getfield etc = args
+			\item aload.aload										n	(aload = ref, aload = arg)
+			\item aload.new											n	(aload = ref, new = arg)
+		\end{itemize}
+   
+		\item non-static field
+		\begin{itemize}
+			\item aload\_0												y	(aload\_0 = ref for private method)
+			\item aload\_0.getfield							y	
+			\item aload\_0.getfield.getfield. ..	y	(if getfields are public fields)
+			\item aload\_0.this									n	(aload\_0 = ref, this... = arg)
+			\item aload\_0.getfield.getstatic		n (!exist)
+			\item aload\_0.getstatic							n	(aload\_0 = ref, getstatic = arg)
+			\item aload\_0.aload									n	(aload\_0 = ref, aload = arg)
+			\item aload\_0.new										n	(aload\_0 = ref, new = arg)
+		\end{itemize}
+
+		\item static field
+		\begin{itemize}
+			\item getstatic											n	(ignore, because getinvoke)
+			\item getstatic.aload								n
+			\item getstatic.aload\_0							n
+			\item getstatic.new									n
+			\item getstatic.getstatic						n (!exist)
+			\item getstatic.getfield						y
+			\item getstatic.getfield.getfield.	y	(getfields are public field)
+		\end{itemize}
+   \end{itemize}
+	\end{boxedminipage}
+	\caption{\Mr template.}
+	\label{list:methodReceiverTemplate}
+\end{figure}
+
+While we iterate through the invocation pc-interval and run into the opcode \eg \textit{``aload.*''} we check what comes after this opcode. If \textit{getfield} is the following opcode, we know that the bytecode represents a field access of a local variable or of the current analyzed class depending on which local variable slot the opcode \textit{``aload.*''} refers to. Next again, we check the next opcode after \textit{getfield} and so on until the following opcode does not fit into the allowed pattern of the template. As long as the checked opcode fits into our template, we consider them as one possible \mr.
+
+If the following opcode after the first \textit{``aload.*} is another \textit{``aload.*} we can be sure that they are two separate \mr candidate because two local variables does not have any relationship with each other. Even if the first opcode is a \textit{aload\_0}.
+
+With this system we iterate through the outermost invocation pc-interval and split it into candiate \mr pc-intervals.
+
+\end{appendices}
 
 \clearpage
 \thispagestyle{empty}

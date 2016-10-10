@@ -132,7 +132,7 @@ This chapter provides a short overview of technologies used in the implementatio
 
 \section{Bytecode}
 \label{sec:bytecode}
-The backbone of NullSpy is analysis and modification of Java bytecode. Java bytecode is an abstract machine language that the stack-based Java virutal machine (JVM) can understand and execute. A JVM keeps an operand stack which is modified every time the JVM executes an instruction. The instruction is represented by an opcode which also has an string representation.
+The backbone of NullSpy is analysis and modification of Java bytecode. Java bytecode is an abstract machine language that the stack-based Java virutal machine (JVM) can understand and execute. A JVM keeps an operand stack which is modified every time the JVM executes an instruction. The instruction is represented by an opcode which also has a string representation.
 
 Since bytecode plays an important role in our project, we will describe the Java bytecode and explain some terms we use often in this thesis. We start with an easy \textit{HelloWorld} source code example (\coderef{helloWorld}) and its bytecode (\bytecoderef{helloWorld}). 
 
@@ -195,9 +195,31 @@ We are going to look only at the bytecode of method \code{say()} which is repres
 
 On the left-side of these instructions we see the \textit{program counter} (pc) which is a processor register that contains the address (location) of the instruction being executed at the current time. It is also called instruction pointer. We use these pcs also as an index in the bytecode. The instructions from pc 0 to pc 4 (lines 26-28) in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textit{pc-interval} to describe an instruction-set that represents \eg a method invocation, an assignment \etc. This term will play an important role further in the thesis. We use the syntax ``<,>'' to represent the pc-interval. For the example just mentioned before the pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts and the latter one where it ends, both included.
 
-Going back to the example shown in \bytecoderef{helloWorld}, we can see on the right-side  the name and type of variables, or in case of an invocation the behavior/method name and the parameters it takes \etc. In \secref{lowLevelOverview} we will see how this information is used.
+Going back to the example shown in \bytecoderef{helloWorld}, we can see on the right-side the name and type of variables, or in case of an invocation the behavior/method name and the parameters it takes \etc. In \secref{lowLevelOverview} we will see how this information is used.
 
-Underneath the instructions from line 33-36 in \bytecoderef{helloWorld} we find the \textit{line number table}\footnote{In the jargon of Javasist, this is also called the line number attribute.}. It maps the pc to the source code line. The numbers at the end of the lines in \boxref{stackTrace} indicate the lines of code that caused the \npe. The information the \textit{line number table} holds is used to recover where the null was assigned. In \secref{lowLevelOverview} we will discuss more about the \textit{line number} and \textit{local variable table}.
+Underneath the instructions from line 33-36 in \bytecoderef{helloWorld} we find the \textit{line number table}\footnote{In the jargon of Javasist, this is also called the line number attribute.}. It maps the pc to the source code line. The numbers at the end of the lines in \boxref{stackTrace} indicate the lines of code that caused the \npe. The information the \textit{line number table} holds is used to recover where the null was assigned. 
+
+The bytecode of each behavior also holds a local variable table (\eg \bytecoderef{helloWorld} line 37-39) which is an array of local variables. All the parameters of a method and the value of the local variables are stored in this table. Parameters are stored first, beginning at index/slot 0 . But the local variable table of a constructor or an instance method stores the \textit{``hidden this''} reference first, which is used to access the instance data of the object, then the parameters and so on. In \figref{localVarArray}\footnote{Figure taken from \url{http://www.ibm.com/developerworks/library/it-haggar_bytecode/}} we see how a local variable is stored in the local variable table.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{localVarArray}
+\caption{Local variable table/array\protect.}
+  \label{fig:localVarArray}
+\end{figure}
+
+Local variables do have a limited lifespan, the square bracket of the local variable table represents the lifespan. The closing bracket \code{\}} of the block, where the local variable is created, indicates its ending.  As soon as the lifespan of one ends, the slot can be reused by the next instantiated local variable. This is why we can find local variable tables that contain multiple entries with the same local variable slot, see \bytecoderef{localVarTableDuplicatedSlot1}.
+
+
+\begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot 2 (line 4\&7).}, label={bytecode:localVarTableDuplicatedSlot1}, breaklines=true]
+Local variable table:
+ [pc: 0, pc: 95] local: this index: 0 type: org.jhotdraw.samples.javadraw.JavaDrawViewer
+ [pc: 0, pc: 95] local: filename index: 1 type: java.lang.String
+ [pc: 13, pc: 40] local: url index: 2 type: java.net.URL
+ [pc: 18, pc: 40] local: stream index: 3 type: java.io.InputStream
+ [pc: 28, pc: 40] local: reader index: 4 type: org.jhotdraw.util.StorableInput
+ [pc: 44, pc: 94] local: e index: 2 type: java.io.IOException
+\end{JVMIS}
 
 \section{Javassist}
 \label{sec:javassist}
@@ -500,43 +522,43 @@ protected void open(org.jhotdraw.framework.DrawingView newDrawingView);
 
 We had troubles getting the right outermost pc-interval of the \mr. By only statically analyzing the bytecode it is unapparent where exactly the \mr is situated in bytecode. More about the challenges we encountered can be found in \subsecref{methodReceiverDifficulties}.
 
-Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*''}. There are exactly five such bytecode instructions: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamicly-typed languages\footnote{Language whose type checking is performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports java, a \textit{staticlly-typed} language\footnote{Language whose type checking is performed at compile time.}.
+Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*''}. There are exactly five such bytecode instructions: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamicly-typed languages\footnote{Language whose type checking is performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports Java, a \textit{staticlly-typed} language\footnote{Language whose type checking is performed at compile time.}.
 
-\ugh{In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but it can be ignored because static method invocations do not have a \mr.}\brs{they DO have a receiver, but it can never be null} Because of this, NullSpy ignores the instruction \textit{invokestatic}. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate.
+In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but it can be ignored because static method invocations are called on classes which can never be null. Because of this, NullSpy ignores the instruction \textit{invokestatic}. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate.
 
-As soon as we have the \mr pc-interval we can extract information about the \mr from the bytecode. By calling the method \code{constantPool.getFieldrefName(index)} we get the name of the \mr. The parameter \code{index} is obtained by \code{codeIterator.u16bitAt(pc+1)}. To be able to get the parameter \code{index} we need the exact pc-interval of the \mr.
+As soon as we have the \mr pc-interval we can extract information about the \mr from the bytecode. The use of the Javassist API allows us to obtain the information about the \mr listed in \listref{methodReceiverInfo}.
 
 \subsection{Variable Data Collection}
 \label{subsec:variable}
-The section before we were looking for instructions which matches the regex \textit{``invoke.*''} to detect \mrs in bytecode. This time we are looking for the regexs \textit{``astore.*''} and \textit{``put.*''}. The former refers to local variable assignments and the latter to field assignments. Unlike the information collection about the \mr in \subsecref{methodReceiver} the data about the variables are stored in a HashMap.
+In the section before we were looking for instructions which matches the regex \textit{``invoke.*''} to detect \mrs in bytecode. This time we are looking for the regexs \textit{``astore.*''} and \textit{``put.*''}. The former refers to local variable assignments and the latter to field assignments. Unlike the information collection of the \mr, the data about the variables are stored in a HashMap.
 
-In the next two subsections we will look at how those information about the assigned variables are extracted. Due to different variable types and the limitation of Javassist, the way of gathering information about the assignments is performed differently.
+In the next two subsections we will look at how the information about the assigned variables is extracted. Due to different variable types and the limitation of Javassist, the ways of gathering information about the local variables and fields are performed differently.
 
 \subsubsection{Local Variable}
 \label{subsubsec:localVariable}
-Unfortunately, Javassist does not provide any support for gaining information about local variables. This is why to get the needed data we had to understand how the bytecode is constructed. At this point we  give a small bytecode introduction\brs{shouldn't this be in the technical background?}\lt{thought this is more difficult to understand and always jumping is not comfortable}.
+Unfortunately, Javassist does not provide any support for gaining information about local variables. This is why we have to understand how the bytecode is constructed concerning the local variables. In \secref{bytecode} we introduced the parts of the bytecode that are important for our project NullSpy. 
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.8\linewidth]{localVarCreationBytecode}
-\caption{Local variable creation\protect.}
-  \label{fig:localVarCreationBytecode}
-\end{figure}
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=0.8\linewidth]{localVarCreationBytecode}
+%\caption{Local variable creation\protect.}
+  %\label{fig:localVarCreationBytecode}
+%\end{figure}
 
-If a local variable is created, the value assigned to it is pushed onto the operand stack as we can see in \figref{localVarCreationBytecode}\footnote{Figure taken from \href{http://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html}{blog.jamesdbloom.com}.}. With the bytecode instruction \textit{``astore.*''} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables are composed of one, or in some cases two bytes. There are reserved instructions for the first four created local variables. These instructions are index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted.\brs{no idea what this paragraph is about}
+%If a local variable is created, the value assigned to it is pushed onto the operand stack as we can see in \figref{localVarCreationBytecode}\footnote{Figure taken from \href{http://blog.jamesdbloom.com/JavaCodeToByteCode_PartOne.html}{blog.jamesdbloom.com}.}. With the bytecode instruction \textit{``astore.*''} the local variable is popped from the operand stack and stored into a local variable array slot. In which slot it is stored can be extracted from the instruction. Opcodes for storing local variables are composed of one, or in some cases two bytes. There are reserved instructions for the first four created local variables. These instructions are index-linked from 0 to 3 and each of them contains one byte (astore\_0, astore\_1, astore\_2, astore\_3). If there is no slot number visible in the instruction, it indicates that the slot number is stored in the second byte from where it can be extracted.\brs{no idea what this paragraph is about}
 
-With this short introduction understanding the local variable table should be easier. Each method of a class file contains a local variable table (see \bytecoderef{localVarTable}) with which many information can be read out, \ie the lifespan of a local variable, what it is called, in which slot it is stored and what type it has.
+%With this short introduction understanding the local variable table should be easier. Each method of a class file contains a local variable table (see \bytecoderef{localVarTable}) with which many information can be read out, \ie the lifespan of a local variable, what it is called, in which slot it is stored and what type it has.
 
-\renewcommand\lstlistingname{Bytecode}
-\begin{JVMIS}[caption={Local variable table.}, label={bytecode:localVarTable}, breaklines=true]
-Local variable table:
- [pc: 0, pc: 31] local: this index: 0 type: org.jhotdraw.samples.javadraw.JavaDrawApp
- [pc: 0, pc: 31] local: newDrawing index: 1 type: org.jhotdraw.framework.Drawing
- [pc: 5, pc: 31] local: d index: 2 type: java.awt.Dimension
- [pc: 22, pc: 31] local: newDrawingView index: 3 type: org.jhotdraw.framework.DrawingView
-\end{JVMIS}
+%\renewcommand\lstlistingname{Bytecode}
+%\begin{JVMIS}[caption={Local variable table.}, label={bytecode:localVarTable}, breaklines=true]
+%Local variable table:
+ %[pc: 0, pc: 31] local: this index: 0 type: org.jhotdraw.samples.javadraw.JavaDrawApp
+ %[pc: 0, pc: 31] local: newDrawing index: 1 type: org.jhotdraw.framework.Drawing
+ %[pc: 5, pc: 31] local: d index: 2 type: java.awt.Dimension
+ %[pc: 22, pc: 31] local: newDrawingView index: 3 type: org.jhotdraw.framework.DrawingView
+%\end{JVMIS}
 
-We have to pay attention to get the right local variable every time we bump into one while iterating through bytecode. Every time we hit upon the opcode \textit{``astore.*"} we could only get its slot and the pc where it is situated in the bytecode sequence. In the earlier paragraph the lifespan of the local variable was mentioned. The importance behind this is, as soon as the lifespan of one ends, the slot can be reused by the next instantiated local variable. This way, the local variable table could contain multiple entries with the same local variable slot.
+We have to pay attention to get the right local variable every time we bump into one while iterating through bytecode. Every time we hit upon the opcode \textit{``astore.*''} we could only get its slot and the pc where it is situated in the bytecode sequence. A local variable has a limited lifespan. The lifespan of a local variable is important because multiple entries can have the same local variable slot (already described in \secref{bytecode}).
 
 \begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot 2 (line 4\&7).}, label={bytecode:localVarTableDuplicatedSlot}, breaklines=true]
 Local variable table:
@@ -548,20 +570,27 @@ Local variable table:
  [pc: 44, pc: 94] local: e index: 2 type: java.io.IOException
 \end{JVMIS}
 
-After extracting the slot (\ie index: 2) of the local variable we will get the first local variable table entry which contains that slot (\ie line 4). If the pc (\ie pc: 45) of the local variable assignment is not included in the lifespan-pc-interval of the entry (\ie [pc: 13, pc: 40]), the next entry (\ie line 7;  [pc: 44, pc: 94]) with the same slot will be examined until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information we need.
+Iterating through the bytecode and finding the opcode \textit{``astore.*''} we extract the slot from the opcode. For example we extract slot 2 from the opcode \textit{astore\_2} with the pc 45. After extracting the slot (index: 2 listed in \bytecoderef{localVarTableDuplicatedSlot}) we get the first local variable table entry which contains that slot (line 4). If the pc of the local variable assignment is not included in the local variable lifespan of the entry ([pc: 13, pc: 40]), the next entry with the same slot (line 7;  [pc: 44, pc: 94]) will be examined. Checking the entries with the same slot goes on until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information we need.
 
-\begin{JVMIS}[caption={Line number table.}, label={code:lineNrTable}]
- Line numbers:
-  [pc: 0, line: 26]
-  [pc: 4, line: 27]
-  [pc: 8, line: 29]
-  [pc: 16, line: 30]
+\begin{JVMIS}[caption={Line number table.}, label={bytecode:lineNrTable}]
+  Line numbers:
+        [pc: 0, line: 58]
+        [pc: 13, line: 59]
+        [pc: 18, line: 60]
+        [pc: 28, line: 61]
+        [pc: 40, line: 62]
+        [pc: 43, line: 63]
+        [pc: 44, line: 64]
+        [pc: 52, line: 65]
+        [pc: 74, line: 66]
+        [pc: 94, line: 68]
 \end{JVMIS}
 
-Each method of a class file does not only hold a local variable table but also another attribute called line number attribute. This is the mapping table from pc to source code line number. That means after getting the pc of the local variable assignment we can obtain the right line number. The line number is essential for constructing the link which will be added to the common exception stack trace.
+With the line number table (shown in \bytecoderef{lineNrTable}) and the pc we can obtain the right line number. In the paragraph before the pc was 45, so the local variable assignment starts at line 64. The line number is essential for constructing the link which will be added to the common exception stack trace.
 
-The other information we need in addition to the line number are:
+The other information we need in addition to the line number are listed in \listref{localVarInfo}.
 
+\lt{change name eventually}
 \begin{figure}[H]
 \renewcommand\figurename{List}
 	\begin{boxedminipage}{\textwidth}
@@ -581,7 +610,7 @@ The other information we need in addition to the line number are:
    \end{itemize}
 	\end{boxedminipage}
 	\caption{Local variable information.}
-	\label{box:localVarInfo}
+	\label{list:localVarInfo}
 \end{figure}
 
 \subsubsection{Instance and Class/Static variable (Field)}
@@ -810,7 +839,7 @@ Image image = Iconkit.instance().registerAndLoadImage(
 [pc: 11, line: 31]
 \end{JVMIS}
 
-Figure shows a normal method invocation which is split into two lines in source code. This cannot be figured out by just looking at the bytecode therefore the line number attribute (\coderef{lineNrTable}) has to be consulted too. There is no \mr in the figure because the \mr would contain a method invocation itself, what is not supported in NullSpy. Another \mrs NullSpy does not support are elements of collections due to its complex structures that can be stored in the collections.
+Figure shows a normal method invocation which is split into two lines in source code. This cannot be figured out by just looking at the bytecode therefore the line number attribute has to be consulted too. There is no \mr in the figure because the \mr would contain a method invocation itself, what is not supported in NullSpy. Another \mrs NullSpy does not support are elements of collections due to its complex structures that can be stored in the collections.
 
 Only looking at bytecode is not enough, so we are looking at the line number attribute. Line number \textit{31} (\bytecoderef{4-3}) is listed twice, this indicates that the method invocation is split into multiple line in source code. The former declares the starting point of the interval and the latter the end of it. How to get the pc-interval will be presented shortly. But first take a look at more examples:
 

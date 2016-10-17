@@ -8,11 +8,11 @@
 \chapter*{\centering Abstract}
 \begin{quotation}
 \noindent
-A previous study found out that \npe are the most frequently occurring and difficult to debug exceptions in Java projects. They are difficult to debug because the developer is only provided with a stack trace to where the exception was thrown. This only gives insight into the effect of the fault but not into its cause.
+A previous study found out that \npe \chg{are}{is} the most frequently occurring and difficult to debug exception\del{s} in Java projects. \todo{Nevena: In the introduction, when this is elaborated, make sure there are some references to support this claim.} \chg{They are}{It is} difficult to debug because \chg{the}{a} developer is only provided with a stack trace to \ins{the line of code} where the exception was thrown. This only gives insight into the effect of the fault but not into its cause. \nm{Nicely said :)}
 
-The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the \npe was actually set to null. We attempt to achieve this goal by instrumenting java source code striving for a minimal execution overhead.
+The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the \npe was actually set to null. We attempt to achieve this goal by instrumenting java source code\ins{, while} striving for a minimal execution overhead.
 
-By tracking the null assignments through static analysis and instrumentation of the bytecode we can achieve a more efficient debugging process after an occurrence of a \npe.
+By tracking the null assignments through static analysis and \chg{instrumentation of}{by instrumenting} the bytecode we can achieve a more efficient debugging process after an occurrence of a \npe.
 \end{quotation}
 \clearpage
 
@@ -27,9 +27,18 @@ By tracking the null assignments through static analysis and instrumentation of 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
 \label{ch:introduction}
-Nowadays, practically all Java developers are at some point confronted with \npes in both big and small Java projects. Previous research has found that 35\% of conditional checks in Java projects are null checks~\cite{Osma15a}. This reduces the readability of source code and has a negative impact on performance~\cite{Osma15a}. It is also considered the number one error Java programmers make\footnote{\url{http://www.javacoffeebreak.com/articles/toptenerrors.html}}.
 
-\Npe is a commonly occurring \rte in object-oriented languages. In most OOP languages  there is a special value called \textit{null} that is assigned to pointers (or references) in order to indicate that the pointer does not point to an object. A \npe are caused by invoking a method or accessing a field through a null value reference.
+\nm{Terminology:
+\begin{description}
+\item[object] instance of a class; created dynamically, stored in the heap; has its memory address
+\item[reference] memory address; also used for a variable that points to some object in the memory
+\item[null] a keyword which has a special value, \ie \textit{null value}, indicating that the reference does not refer to any object
+\end{description}
+}
+
+Nowadays, \chg{practically}{most, if not} all Java developers are at some point confronted with \npes in both big and small Java projects. Previous research has found that 35\% of conditional checks in Java projects are null checks~\cite{Osma15a}. This reduces the readability of source code and has a negative impact on performance~\cite{Osma15a}. It is also considered the number one error Java programmers make\footnote{\url{http://www.javacoffeebreak.com/articles/toptenerrors.html}}. \nm{Boris, is it legal to put a link like this in the bachelor thesis? This is some kind of reference...}
+
+\Npe is a commonly occurring \rte in object-oriented languages. \nm{Find some reference for this. I've asked Haidar.} In most OOP languages  there is a special \chg{value called \textit{null}}{\textit{null} value} that is assigned to pointers (or references) in order to indicate that the \chg{pointer}{reference} \nm{I would prefer the term ``reference" instead of ``pointer". ``Pointer" is mostly used for C like languages, while in Java it is mostly ``reference".} does not refer to an object. A \npe \chg{are}{is} caused by invoking a method or accessing a field through a null\ins{-}value reference\ins{ ,\ie a reference with the null value}. \nm{You are explaining the \npe and the explaining what the null value is. It is better to explain null and then \npe. Move these two previous sentences at the beginning of the introduction.}
 
 To better understand occurrences of \npes we present two different situations in which a \npe can be thrown.
 
@@ -51,7 +60,7 @@ public void drop(...) {
 }
 \end{Java}
 
-Assume that in the example shown in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value from the return value of the function \code{DNDHelper.processReceivedData()}. This means that the same variable \code{ff} is \code{null} at line 9 and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5. 
+Assume that in the example shown in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value \chg{from}{as the result of assigning} the return value of the \chg{function}{method} \code{DNDHelper.processReceivedData()} \ins{to the variable}. This means that the same variable \code{ff} is \code{null} at line \chg{9}{7} and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5. 
 
 \begin{Java}[caption={\Npe example (II).}, label={code:npeExampleFieldAccess}]
 public class DrawApplication {
@@ -86,11 +95,11 @@ public class DrawApplication {
 
 A more complicated way a \npe can be triggered is when it involves variables with larger scopes such as class members. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation.
 
-The \code{open()} method calls the methods \code{createIconkit()} at line 7 and \code{setTool()} at line 9. The former will initialize the field \code{fManager} (line 3) and the latter will cause the \npe.
+The \code{open()} method calls the methods \code{createIconkit()} at line 7 and \code{setTool()} at line 9. The former will initialize the field \code{fManager} (line 3) \nm{It will initialize in the line 14, field declared in the line 3. Make it more clear.} and the latter will cause the \npe. \nm{It won't cause \npe. It will just return null. If you, then, use the reference to this return value to call a method or access the field, *it* will cause \npe. Meka this more clear.}
 
 By calling \code{createIconkit()} the field is assigned \textbf{null} by calling \code{getIconkitManager()} at line 14 which just returns the \textbf{null} value at line 19.
 
-In the method \code{setTool()} (line 22) the \npe is finally caused by the attempt to access the field at line 24. The resulting \npe stack trace is shown in \boxref{stackTrace}:
+\ins{Afterwards, when the method \code{open()} calls the method \code{setTool()}, }\nm{Try to explain the code by analyzing the execution flow, that means by explaining step by step what is going to happen.}In the method \code{setTool()} (line 22) the \npe is finally caused by the attempt to \ugh{access the field} at line 24. \nm{Strictly speaking, this is not a field access, this is a method call, it is just a getter method.}The resulting \npe stack trace is shown in \boxref{stackTrace}:
 
 \begin{figure}[H]
 \renewcommand\figurename{Box}
@@ -107,7 +116,7 @@ In the method \code{setTool()} (line 22) the \npe is finally caused by the attem
 
 In \boxref{stackTrace} we can see that the stack trace does not track to the location where the variable is assigned the null value. We call this location the root of an exception. That means the Java developer has to debug his/her way to the exception root.
 
-At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developers the exact location of the null assignment next to the ordinary stack trace as shown in \boxref{stackTrace2}.
+At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developer the exact location of the null assignment next to the ordinary stack trace as shown in \boxref{stackTrace2}.
 
 \begin{figure}[H]
 \renewcommand\figurename{Box}
@@ -1209,9 +1218,9 @@ We also came in contact with the building XML file and the jar file. Concerning 
 
 %END Doc
 %-------------------------------------------------------
-
-\bibliography{scg}
 \bibliographystyle{plain}
+\bibliography{scg}
+
 
 \begin{appendices}
 

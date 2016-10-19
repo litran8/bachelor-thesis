@@ -230,7 +230,7 @@ Local variables do have a limited lifespan, the square bracket of the local vari
 As soon as the lifespan of a local variable ends, the slot can be reused by the next instantiated local variable. See the local variable table example shown in \bytecoderef{localVarTableDuplicatedSlot1} and the source code \coderef{localVarTableDuplicatedSlot1SourceCode} which the local variable table belongs to. Line 4 in \bytecoderef{localVarTableDuplicatedSlot1} holds the information about the local variable \code{url} at line 3 in \coderef{localVarTableDuplicatedSlot1SourceCode}. We see in the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} that the variable \code{url} is only accessible within the \code{try\{\}} block which starts from pc 0 and ends with pc 40 \lt{not want to list the whole bytecode of the source code because it's too long...}. If we look further than pc 40 at bytecode-level, slot 2 is free again which is then immediately used by the next variable \code{e} in our example. This is why we can find local variable tables that contain multiple entries with the same local variable slot.
 \nm{I would present here the source code of this bytecode. After having a look at the Bytecode 2.3 I have realised what are you talking about. Before that I read the whole paragraph, and did not understand you. Example would be useful.}\lt{Is the example clear?}
 
-\renewcommand\lstlistingname{B<tecode}
+\renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot 2 (line 4\&7).}, label={bytecode:localVarTableDuplicatedSlot1}, breaklines=true]
 Local variable table:
  [pc: 0, pc: 95] local: this index: 0 type: org.jhotdraw.samples.javadraw.JavaDrawViewer

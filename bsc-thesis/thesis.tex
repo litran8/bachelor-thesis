@@ -610,7 +610,7 @@ Local variable table:
  [pc: 44, pc: 94] local: e index: 2 type: java.io.IOException
 \end{JVMIS}
 
-Iterating through the bytecode and finding the opcode \textit{``astore.*''} we extract the slot from the opcode. For example we extract slot 2 from the opcode \textit{astore\_2} with the pc 45. After extracting the slot (index: 2 listed in \bytecoderef{localVarTableDuplicatedSlot}) we get the first local variable table entry which contains that slot (line 4). If the pc of the local variable assignment is not included in the local variable lifespan of the entry ([pc: 13, pc: 40]), the next entry with the same slot (line 7;  [pc: 44, pc: 94]) will be examined. Checking the entries with the same slot goes on until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information we need.
+Iterating through the bytecode and finding the instruction \textit{``astore.*''} we extract the slot from the opcode. For example we extract slot 2 from the opcode \textit{astore\_2} with the pc 45. After extracting the slot (index: 2) we get the first local variable table entry which contains that slot (line 4 of \bytecoderef{localVarTableDuplicatedSlot}). If the pc of the local variable assignment is not included in the local variable lifespan of the entry (line 4; [pc: 13, pc: 40]), the next entry with the same slot (line 7;  [pc: 44, pc: 94]) will be examined. Checking the entries with the same slot goes on until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information we need.
 
 \begin{JVMIS}[caption={Line number table.}, label={bytecode:lineNrTable}]
   Line numbers:
@@ -630,7 +630,6 @@ With the line number table (shown in \bytecoderef{lineNrTable}) and the pc we ca
 
 The other information we need in addition to the line number are listed in \listref{localVarInfo}.
 
-\lt{change name eventually}
 \begin{figure}[H]
 \renewcommand\figurename{List}
 	\begin{boxedminipage}{\textwidth}
@@ -642,7 +641,7 @@ The other information we need in addition to the line number are listed in \list
 		\item localVariableType
 		\item startPc
 		\item storePc
-		\item afterPc (right before this pos additional bytecode is inserted)
+		\item afterPc (right before this pc additional bytecode is inserted)
 		\item className
 		\item behavior
 		\item localVariableAttributeIndex
@@ -655,9 +654,9 @@ The other information we need in addition to the line number are listed in \list
 
 \subsubsection{Instance and Class/Static variable (Field)}
 \label{subsec:field}
-Although Javassist does not support the access to local variable it provides a way for fields. Javassist allows modifying an expression in a method body with the class \code{Javassist.expt.ExprEditor}. In our case we only want to extract some information about the fields instead of any modification, nevertheless this class can be used appropriately. What it does is to scan the bytecodes on instructions like \textit{``putfield''} for instance or \textit{``putstatic''} for static variables.
+Although Javassist does not support the access to local variable it provides a way for fields. Javassist allows to modify an expression in a method body with the class \code{Javassist.expt.ExprEditor}. In our case we only want to extract some information about the fields instead of any modification, nevertheless this class can be used appropriately. What it does is to scan the bytecodes on instructions like \textit{``putfield''} for instance or \textit{``putstatic''} for static fields.
 
-There are only two instructions that indicates an access to a field, but there are actually many different types of field. To get the meaning of different types see the following list:
+There are only two instructions that indicates an access to a field, but there are actually many different types of fields. To get the meaning of different types see \listref{fieldKeywords}.
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
@@ -673,10 +672,10 @@ There are only two instructions that indicates an access to a field, but there a
    \end{enumerate}
 	\end{boxedminipage}
 	\caption{Field keywords.}
-	\label{box:fieldKeywords}
+	\label{list:fieldKeywords}
 \end{figure}
 
-Depending on the category a field belongs to, different kind of information is stored about it. Number 1 in \boxref{fieldKeywords} indicates fields of the current analyzed class and number 3-5 are from nested or other classes. Number 2 can be static fields either of the current analyzed class or others classes. For field accessing 1\&2 following information is needed and stored:
+Depending on the category a field belongs to, different kind of information is stored about it. Number 1 in \listref{fieldKeywords} indicates fields of the current analyzed class and number 2 can be static fields either of the current analyzed class or others classes. What Information we need about the field accessing 1\&2 is listed in \listref{variableInfo1}.
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
@@ -691,17 +690,17 @@ Depending on the category a field belongs to, different kind of information is s
 		\item fieldLineNumber
 		\item startPc
 		\item storePc
-		\item afterPc (right before this pos additional bytecode is inserted)
+		\item afterPc (right before this pc additional bytecode is inserted)
 		\item classWhereFieldIsAccessed (current analyzed class)
 		\item behavior
    \end{itemize}
 	\end{boxedminipage}
-	\caption{Variable information (I).}
-	\label{box:variableInfo1}
+	\caption{Field information (I).}
+	\label{list:variableInfo1}
 \end{figure}
 
-In NullSpy we use the term \textit{member field} to describe a field of another class than the class being analyzed. Such fields are listed as number 3-5 in \boxref{fieldKeywords}.
-We call everything before the instruction \textit{putfield} \textit{``member object''}. For those fields more data are needed to store for their identification.  Nearly the same as above, except:
+In NullSpy we use the term \textbf{member field} to describe a field of another class than the class being analyzed. Such fields are listed as number 3-5 in \listref{fieldKeywords}.
+We call everything before the instruction \textit{``putfield''} \textbf{member object}. For those fields more data are needed to store for their identification. The same information as listed in \listref{variableInfo1} is needed plus additional data listed in \listref{variableInfo2}.
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
@@ -709,24 +708,24 @@ We call everything before the instruction \textit{putfield} \textit{``member obj
 \begin{itemize}
 \itemsep8pt
       \item classWhereFieldIsAccessed (can be different than the current analyzed class)
-\item indirectVariable: \lt{change to member object? also in code?}
+\item memberObject:
 \begin{itemize}
-\item indirectVariableName
-\item indirectVariableType
-\item indirectVariableDeclaringClassName
-\item isIndirectVariableStatic
-\item indirectVariableOpcode (to distinguisch if it is a localVariable or a field)
+\item memberObjectName
+\item memberObjectType
+\item memberObjectDeclaringClassName
+\item isMemberObjectStatic
+\item memberObjectOpcode (to distinguish if it is a local variable or a field)
 \end{itemize}
    \end{itemize}
 	\end{boxedminipage}
-	\caption{Variable information (II).}
-	\label{box:variableInfo2}
+	\caption{Field information (II).}
+	\label{list:variableInfo2}
 \end{figure}
 
-The synthetic example \coderef{fieldExample} shows how the instructions \textit{``putfield''} and \textit{``putstatic''} are used:
+The synthetic example \coderef{fieldExample} shows how exactly the instructions \textit{``putfield''} and \textit{``putstatic''} are used.
 
 \renewcommand\lstlistingname{Code}
-\begin{Java}[caption={Example: \textit{``putfield''} and \textit{``putstatic''}.}, label={code:fieldExample}]
+\begin{Java}[caption={Synthetic example to show how the instructions \textit{``putfield''} and \textit{``putstatic''} are used.}, label={code:fieldExample}]
 public class A {
 
 	private B b = new B();
@@ -734,22 +733,22 @@ public class A {
 
 	public void x() {
 
-		// |...|: value assigned
+		// |...|: value assigned to fields
 
 		// fields
 		this.b = ...; // aload_0, |...|, putfield
-		b2 = ...; // |...|, putstatic
+		b2 = ...; 		// |...|, putstatic
 
 		B b3 = new B();
 
-		// indirectFields (@\lt{member fields?}@)
-		b3.c = ...; // aload.*, (getfield)*, |...|, putfield
+		// member fields
+		b3.c = ...; 	// aload.*, (getfield)*, |...|, putfield
 		b3.c.d = ...
 
-		b.c = ...; // aload_0, (getfield)+, |...|, putfield
+		b.c = ...; 		// aload_0, (getfield)+, |...|, putfield
 		b.c.d = ...;
 
-		b2.c = ...; // getstatic, (getfield)*, |...|, putfield
+		b2.c = ...; 	// getstatic, (getfield)*, |...|, putfield
 		b2.c.d = ...;
 	}
 }
@@ -769,9 +768,9 @@ public class D {
 }
 \end{Java}
 
-While getting the data we are interested in to identify a field we encountered some difficulties which we will discuss in a separate subsection.
+During the data collection about the fields we encountered some difficulties which we will discuss in \subsecref{variableDifficulties}.
 
-Already mentioned before every time finding an assignment either of a local variable or a field, NullSpy enters bytecode to check the variable whether it is null. If the variable is assigned null, NullSpy stores all the data about it in a HashMap. How we insert bytecode is described next.
+As already mentioned before, every time after finding an assignment either of a local variable or a field, NullSpy enters bytecode to check whether the variable is assigned null. If the variable is assigned null, NullSpy stores all the data about it in a HashMap. How we insert bytecode is described next.
 
 \subsection{Bytecode Adaptation}
 \label{bytecodeAdaptation}

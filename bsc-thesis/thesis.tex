@@ -1155,7 +1155,7 @@ This chapter will provide some numbers to compare the execution time each projec
 
 \section{Execution Time Difference}
 \label{sec:execTimeDiff}
-How did we get the numbers? First of all, of course another executable jar file of the modified project has to be created. The steps to it are followings: load project, modify project, store modified project, build project that creates an executable jar file of the original project and one of the modified one. We then simulate the terminal with a Java class to run each jar thirty times and calculate the average. The next table lists each execution time and the average:
+JHotDraw already provides an Ant buildfile \textit{built.xml} that packs the project into an executable jar file. We modified the buildfile a little bit so that it also creates a jar file out of the modified project stored in the destination the user has chosen before. The steps to create an executable jar of the modified project are followings: load project, modify project, store modified project, build project that creates jar file of the original project and one of the modified one. We then simulate the terminal with a Java class to run the tests included in each jar file thirty times, each time it returns the execution time. At the end we calculate the average time for the original and the modified project. The the execution times are listed in \tabref{executionTime} and the average times are shown in \tabref{averageTime}.
 
 \begin{table}[H]
 \centering
@@ -1210,6 +1210,70 @@ How did we get the numbers? First of all, of course another executable jar file 
 \end{table}
 
 The runtime of the modified project takes 0.362734s longer than the original one, this means after adding additional code to the project results in approximately \textbf{5\%} overhead. This small overhead is quite negligible. But this numbers have to be interpreted with caution because the overhead is only measured on JHotDraw.
+
+\section{NullSpy demonstration on a real project}
+\label{sec:demonstration}
+We want to demonstrate how our project NullSpy helps the user to find the real culprit that leads to a \npe on a real project.
+
+\begin{Java}[caption={NullSpy demonstration example.}, label={code:demonstration}]
+public class Ideone {
+
+	public static List<Integer> numbers;
+	public static BufferedReader reader;
+
+	public static void main(String[] args) {
+		makeReader();
+		readNumbers();
+		closeReader();
+		System.out.println(numbers);
+	}
+
+	// Buggy, reader should not be null if there is no file to read
+	private static void makeReader() {
+		try {
+			reader = new BufferedReader(new FileReader(new File("file.txt")));
+		} catch (FileNotFoundException e) {
+			reader = null;
+		}
+	}
+
+	// Not really important.
+	private static List<Integer> readNumbers() {
+		try {
+			List<Integer> numbers = new ArrayList<Integer>();
+			String text = null;
+			while ((text = reader.readLine()) != null) {
+				numbers.add(Integer.parseInt(text));
+			}
+			return numbers;
+		} catch (Exception e) {
+			return new ArrayList<Integer>();
+		}
+	}
+
+	// NPE triggered here!
+	private static void closeReader() {
+		try {
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+\end{Java}
+
+\begin{figure}[H]
+\renewcommand\figurename{Box}
+	\begin{boxedminipage}{\textwidth}
+		\color{cadmiumred}
+		Field this.reader at line 18 is null: (\textcolor{blue}{Ideone.java: 18})\\
+		Exception in thread "main" \textcolor{blue}{java.lang.NullPointerException}\\
+		\tab at Ideone.closeReader(\textcolor{blue}{Ideone.java:39})\\
+		\tab at Ideone.main(\textcolor{blue}{Ideone.java:9})\\
+	\end{boxedminipage}
+	\caption{Stack trace of the demonstration example \coderef{demonstration}.}
+	\label{box:demonstrationStackTrace}
+\end{figure}
 
 \chapter {Conclusion and Future Work}
 \label{ch:conclusionFutureWork}

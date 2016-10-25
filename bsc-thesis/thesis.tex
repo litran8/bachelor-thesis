@@ -736,7 +736,7 @@ public class A {
 		// |...|: value assigned to fields
 
 		// fields
-		this.b = ...; // aload_0, |...|, putfield
+		this.b = ...; 	// aload_0, |...|, putfield
 		b2 = ...; 		// |...|, putstatic
 
 		B b3 = new B();
@@ -776,7 +776,7 @@ As already mentioned before, every time after finding an assignment either of a 
 \label{bytecodeAdaptation}
 Each time encountering a variable assignment we first extract the needed data and then we  adapt the class file by adding extra bytecode right after the assignment. The function of the entered bytecode is checking whether the variable is null or not. If it is null, the information collected before is stored either into the \textit{``localVariableMap''} or into a \textit{``fieldMap''} which are HashMaps.
 
-The added bytecode represents a static method of a class named \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}.} which will be added to the modified project after class file modification is done. Depending on the kind of variable analyzed at the moment different bytecode is constructed, which means the bytecode represents different methods which accepts different parameter/variable data.
+The added bytecode represents a static method of a class named \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}.} which will be added to the modified project after class file modification is done. Depending on what kind of variable (local variable, field) is analyzed, different bytecode is constructed, which means the bytecode represents different methods which accepts different parameter/variable data.
 
 In \secref{javassist} we mentioned that the library makes it possible to modify bytecode either with the source- or bytecode-level API. Due to a limitation of Javassist (\secref{limitations}) we modify the class file at bytecode-level by creating a \textit{bytecode-array} and include it in the file. \coderef{bytecodeCreation} shows the way how the inserted bytecode is created.
 
@@ -794,27 +794,26 @@ private byte[] getInsertCodeByteArray(Variable var) {
 
 	Field field = (Field) var;
 
-	String classNameInWhichFieldIsInstantiated = field
+	String fieldDeclaringClassName = field
 		.getFieldDeclaringClassName();
 
-	testMethodByteCode.addLdc(field.getFieldDeclaringClassName());
+	testMethodByteCode.addLdc(fieldDeclaringClassName);
 
 	// int 1 -> static, 0 -> nonStatic
-	testMethodByteCode.addOpcode(Opcode.BIPUSH);
 	if (field.isStatic()) {
-		testMethodByteCode.add(1);
+		addIntegerToBytecode(testMethodByteCode, 1);
 	} else {
-		testMethodByteCode.add(0);
+		addIntegerToBytecode(testMethodByteCode, 0);
 	}
 
 	testMethodByteCode.addAload(0);
 	testMethodByteCode.addGetfield(
-		classNameInWhichFieldIsInstantiated, varName, varType);
+		fieldDeclaringClassName varName, varType);
 
 	addIntegerToBytecode(testMethodByteCode, var.getVarLineNr());
-	addIntegerToBytecode(testMethodByteCode, var.getStartPos());
-	addIntegerToBytecode(testMethodByteCode, var.getStorePos());
-	addIntegerToBytecode(testMethodByteCode, var.getAfterPos());
+	addIntegerToBytecode(testMethodByteCode, var.getStartPc());
+	addIntegerToBytecode(testMethodByteCode, var.getStorePc());
+	addIntegerToBytecode(testMethodByteCode, var.getAfterPc());
 
 	CtClass variableTester = ClassPool.getDefault().get(
 			"ch.unibe.scg.nullSpy.runtimeSupporter.VariableTester");
@@ -834,15 +833,31 @@ private byte[] getInsertCodeByteArray(Variable var) {
 }
 \end{Java}
 
-\coderef{bytecodeCreation} is a code snippet from class \code{VariableTester}\textsuperscript{\ref{package1}} which NullSpy adds to the project after the bytecode modification. This snippet creates the static method invocation that tests whether a field is null. The header of that method is presented in
+\coderef{bytecodeCreation} is a code snippet from class \code{VariableTester}\textsuperscript{\ref{package1}} which NullSpy adds to the project after the bytecode modification. This snippet creates the static method invocation that tests whether a field is null. The header of that method is presented in \coderef{checkFieldMethodHeader}.
 
 \begin{Java}[caption={Check field method header.}, label={code:checkFieldMethodHeader}, firstnumber=31]
-public static void testDirectField(String classNameInWhichVarIsUsed,
-			String behaviorName, String behaviorSignature, String varID,
-			String varName, String varType, String varDeclaringClassName,
-			int isStatic, Object varValue, int varLineNr, int startPos,
-			int storePos, int afterPos) {...}
+public static void testDirectField(
+	String classNameInWhichVarIsAccessed,
+	String behaviorName,
+	String behaviorSignature, 
+	String varID, String varName, String varType, 
+	String varDeclaringClassName,
+	int isStatic, 
+	Object varValue, 
+	int varLineNr, 
+	int startPc, int storePc, int afterPc
+	) {...}
 \end{Java}
+
+Now we will go through the code snippet shown in \coderef{bytecodeCreation} and explain it. The method header of the behavior \code{VariableTester.testDirectField()} shown in \coderef{checkFieldMethodHeader} takes seven strings, one boolean, one object and four integers as parameter. The snippet \coderef{bytecodeCreation} reproduces those parameter. 
+
+From line 4 to 17 the instruction \textit{``addLdc''} is used to add strings to the bytecode. For adding a boolean we used the integers \textit{``1''} and \textit{``0''} to represent the boolean value \textit{true} respectively \textit{false}. Code-lines 20 to 25 adds integers to the bytecode sequence. 
+
+The Object, in our case a field, is added by the method \code{addAload()} at line 27 and the method \code{addGetfield()} at line 28. In our synthetic example shown in \coderef{fieldExample} we see that how a field is assigned something at line 11. The bytecode of this example is \textit{``aload\_0'', \textbar\dots\textbar, ``putfield''}. Even if we don't write the keyword \code{this} in front of the field \code{b}, the bytecode will be the same. The example was about the field assignment, but if we only want to load a field the bytecode would look like \textit{``aload\_0'', ``getfield''}. Back to our bytecode creation example \coderef{bytecodeCreation}, lines 27 and 28 are exactly adding those instructions to the bytecode. We take the variable itself as parameter to evaluate its value in the check-method.
+
+Important integers like the line number and pcs are added to the bytecode sequence from line 31 to 24.
+
+Finally all classes that the check-method takes as parameter are prepared at lines 36 to 39 and the instruction \textit{``invokestatic''} is added to the bytecode.  
 
 There were again some challenges we had to get over, like getting the wanted data after an instrumentation and entering the additional code in the right position of the bytecode sequence (\subsecref{bytecodeAdaptationDifficulties}).
 

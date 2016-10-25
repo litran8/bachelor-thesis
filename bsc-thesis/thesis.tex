@@ -855,13 +855,13 @@ From line 4 to 17 the instruction \textit{``addLdc''} is used to add strings to 
 
 The Object, in our case a field, is added by the method \code{addAload()} at line 27 and the method \code{addGetfield()} at line 28. In our synthetic example shown in \coderef{fieldExample} we see that how a field is assigned something at line 11. The bytecode of this example is \textit{``aload\_0'', \textbar\dots\textbar, ``putfield''}. Even if we don't write the keyword \code{this} in front of the field \code{b}, the bytecode will be the same. The example was about the field assignment, but if we only want to load a field the bytecode would look like \textit{``aload\_0'', ``getfield''}. Back to our bytecode creation example \coderef{bytecodeCreation}, lines 27 and 28 are exactly adding those instructions to the bytecode. We take the variable itself as parameter to evaluate its value in the check-method.
 
-Important integers like the line number and pcs are added to the bytecode sequence from line 31 to 24.
+Important integers like the line number and pcs are added to the bytecode sequence from line 31 to 24. Finally all classes that the check-method takes as parameter are prepared at lines 36 to 39 and the instruction \textit{``invokestatic''} is added to the bytecode.
 
-Finally all classes that the check-method takes as parameter are prepared at lines 36 to 39 and the instruction \textit{``invokestatic''} is added to the bytecode.  
+With the classes \textit{CodeAttribute} and \textit{CodeIterator} from the Javassist API we can enter the bytecode sequence we created into existing ones. CodeAttribute represents the bytecode of a behavior and with CodeIterator we can iterate through that bytecode. So we first move the CodeIterator to the position (pc) in the bytecode where we want to enter our bytecode with \code{codeIterator.move(pc)} and than enter our sequence with \code{iter.insert(ourByteCode)}.
 
-There were again some challenges we had to get over, like getting the wanted data after an instrumentation and entering the additional code in the right position of the bytecode sequence (\subsecref{bytecodeAdaptationDifficulties}).
+There were again some challenges we had to get over, like getting the right data after an instrumentation and entering the additional code in the right position of the bytecode sequence. In (\subsecref{bytecodeAdaptationDifficulties}) we discuss about our problems we had.
 
-Once we have gone through the bytecode of a Java class, the modified class files are stored in a destination directory as mentioned in \secref{highLevelOverview}. Next to the instrumentation supplementary supporter classes are added to the project. The most important ones are \code{VariableTester}\textsuperscript{\ref{package1}} which tests whether a variable is null or not and \code{NullDisplayer}\textsuperscript{\ref{package1}} which matches data and prints the location of a null assignment when a \npe is thrown.
+Once we have gone through the bytecode of a Java class, the modified class files are stored in the destination directory as mentioned in \secref{highLevelOverview}. After the instrumentation we add supplementary supporter classes to the project. The most important ones are \code{VariableTester}\textsuperscript{\ref{package1}} which tests whether a variable is null or not and \code{NullDisplayer}\textsuperscript{\ref{package1}} which matches data and prints the location of a null assignment when a \npe is thrown.
 
 \section{Challenges}
 \label{sec:challenges}

@@ -1,4 +1,4 @@
- \documentclass[oneside,a4paper,12pt]{book}
+\documentclass[oneside,a4paper,12pt]{book}
 %\pagestyle{headings}
 \frontmatter
 \input{preamble}
@@ -61,7 +61,7 @@ public void drop(...) {
 }
 \end{Java}
 
-Assume that in the example shown in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value as the result of assigning the return value of the method \code{DNDHelper.processReceivedData()} to the variable. This means that the same variable \code{ff} is \code{null} at line 7 and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5. 
+Assume that in the example shown in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value as the result of assigning the return value of the method \code{DNDHelper.processReceivedData()} to the variable. This means that the same variable \code{ff} is \code{null} at line 7 and when a method is called on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was caused but not to the real culprit which is the assignment at line 5.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={\Npe example (II).}, label={code:npeExampleFieldAccess}]
@@ -81,7 +81,7 @@ public class DrawApplication {
 		(@\textbf{fManager}@) = getIconkitManager();
 		..
 	}
-	
+
 	protected getIconkitManager() {
 		return null;
 	}
@@ -97,7 +97,7 @@ public class DrawApplication {
 
 A more complicated way a \npe can be triggered is when it involves variables with larger scopes such as class members. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation.
 
-The \code{open()} method calls the methods \code{createIconkit()} at line 7 and \code{setTool()} at line 9. 
+The \code{open()} method calls the methods \code{createIconkit()} at line 7 and \code{setTool()} at line 9.
 %The former method call will initialize the field \code{fManager} at line 14 which is declared at line 3. The latter method call will perform a method call on \code{fManager} at line 24 which will cause the \npe.
 
 By calling \code{createIconkit()} at line 7 the field \code{fManager} which is declared at line 3 is initialized \textbf{null}. The field is assigned \textbf{null} by performing the method \code{getIconkitManager()} at line 14, which just returns the \textbf{null} value at line 19.
@@ -148,7 +148,7 @@ This chapter provides a short overview of technologies used in the implementatio
 \label{sec:bytecode}
 The backbone of NullSpy is analysis and modification of Java bytecode. Java bytecode is an abstract machine language that the stack-based Java virutal machine (JVM) can understand and execute. A JVM keeps an operand stack which is modified every time the JVM executes an instruction. The instruction is represented by an opcode (operation code) which also has a string representation.
 
-Since bytecode plays an important role in our project, we will describe the Java bytecode and explain some terms we often use in this thesis. We start with an easy \textit{HelloWorld} source code example (\coderef{helloWorld}) and its bytecode (\bytecoderef{helloWorld}). 
+Since bytecode plays an important role in our project, we will describe the Java bytecode and explain some terms we often use in this thesis. We start with an easy \textit{HelloWorld} source code example (\coderef{helloWorld}) and its bytecode (\bytecoderef{helloWorld}).
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Hello World example.}, label={code:helloWorld}][H]
@@ -166,10 +166,10 @@ public class HelloWorld {
 \begin{JVMIS}[numbers=left, caption={Bytecode of \coderef{helloWorld}.}, label={bytecode:helloWorld}, breaklines=true][H]
 // Compiled from HelloWorld.java (version 1.8 : 52.0, super bit)
 public class HelloWorld {
-  
+
   // Field descriptor #6 Ljava/lang/String;
   private java.lang.String hello;
-  
+
   // Method descriptor #8 ()V
   // Stack: 2, Locals: 1
   public HelloWorld();
@@ -185,7 +185,7 @@ public class HelloWorld {
         [pc: 10, line: 1]
       Local variable table:
         [pc: 0, pc: 11] local: this index: 0 type: HelloWorld
-  
+
   // Method descriptor #8 ()V
   // Stack: 2, Locals: 2
   public void say();
@@ -212,7 +212,7 @@ On the left-side of these instructions we see the \textit{program counter} (pc) 
 
 Going back to the example shown in \bytecoderef{helloWorld}, we can see on the right-side the name and type of variables (\eg line 27), or in case of an invocation the behavior/method name, the parameters it takes and the return type (\eg line 31). In \secref{lowLevelOverview} we will see how this information is used.
 
-Underneath the instructions from line 33 till the line 36 in \bytecoderef{helloWorld} we find the \textit{line number table}\footnote{In the jargon of Javasist, this is also called the line number attribute.}. This line number table maps the pc to the source code line of the method \code{say()} represented in bytecode from line 25 to 39. \nm{From what I see, it actually indicates the starting pc for each line of code. Maybe we should mention that, just to make it clear.}\lt{in situations like a method call which is divided in multiple lines, it does not indicate the starting pc for each line of code..} Not only the method \code{say()} but each method bytecode (\eg the constructor \code{HelloWorld()} from line 9 to 21) has its own \textit{line number table}. 
+Underneath the instructions from line 33 till the line 36 in \bytecoderef{helloWorld} we find the \textit{line number table}\footnote{In the jargon of Javasist, this is also called the line number attribute.}. This line number table maps the pc to the source code line of the method \code{say()} represented in bytecode from line 25 to 39. \nm{From what I see, it actually indicates the starting pc for each line of code. Maybe we should mention that, just to make it clear.}\lt{in situations like a method call which is divided in multiple lines, it does not indicate the starting pc for each line of code..} Not only the method \code{say()} but each method bytecode (\eg the constructor \code{HelloWorld()} from line 9 to 21) has its own \textit{line number table}.
 
 If we look back, to the \boxref{stackTrace}, we can see the numbers at the end of each line. They indicate the lines of code, which are the part of the call-chain that led to \npe. The information the \textit{line number table} holds is used to recover the information about the actual point in the code where the null was assigned to a reference. In \secref{lowLevelOverview} we will discuss how this is done.
 
@@ -225,7 +225,7 @@ The bytecode of each behavior also holds a local variable table (\eg \bytecodere
   \label{fig:localVarArray}
 \end{figure}
 
-Local variables do have a limited lifespan, the square bracket of the local variable table represents the lifespan. The local variable \code{result} at line 39 in \bytecoderef{helloWorld} is not created until pc 5 and is only accessible until pc 13 (excluded). 
+Local variables do have a limited lifespan, the square bracket of the local variable table represents the lifespan. The local variable \code{result} at line 39 in \bytecoderef{helloWorld} is not created until pc 5 and is only accessible until pc 13 (excluded).
 
 As soon as the lifespan of a local variable ends, the slot can be reused by the next instantiated local variable. See the local variable table example shown in \bytecoderef{localVarTableDuplicatedSlot1} and the source code \coderef{localVarTableDuplicatedSlot1SourceCode} which the local variable table belongs to. Line 4 in \bytecoderef{localVarTableDuplicatedSlot1} holds the information about the local variable \code{url} at line 3 in \coderef{localVarTableDuplicatedSlot1SourceCode}. We see in the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} that the variable \code{url} is only accessible within the \code{try\{\}} block which starts from pc 0 and ends with pc 40 \lt{not want to list the whole bytecode of the source code because it's too long...}. If we look further than pc 40 at bytecode-level, slot 2 is free again which is then immediately used by the next variable \code{e} in our example. This is why we can find local variable tables that contain multiple entries with the same local variable slot.
 \nm{I would present here the source code of this bytecode. After having a look at the Bytecode 2.3 I have realised what are you talking about. Before that I read the whole paragraph, and did not understand you. Example would be useful.}\lt{Is the example clear?}
@@ -479,10 +479,10 @@ public class A {
 
 	private Object (@\textbf{field}@) = new Object();
 	private Object b = new B();
-	
+
 	public static void main() {
 		Object (@\textbf{var}@) = new Object();
-		
+
 		(@\textbf{var}@).toString();	// variable on which method is invoked
 		(@\textbf{field}@).toString();	// field access
 		(@\textbf{b.foo}@).toString();	// field access
@@ -576,7 +576,7 @@ In the next two subsections we will look at how the information about the assign
 
 \subsubsection{Local Variable}
 \label{subsubsec:localVariable}
-Unfortunately, Javassist does not provide any support for gaining information about local variables. This is why we have to understand how the bytecode is constructed concerning the local variables. In \secref{bytecode} we introduced the parts of the bytecode that are important for our project NullSpy. 
+Unfortunately, Javassist does not provide any support for gaining information about local variables. This is why we have to understand how the bytecode is constructed concerning the local variables. In \secref{bytecode} we introduced the parts of the bytecode that are important for our project NullSpy.
 
 %\begin{figure}[H]
 %\centering
@@ -1297,18 +1297,18 @@ In \subsecref{methodReceiver} we discussed about extracting all possible combina
 		\item local variable
 		\begin{itemize}
 			\item aload													y
-			\item aload.getfield 								y	
+			\item aload.getfield 								y
 			\item aload.getfield.getfield...		y	(if fields are public)
 			\item aload.getstatic								n	(aload = ref, getstatic = arg)
 			\item aload.aload\_0									n	(aload = ref, this.getfield etc = args
 			\item aload.aload										n	(aload = ref, aload = arg)
 			\item aload.new											n	(aload = ref, new = arg)
 		\end{itemize}
-   
+
 		\item non-static field
 		\begin{itemize}
 			\item aload\_0												y	(aload\_0 = ref for private method)
-			\item aload\_0.getfield							y	
+			\item aload\_0.getfield							y
 			\item aload\_0.getfield.getfield. ..	y	(if getfields are public fields)
 			\item aload\_0.this									n	(aload\_0 = ref, this... = arg)
 			\item aload\_0.getfield.getstatic		n (!exist)

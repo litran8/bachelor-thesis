@@ -518,25 +518,28 @@ We use the library Javassist to extract data from bytecode. Unfortunately, Javas
 	\label{list:methodReceiverInfo}
 \end{figure}
 
-\del{This is why we implemented our own algorithm to get the \mrs. We need the exact \textit{pc-interval} of the \mr to extract the right data from the bytecode.} As we discuss the steps of the algorithm we will be showing the result of each step when applied to the example source code and bytecode shown in \coderef{methodReceiverAlgDemoCode} and \bytecoderef{methodReceiverAlgDemoBytecode}. The algorithm contains following steps:
+\del{This is why we implemented our own algorithm to get the \mrs. We need the exact \textit{pc-interval} of the \mr to extract the right data from the bytecode.} As we discuss the steps of the algorithm we will be showing the result of each step when applied to the example source code and bytecode shown in \coderef{methodReceiverAlgDemoCode} and \bytecoderef{methodReceiverAlgDemoBytecode}. \nm{State want information you want to extract. At the end of the next paragraph, you say ``In our example, the end-pc is 155, since we are interested in the receiver of the \code{add} method." Say here: ``We are interested in the information blah, blah, blah...}The algorithm contains following steps:
 
-\textbf{Finding the invocation bytecode}\\
-While iterating through the bytecode, NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation for which we are trying to find the \mr. We call the pc of the invocation the \textbf{end-pc}. In our example, the end-pc is 155, since we are interested in the receiver of the \code{add} method.
+\nm{Why not use the example 2.1 and 2.2? Like this examples starts to pile up, and it becomes confusing.}
 
-\textbf{Finding the start-pc}\\
-We locate the pc at which the bytecode for source code line of the invocation begins. We call this the \textbf{start-pc}. This is done using the line number table mentioned in \secref{bytecode}. This table is omitted from our example for simplicity and the start-pc is 144.
+\textbf{Finding the invocation bytecode}\nm{Why not put this paragraph before previous paragraph?}\\
+While iterating through the bytecode, NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation\ins{.} \chg{for which we are trying to find the \mr.}{For each method invocation we want to find the method receiver.} We call the pc of the invocation the \textbf{end-pc}. In our example, the end-pc is 155, since we are interested in the receiver of the \code{add} method.
+
+\textbf{Finding the start-pc}\\ 
+\nm{Isn't this start-pc also part of the invocation bytecode? Shouldn't the previous paragraph be something like ``Finding the end-pc", and together with this paragraph be a subparagraphs of the ``Finding the invocation bytecode"?}
+We locate the pc at which the bytecode for source code line of the invocation begins. We call this the \textbf{start-pc}. This is done using the line number table mentioned in \secref{bytecode}. \chg{This table is omitted from our example for simplicity and the start-pc is 144.}{This table is omitted from our example for simplicity. The start-pc is 144.} \nm{Do not put two completely independent information into one sentence. It doesn't make sense.}
 
 \textbf{Defining the outermost pc-interval}\\
 We define the outermost \textbf{pc-interval} as the interval starting with the start-pc and ending with the end-pc. We know that the \mr is located in this interval. In our example, this is <144,155>.
 
 \textbf{Getting the number of parameters for the method}\\
-Javassist offers the functionality to count the number of parameters a method invocation has by analyzing the method signature. The signature is a \textit{String} that contains the parameter and the return type of the method call. Our example method takes 2 parameters.
+Javassist offers the functionality to count the number of parameters\ins{ of} a method invocation \del{has }by analyzing the method signature. The signature is\ins{ of a type} a \textit{String} \nm{It is not the class String itself!} that contains the parameter and the return type of the method call. Our example method takes \chg{2}{two} \nm{Always spell out small numbers.} parameters.
 
 \textbf{Extracting candidate \mr pc-intervals}\\
-The outermost interval <144,155> could contain other invocations, which could have \mrs of their own. This is visible in our example, where the \code{getDesktop} invocation (pc 146) is embedded in our outermost interval. For this reason, we explored all possible bytecode combinations of \mrs and developed a system for identifying such embedded call sights. More about this system can be found in the appendix (\ref{cha:bytecodeCombinations}). This system allows us to split the outermost pc-interval into candidate \mr pc-intervals. In our example, the outermost pc-interval is divided into \{<144,144>,<145,149>,<152,152>\}.
+The outermost interval <144,155> could contain other invocations, which could have \mrs of their own. This is visible in our example, where the \code{getDesktop} invocation (pc 146) is embedded in our outermost interval. For this reason, we explored all possible bytecode combinations of \mrs and developed a system for identifying such embedded call sights. More about this system can be found in the appendix (\ref{cha:bytecodeCombinations}). This system allows us to split the outermost pc-interval into candidate \mr pc-intervals. In our example, the outermost pc-interval is divided into \{<144,144>,<145,149>,<152,152>\}. \nm{Explain what each of these intervals represent.}
 
 \textbf{Finding the actual \mr}\\
-Since the candidate pc-intervals end with the arguments of the method, and we know that the method expects $N$ arguments, we can ignore the last $N$ candidate pc-intervals. The one before them is the actual \mr pc-interval. In other words, the $N$-th to last candidate is the actual \mr pc-interval. In our example, since the method takes 2 arguments, the actual \mr pc-interval is <144,144>.
+Since the candidate pc-interval\del{s} end\ins{s} with the arguments of the method, and we know that the method expects $N$ arguments, we can ignore the last $N$ candidate pc-intervals. The one before them is the actual \mr pc-interval. In other words, the $N$-th to last candidate is the actual \mr pc-interval. In our example, since the method takes \chg{2}{two} arguments, the actual \mr pc-interval is <144,144>.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Code snippet to demonstrate the \mr extracting algorithm.}, label={code:methodReceiverAlgDemoCode}]
@@ -562,7 +565,7 @@ protected void open(org.jhotdraw.framework.DrawingView newDrawingView);
 
 We had troubles getting the right outermost pc-interval of the \mr. By only statically analyzing the bytecode it is unapparent where exactly the \mr is situated in bytecode. More about the challenges we encountered can be found in \subsecref{methodReceiverDifficulties}.
 
-Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*''}. There are exactly five such bytecode instructions: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamicly-typed languages\footnote{Language whose type checking is performed at runtime.} through dynamic method invocation. In our case it can be ignored because NullSpy only supports Java, a \textit{staticlly-typed} language\footnote{Language whose type checking is performed at compile time.}.
+Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex (Regular expression) \textit{``invoke.*''}. There are exactly five such bytecode instructions: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. The invocation opcode \textit{invokedynamic} facilitates the dynamicly-typed languages\footnote{Language whose type checking is performed at \chg{runtime}{run time}.} through dynamic method invocation. \nm{Previous sentence doesn't make sense.} In our case it can be ignored because NullSpy only supports Java, a \textit{staticlly-typed} language\footnote{Language whose type checking is performed at compile time.}.
 
 In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but it can be ignored because static method invocations are called on classes which can never be null. Because of this, NullSpy ignores the instruction \textit{invokestatic}. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate.
 

@@ -471,7 +471,7 @@ The way how we extract and store all those data are discussed in the following s
 
 \subsection{\MR Data Collection}
 \label{subsec:methodReceiver}
-As mentioned in \subsecref{processFlow}, a big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr. A small synthetic example (\coderef{methodReceiverExample}) makes is easier to understand. \Mrs in \coderef{methodReceiverExample} are the variables \code{var} at line 9, \code{field} at line 10 and \code{b.foo} at line 11.
+As mentioned in \subsecref{processFlow}, a big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr \nm{My suggestion is to make this name ``method receiver" in italic for example, just to distinguish it as a term every time you mention it. What do you think?}. A small synthetic example (\coderef{methodReceiverExample}) makes is easier to understand. \Mrs in \coderef{methodReceiverExample} are the variables \code{var} at line 9, \code{field} at line 10 and \code{b.foo} at line 11.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={\Mr example.}, label={code:methodReceiverExample}]
@@ -495,7 +495,7 @@ public class B {
 }
 \end{Java}
 
-We use the library Javassist to extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get information about the \mr. The exact information we need is listed in \listref{methodReceiverInfo} and it is stored in an external \textit{csv} file due to overhead minimization.
+We use the library Javassist to extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get information \ins{we need} about the \mr\ins{, thus we need to do it manually}. \ins{This is why we implemented our own algorithm to get the \mrs.} The exact information we need is listed in \listref{methodReceiverInfo} and it is stored in an external \textit{csv} file due to overhead minimization.  \ins{We need the exact \textit{pc-interval} of the \mr to extract the right data from the bytecode.} \nm{What is right data? Listed in 3.4?}
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
@@ -518,7 +518,7 @@ We use the library Javassist to extract data from bytecode. Unfortunately, Javas
 	\label{list:methodReceiverInfo}
 \end{figure}
 
-This is why we implemented our own algorithm to get the \mrs. We need the exact \textit{pc-interval} of the \mr to extract the right data from the bytecode. As we discuss the steps of the algorithm we will be showing the result of each step when applied to the example source code and bytecode shown in \coderef{methodReceiverAlgDemoCode} and \bytecoderef{methodReceiverAlgDemoBytecode}. The algorithm contains following steps:
+\del{This is why we implemented our own algorithm to get the \mrs. We need the exact \textit{pc-interval} of the \mr to extract the right data from the bytecode.} As we discuss the steps of the algorithm we will be showing the result of each step when applied to the example source code and bytecode shown in \coderef{methodReceiverAlgDemoCode} and \bytecoderef{methodReceiverAlgDemoBytecode}. The algorithm contains following steps:
 
 \textbf{Finding the invocation bytecode}\\
 While iterating through the bytecode, NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation for which we are trying to find the \mr. We call the pc of the invocation the \textbf{end-pc}. In our example, the end-pc is 155, since we are interested in the receiver of the \code{add} method.

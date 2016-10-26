@@ -732,7 +732,7 @@ public class A {
 		// |...|: value assigned to fields
 
 		// fields
-		this.b = ...; // aload_0, |...|, putfield
+		this.b = ...; 	// aload_0, |...|, putfield
 		b2 = ...; 		// |...|, putstatic
 
 		B b3 = new B();
@@ -772,7 +772,7 @@ As already mentioned before, every time after finding an assignment either of a 
 \label{bytecodeAdaptation}
 Each time encountering a variable assignment we first extract the needed data and then we  adapt the class file by adding extra bytecode right after the assignment. The function of the entered bytecode is checking whether the variable is null or not. If it is null, the information collected before is stored either into the \textit{``localVariableMap''} or into a \textit{``fieldMap''} which are HashMaps.
 
-The added bytecode represents a static method of a class named \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}.} which will be added to the modified project after class file modification is done. Depending on the kind of variable analyzed at the moment different bytecode is constructed, which means the bytecode represents different methods which accepts different parameter/variable data.
+The added bytecode represents a static method of a class named \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}.} which will be added to the modified project after class file modification is done. Depending on what kind of variable (local variable, field) is analyzed, different bytecode is constructed, which means the bytecode represents different methods which accepts different parameter/variable data.
 
 In \secref{javassist} we mentioned that the library makes it possible to modify bytecode either with the source- or bytecode-level API. Due to a limitation of Javassist (\secref{limitations}) we modify the class file at bytecode-level by creating a \textit{bytecode-array} and include it in the file. \coderef{bytecodeCreation} shows the way how the inserted bytecode is created.
 
@@ -790,27 +790,26 @@ private byte[] getInsertCodeByteArray(Variable var) {
 
 	Field field = (Field) var;
 
-	String classNameInWhichFieldIsInstantiated = field
+	String fieldDeclaringClassName = field
 		.getFieldDeclaringClassName();
 
-	testMethodByteCode.addLdc(field.getFieldDeclaringClassName());
+	testMethodByteCode.addLdc(fieldDeclaringClassName);
 
 	// int 1 -> static, 0 -> nonStatic
-	testMethodByteCode.addOpcode(Opcode.BIPUSH);
 	if (field.isStatic()) {
-		testMethodByteCode.add(1);
+		addIntegerToBytecode(testMethodByteCode, 1);
 	} else {
-		testMethodByteCode.add(0);
+		addIntegerToBytecode(testMethodByteCode, 0);
 	}
 
 	testMethodByteCode.addAload(0);
 	testMethodByteCode.addGetfield(
-		classNameInWhichFieldIsInstantiated, varName, varType);
+		fieldDeclaringClassName varName, varType);
 
 	addIntegerToBytecode(testMethodByteCode, var.getVarLineNr());
-	addIntegerToBytecode(testMethodByteCode, var.getStartPos());
-	addIntegerToBytecode(testMethodByteCode, var.getStorePos());
-	addIntegerToBytecode(testMethodByteCode, var.getAfterPos());
+	addIntegerToBytecode(testMethodByteCode, var.getStartPc());
+	addIntegerToBytecode(testMethodByteCode, var.getStorePc());
+	addIntegerToBytecode(testMethodByteCode, var.getAfterPc());
 
 	CtClass variableTester = ClassPool.getDefault().get(
 			"ch.unibe.scg.nullSpy.runtimeSupporter.VariableTester");
@@ -830,19 +829,35 @@ private byte[] getInsertCodeByteArray(Variable var) {
 }
 \end{Java}
 
-\coderef{bytecodeCreation} is a code snippet from class \code{VariableTester}\textsuperscript{\ref{package1}} which NullSpy adds to the project after the bytecode modification. This snippet creates the static method invocation that tests whether a field is null. The header of that method is presented in
+\coderef{bytecodeCreation} is a code snippet from class \code{VariableTester}\textsuperscript{\ref{package1}} which NullSpy adds to the project after the bytecode modification. This snippet creates the static method invocation that tests whether a field is null. The header of that method is presented in \coderef{checkFieldMethodHeader}.
 
 \begin{Java}[caption={Check field method header.}, label={code:checkFieldMethodHeader}, firstnumber=31]
-public static void testDirectField(String classNameInWhichVarIsUsed,
-			String behaviorName, String behaviorSignature, String varID,
-			String varName, String varType, String varDeclaringClassName,
-			int isStatic, Object varValue, int varLineNr, int startPos,
-			int storePos, int afterPos) {...}
+public static void testDirectField(
+	String classNameInWhichVarIsAccessed,
+	String behaviorName,
+	String behaviorSignature, 
+	String varID, String varName, String varType, 
+	String varDeclaringClassName,
+	int isStatic, 
+	Object varValue, 
+	int varLineNr, 
+	int startPc, int storePc, int afterPc
+	) {...}
 \end{Java}
 
-There were again some challenges we had to get over, like getting the wanted data after an instrumentation and entering the additional code in the right position of the bytecode sequence (\subsecref{bytecodeAdaptationDifficulties}).
+Now we will go through the code snippet shown in \coderef{bytecodeCreation} and explain it. The method header of the behavior \code{VariableTester.testDirectField()} shown in \coderef{checkFieldMethodHeader} takes seven strings, one boolean, one object and four integers as parameter. The snippet \coderef{bytecodeCreation} reproduces those parameter. 
 
-Once we have gone through the bytecode of a Java class, the modified class files are stored in a destination directory as mentioned in \secref{highLevelOverview}. Next to the instrumentation supplementary supporter classes are added to the project. The most important ones are \code{VariableTester}\textsuperscript{\ref{package1}} which tests whether a variable is null or not and \code{NullDisplayer}\textsuperscript{\ref{package1}} which matches data and prints the location of a null assignment when a \npe is thrown.
+From line 4 to 17 the instruction \textit{``addLdc''} is used to add strings to the bytecode. For adding a boolean we used the integers \textit{``1''} and \textit{``0''} to represent the boolean value \textit{true} respectively \textit{false}. Code-lines 20 to 25 adds integers to the bytecode sequence. 
+
+The Object, in our case a field, is added by the method \code{addAload()} at line 27 and the method \code{addGetfield()} at line 28. In our synthetic example shown in \coderef{fieldExample} we see that how a field is assigned something at line 11. The bytecode of this example is \textit{``aload\_0'', \textbar\dots\textbar, ``putfield''}. Even if we don't write the keyword \code{this} in front of the field \code{b}, the bytecode will be the same. The example was about the field assignment, but if we only want to load a field the bytecode would look like \textit{``aload\_0'', ``getfield''}. Back to our bytecode creation example \coderef{bytecodeCreation}, lines 27 and 28 are exactly adding those instructions to the bytecode. We take the variable itself as parameter to evaluate its value in the check-method.
+
+Important integers like the line number and pcs are added to the bytecode sequence from line 31 to 24. Finally all classes that the check-method takes as parameter are prepared at lines 36 to 39 and the instruction \textit{``invokestatic''} is added to the bytecode.
+
+With the classes \textit{CodeAttribute} and \textit{CodeIterator} from the Javassist API we can enter the bytecode sequence we created into existing ones. CodeAttribute represents the bytecode of a behavior and with CodeIterator we can iterate through that bytecode. So we first move the CodeIterator to the position (pc) in the bytecode where we want to enter our bytecode with \code{codeIterator.move(pc)} and than enter our sequence with \code{iter.insert(ourByteCode)}.
+
+There were again some challenges we had to get over, like getting the right data after an instrumentation and entering the additional code in the right position of the bytecode sequence. In (\subsecref{bytecodeAdaptationDifficulties}) we discuss about our problems we had.
+
+Once we have gone through the bytecode of a Java class, the modified class files are stored in the destination directory as mentioned in \secref{highLevelOverview}. After the instrumentation we add supplementary supporter classes to the project. The most important ones are \code{VariableTester}\textsuperscript{\ref{package1}} which tests whether a variable is null or not and \code{NullDisplayer}\textsuperscript{\ref{package1}} which matches data and prints the location of a null assignment when a \npe is thrown.
 
 \section{Challenges}
 \label{sec:challenges}
@@ -1136,7 +1151,7 @@ This chapter will provide some numbers to compare the execution time each projec
 
 \section{Execution Time Difference}
 \label{sec:execTimeDiff}
-How did we get the numbers? First of all, of course another executable jar file of the modified project has to be created. The steps to it are followings: load project, modify project, store modified project, build project that creates an executable jar file of the original project and one of the modified one. We then simulate the terminal with a Java class to run each jar thirty times and calculate the average. The next table lists each execution time and the average:
+JHotDraw already provides an Ant buildfile \textit{built.xml} that packs the project into an executable jar file. We modified the buildfile a little bit so that it also creates a jar file out of the modified project stored in the destination the user has chosen before. The steps to create an executable jar of the modified project are followings: load project, modify project, store modified project, build project that creates jar file of the original project and one of the modified one. We then simulate the terminal with a Java class to run the tests included in each jar file thirty times, each time it returns the execution time. At the end we calculate the average time for the original and the modified project. The the execution times are listed in \tabref{executionTime} and the average times are shown in \tabref{averageTime}.
 
 \begin{table}[H]
 \centering
@@ -1191,6 +1206,70 @@ How did we get the numbers? First of all, of course another executable jar file 
 \end{table}
 
 The runtime of the modified project takes 0.362734s longer than the original one, this means after adding additional code to the project results in approximately \textbf{5\%} overhead. This small overhead is quite negligible. But this numbers have to be interpreted with caution because the overhead is only measured on JHotDraw.
+
+\section{NullSpy demonstration on a real project}
+\label{sec:demonstration}
+We want to demonstrate how our project NullSpy helps the user to find the real culprit that leads to a \npe on a real project.
+
+\begin{Java}[caption={NullSpy demonstration example.}, label={code:demonstration}]
+public class Ideone {
+
+	public static List<Integer> numbers;
+	public static BufferedReader reader;
+
+	public static void main(String[] args) {
+		makeReader();
+		readNumbers();
+		closeReader();
+		System.out.println(numbers);
+	}
+
+	// Buggy, reader should not be null if there is no file to read
+	private static void makeReader() {
+		try {
+			reader = new BufferedReader(new FileReader(new File("file.txt")));
+		} catch (FileNotFoundException e) {
+			reader = null;
+		}
+	}
+
+	// Not really important.
+	private static List<Integer> readNumbers() {
+		try {
+			List<Integer> numbers = new ArrayList<Integer>();
+			String text = null;
+			while ((text = reader.readLine()) != null) {
+				numbers.add(Integer.parseInt(text));
+			}
+			return numbers;
+		} catch (Exception e) {
+			return new ArrayList<Integer>();
+		}
+	}
+
+	// NPE triggered here!
+	private static void closeReader() {
+		try {
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}
+\end{Java}
+
+\begin{figure}[H]
+\renewcommand\figurename{Box}
+	\begin{boxedminipage}{\textwidth}
+		\color{cadmiumred}
+		Field this.reader at line 18 is null: (\textcolor{blue}{Ideone.java: 18})\\
+		Exception in thread "main" \textcolor{blue}{java.lang.NullPointerException}\\
+		\tab at Ideone.closeReader(\textcolor{blue}{Ideone.java:39})\\
+		\tab at Ideone.main(\textcolor{blue}{Ideone.java:9})\\
+	\end{boxedminipage}
+	\caption{Stack trace of the demonstration example \coderef{demonstration}.}
+	\label{box:demonstrationStackTrace}
+\end{figure}
 
 \chapter {Conclusion and Future Work}
 \label{ch:conclusionFutureWork}

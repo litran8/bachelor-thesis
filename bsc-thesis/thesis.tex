@@ -403,7 +403,11 @@ public void itemStateChanged(ItemEvent e) {
 
 JAD is in no way a dependency of NullSpy but it was a big help during the implementation phase since after running NullSpy on a project only the modified bytecode is available. The use of JAD is for the sake of debugging NullSpy; to check whether the modification made by Javassist, \ie inserting source code, was successful. Another way to check the result for correctness is looking at bytecode itself but that would have taken a lot more effort and time.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                   NullSpy                                    %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{NullSpy}
+
 As explained in \charef{introduction}, this project is about providing the user with an additional link next to the common stack trace containing the \del{information/}location of \chg{where the null is assigned}{a \textit{null} assignment} to the variable that caused the \npe.
 
 In this chapter we give an overview of how we implemented NullSpy. We will also address the challenges (\secref{challenges}) we encountered during the implementation as well as the limitations of the tool (\secref{limitations}).
@@ -1168,8 +1172,12 @@ Another limitation of Javassist to mention is that it does not provide anything 
 
 The last limitation we want to discuss here is that unfortunately NullSpy is not capable to track the root of \npes that are originated in a null which was returned of a method call or in an element of a collection. Why those situations are not supported in NullSpy is because of the impossibility way to store them, e.g. imagine a nested ArrayList or a HashMap and a never ending return value of method invocations. So we lack something tangible to compare with each other, get a hit and read the location out of the hit (\secref{futureWork}).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                  Validation                                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Validation}
 \label{ch:validation}
+
 This chapter will provide some numbers to compare the execution time each project takes, the original and the instrumented one. To get the numbers we instrumented the example project JHotDraw.
 
 %===============================================================================
@@ -1304,8 +1312,12 @@ public class Ideone {
 	\label{box:demonstrationStackTrace}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                          Conclusion and Future work                          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter {Conclusion and Future Work}
 \label{ch:conclusionFutureWork}
+
 Now we have come so far to retrospect (step back and have a critical loot at) the entire project for summarizing what goals we have achieved so far and for proposing further aims that could be completed in the future. In a small section we also want to talk about the gained experience during the whole project.
 
 %===============================================================================

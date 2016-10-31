@@ -1213,7 +1213,15 @@ The runtime of the modified project takes 0.362734s longer than the original one
 
 \section{NullSpy demonstration on a real project}
 \label{sec:demonstration}
-We want to demonstrate how our project NullSpy helps the user to find the real culprit that leads to a \npe on a real project.
+We want to demonstrate on a real project how the project NullSpy helps the user to find the real culprit that leads to a \npe. The example shown in \coderef{demonstration} will be the real world project NullSpy supports.
+
+The \code{main()} method at line 6 invokes sequential three methods (\code{makeReader()}, \code{readNumbers()}, \code{closeReader}) and prints out the field \code{numbers}. In make \code{makeReager()} method it tries to read a file named ``file.txt''. If the example does not find that file, it will execute the catch-block and assign null to the field \code{reader} at line 18.
+
+Of course the call to \code{readNumbers()} at line 8 is not important for our demonstration, that is why we skip it.
+
+The \npe is treggered when the method \code{closeReader()} is called. There is an attempt at line 39 to close the reader, but because the field \code{reader} is assigned null the method call \code{close()} cause the \npe. Since only the \textit{IOException} is catched there the \npe goes up the call hierarchy until the \code{main()} method. As discussed in \subsecref{processFlow} in the catch-block of \code{main()} information is extracted from the \npe stack trace, multiple comparisons are performed and finally the link to the null assignment and the \npe stack trace are displayed.
+
+
 
 \begin{Java}[caption={NullSpy demonstration example.}, label={code:demonstration}]
 public class Ideone {

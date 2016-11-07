@@ -189,6 +189,7 @@
 	frame=single,
 	float,
 	aboveskip=20pt,
+	escapeinside={(@}{@)},
 	#1
 }}
 {}
@@ -225,7 +226,7 @@
 \newcommand{\coderef}[1]{\hyperref[{code:#1}]{Code~\ref*{code:#1}}}
 \newcommand{\bytecoderef}[1]{\hyperref[{bytecode:#1}]{Bytecode~\ref*{bytecode:#1}}}
 \newcommand{\algref}[1]{\hyperref[{alg:#1}]{Algorithm~\ref*{alg:#1}}}
-\newcommand{\boxref}[1]{\hyperref[{box:#1}]{Box~\ref*{box:#1}}}
+\newcommand{\stacktraceref}[1]{\hyperref[{stacktrace:#1}]{Stack trace~\ref*{stacktrace:#1}}}
 \newcommand{\listref}[1]{\hyperref[{list:#1}]{List~\ref*{list:#1}}}
 
 %----------------------------------------------------------------------------

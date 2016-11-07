@@ -92,10 +92,10 @@ A more complicated way a \npe can be triggered is when it involves variables wit
 
 The \code{open(...)} method invokes the methods \code{createIconkit()} at line 7 and \code{setTool(...)} at line 9. By calling \code{createIconkit()} at line 7 the field \code{fManager} is assigned \textbf{null}. The field is assigned \textbf{null} by performing the method \code{getIconkitManager()} at line 14, which just returns the \textbf{null} value at line 19.
 
-Afterwards, when the method \code{open(...)} calls \code{setTool()}, the attempt to call the method \code{getComponent()} on field \code{fManager} at line 24 causes the \npe. The resulting \npe stack trace is shown in \boxref{stackTrace}:
+Afterwards, when the method \code{open(...)} calls \code{setTool()}, the attempt to call the method \code{getComponent()} on field \code{fManager} at line 24 causes the \npe. The resulting \npe stack trace is shown in \stacktraceref{stackTrace}:
 
 \begin{figure}[H]
-\renewcommand\figurename{Box}
+\renewcommand\figurename{Stack trace}
 	\begin{boxedminipage}{\textwidth}
 		\color{cadmiumred}
 		Exception in thread "main" \textcolor{blue}{java.lang.NullPointerException}\newline
@@ -104,15 +104,15 @@ Afterwards, when the method \code{open(...)} calls \code{setTool()}, the attempt
 	 \tab ...
 	\end{boxedminipage}
 	\caption{Stack trace of a \npe.}
-	\label{box:stackTrace}
+	\label{stacktrace:stackTrace}
 \end{figure}
 
-In \boxref{stackTrace} we can see that the stack trace points only to the line 24, where \npe occured, and it does not track to the location where the variable is assigned the null value. We call this location the root of an exception. That means the Java developer has to debug his/her way to the exception root.
+In \stacktraceref{stackTrace} we can see that the stack trace points only to the line 24, where \npe occured, and it does not track to the location where the variable is assigned the null value. We call this location the root of an exception. That means the Java developer has to debug his/her way to the exception root.
 
-At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developer the exact location of the null assignment next to the ordinary stack trace, as shown in \boxref{stackTrace2}.
+At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developer the exact location of the null assignment next to the ordinary stack trace, as shown in \stacktraceref{stackTrace2}.
 
 \begin{figure}[H]
-\renewcommand\figurename{Box}
+\renewcommand\figurename{Stack trace}
 	\begin{boxedminipage}{\textwidth}
 		\color{cadmiumred}
 		Field this.fManager at line 14 is null: (\textcolor{blue}{DrawApplication.java: 14})\\
@@ -122,7 +122,7 @@ At this point we introduce our project named \textit{\textbf{NullSpy}} which sup
 	 \tab ...
 	\end{boxedminipage}
 	\caption{Stack trace of a \npe with NullSpy.}
-	\label{box:stackTrace2}
+	\label{stacktrace:stackTrace2}
 \end{figure}
 
 In this thesis we explain how the goal mentioned above is achieved and we also discuss the challenges, the limitations and performance impact of the approach.
@@ -157,77 +157,49 @@ public class HelloWorld {
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[numbers=left, caption={Bytecode of \coderef{helloWorld}.}, label={bytecode:helloWorld}, breaklines=true][H]
-// Compiled from HelloWorld.java (version 1.8 : 52.0, super bit)
-public class HelloWorld {
-
-	// Field descriptor #6 Ljava/lang/String;
-	private java.lang.String hello;
-
-  // Method descriptor #8 ()V
-  // Stack: 2, Locals: 1
-  public HelloWorld();
-     0  aload_0 [this]
-     1  invokespecial java.lang.Object() [10]
-     4  aload_0 [this]
-     5  ldc <String "Hello World!"> [12]
-     7  putfield HelloWorld.hello : java.lang.String [14]
-    10  return
-      Line numbers:
-        [pc: 0, line: 1]
-        [pc: 4, line: 2]
-        [pc: 10, line: 1]
-      Local variable table:
-        [pc: 0, pc: 11] local: this index: 0 type: HelloWorld
-
-  // Method descriptor #8 ()V
-  // Stack: 2, Locals: 2
-  public void say();
-     0  aload_0 [this]
-     1  getfield HelloWorld.hello : java.lang.String [14]
-     4  astore_1 [result]
-     5  getstatic java.lang.System.out : java.io.PrintStream [21]
-     8  aload_1 [result]
-     9  invokevirtual java.io.PrintStream.println(java.lang.String) : void [27]
-    12  return
-      Line numbers:
-        [pc: 0, line: 5]
-        [pc: 5, line: 6]
-        [pc: 12, line: 7]
-      Local variable table:
-        [pc: 0, pc: 13] local: this index: 0 type: HelloWorld
-        [pc: 5, pc: 13] local: result index: 1 type: java.lang.String
-}
+public void say();
+	 0  aload_0 [this]
+	 1  getfield HelloWorld.hello : java.lang.String [14]
+	 4  astore_1 [result]
+	 5  getstatic java.lang.System.out : java.io.PrintStream [21]
+	 8  aload_1 [result]
+	 9  invokevirtual java.io.PrintStream.println(java.lang.String) : void [27]
+	12  return
+		Line numbers:
+			[pc: 0, line: 5]
+			[pc: 5, line: 6]
+			[pc: 12, line: 7]
+		Local variable table:
+			[pc: 0, pc: 13] local: this index: 0 type: HelloWorld
+			[pc: 5, pc: 13] local: result index: 1 type: java.lang.String
 \end{JVMIS}
 
-We start with an easy \textit{HelloWorld} source code example (\coderef{helloWorld}). The code snippet in the example \coderef{helloWorld} contains the definition of the class \code{HelloWorld} with an instance field named \code{hello} and method \code{say()} which prints the value of the field. The bytecode of the method \code{say()} is represented in the \bytecoderef{helloWorld}. \ins{We omit the bytecode of the class and field definition since it is not relevant for our example.}
+We start with an easy \textit{HelloWorld} source code example (\coderef{helloWorld}). The code snippet in the example \coderef{helloWorld} contains the definition of the class \code{HelloWorld} with an instance field named \code{hello} and method \code{say()} which prints the value of the field. The bytecode of the method \code{say()} is represented in the \bytecoderef{helloWorld}. We omit the bytecode of the class and field definition since it is not relevant for our example.
 
 \nm{Omit the first part of the bytecode, \ie everything before line 25, reset the counter of the line to 0 instead of 25, and update the text correspondingly.}
 
 The green words in \bytecoderef{helloWorld} are the string representations of Java bytecode instructions. We will also use the term \textbf{opcode} when referring to individual instructions. Multiple opcode instructions are referred to as \textbf{bytecode}.
 
-On the left-side of these instructions we see the \textbf{program counter} (pc) which is a processor register that contains the address (location) of the instruction being executed at the current time. It is also called an \textbf{instruction pointer}. We use these program counters, or pc-s also as an index in the bytecode. The instructions from pc 0 to pc 4 (lines 26-28) in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textbf{pc-interval} to describe a set of instructions that represents a Java expression. This term will play an important role further in the thesis. We use the syntax \textbf{``<,>''} to represent \chg{the}{an} pc-interval\chg{. For the example}{, \eg} just mentioned \del{the} pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts and the latter one where it ends, both inclusive.
+On the left-side of these instructions we see the \textbf{program counter} (pc) which is a processor register that contains the address (location) of the instruction being executed at the current time. It is also called an \textbf{instruction pointer}. We use these program counters, or pc-s also as an index in the bytecode. The instructions from pc 0 to pc 4 (lines 2-4) in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textbf{pc-interval} to describe a set of instructions that represents a Java expression. This term will play an important role further in the thesis. We use the syntax \textbf{``<,>''} to represent an pc-interval, \eg just mentioned pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts and the latter one where it ends, both inclusive.
 
-If the opcode represents the read from a variable, on its the right side there is the information about the name and type of the variable, \eg line 27. 
-In case of an invocation opcode, it shows the behavior/method name, the parameters it takes and the return type, \eg line 31. In \secref{lowLevelOverview} we will see how this information is used.
+If the opcode represents the read from a variable, on its right side there is the information about the name and type of the variable, \eg line 3. 
+In case of an invocation opcode, it shows the behavior/method name, the parameters it takes and the return type, \eg line 7. In \secref{lowLevelOverview} we will see how this information is used.
 
-Each method\ins{ bytecode representation} holds a \textbf{line number table} and a \textbf{local variable table} which are listed underneath the instructions of the method (lines 33-39 in \bytecoderef{helloWorld}). 
+Each method bytecode representation holds a \textbf{line number table} and a \textbf{local variable table} which are listed underneath the instructions of the method (lines 9-15 in \bytecoderef{helloWorld}). 
 
-\chg{This}{The} line number table\footnote{In the jargon of Javasist, this is also called the line number attribute.} maps the pc to the source code line of the method \del{\code{say()} ( line 25 to 39)}. 
-The line number table in \bytecoderef{helloWorld} is represented between the lines 33 and 36: source code line 5 starts with the pc 0 (represented by the line 34), source code line 6 starts with the pc 5 (in line 35) \etc. This\ins{ mapping} does not apply to cases where \chg{an expression}{a statement} is separated into multiple line\ins{s}. In \subsecref{methodReceiverDifficulties} we explain further details about the line number table in a split Java statement case.
+The line number table\footnote{In the jargon of Javasist, this is also called the line number attribute.} maps the pc to the source code line of the method. The line number table in \bytecoderef{helloWorld} is represented between the lines 9 and 12: source code line 5 starts with the pc 0 (represented by the line 10), source code line 6 starts with the pc 5 (in line 11) \etc. This mapping does not apply to cases where a statement is separated into multiple lines. In \subsecref{methodReceiverDifficulties} we explain further details about the line number table in a split Java statement case.
 
-\nm{@Lina: rename box to stack trace}
-
-If we look back, to the \boxref{stackTrace}, we can see the numbers at the end of each line. They indicate the lines of code, which are the part of the call-chain that led to \npe. The information the line number table holds is used to recover the information about the actual point in the code where the null was assigned to a reference. In \secref{lowLevelOverview} we will discuss how this is done.
+If we look back, to the \stacktraceref{stackTrace}, we can see the numbers at the end of each line. They indicate the lines of code, which are the part of the call-chain that led to \npe. The information the line number table holds is used to recover the information about the actual point in the code where the null was assigned to a reference. In \secref{lowLevelOverview} we will discuss how this is done.
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot 2 (line 4\&7).}, label={bytecode:localVarTableDuplicatedSlot1}, breaklines=true]
 Local variable table:
  [pc: 0, pc: 95] local: this index: 0 type: org.jhotdraw.samples.javadraw.JavaDrawViewer
  [pc: 0, pc: 95] local: filename index: 1 type: java.lang.String
- [pc: 13, pc: 40] local: url index: 2 type: java.net.URL
+ [pc: 13, pc: 40] local: url index: (@\textbf{2}@) type: java.net.URL
  [pc: 18, pc: 40] local: stream index: 3 type: java.io.InputStream
  [pc: 28, pc: 40] local: reader index: 4 type: org.jhotdraw.util.StorableInput
- [pc: 44, pc: 94] local: e index: \textbf{2} type: java.io.IOException
+ [pc: 44, pc: 94] local: e index: (@\textbf{2}@) type: java.io.IOException
 \end{JVMIS}
 
 \renewcommand\lstlistingname{Code}
@@ -247,8 +219,7 @@ private void loadDrawing(String filename) {
 	}
 \end{Java}
 
-As mentioned before, the bytecode of each method also holds a local variable table which is an array of the information about local variables (lines 37-39 in \bytecoderef{helloWorld}). This table has the information about the \textit{this} reference (if the method is an instance method or a constructor), about method parameters and method local variables, respectively. \ins{Example of the \textit{this} reference representation can be seen in the line 38.}
-Each line of this table represents one variable. It has
+As mentioned before, the bytecode of each method also holds a local variable table which is an array of the information about local variables (lines 13-15 in \bytecoderef{helloWorld}). This table has the information about the \textit{this} reference (if the method is an instance method or a constructor), about method parameters and method local variables, respectively. Example of the \textit{this} reference representation can be seen in the line 14. Each line of this table represents one variable. It has
 
 \begin{enumerate}
 	\item the pc-s which represent the lexical scope of the variable, \ie the pc-s in between the square brackets 	
@@ -257,20 +228,17 @@ Each line of this table represents one variable. It has
 	\item the type of the variable.
 \end{enumerate}
 
-\ins{In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is class \code{HelloWorld}.}
+In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is class \code{HelloWorld}.
 
-(\eg \bytecoderef{localVarTableDuplicatedSlot1}) 
+The indexes of the the local variable table are important because we use them to get the right local variable we are interested in. How we make use of the indexes to find the aim variable is explained in \subsecref{variable}.
 
-\ins{Let us now look at more complicated example of the local variable table} (\bytecoderef{localVarTableDuplicatedSlot1}). 
-Local variables do have a limited lifespan. 
-Let us have a look at the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{localVarTableDuplicatedSlot1}.
-This method consists of a \code{try-catch} block. We see that the variable \code{url} (declared at line 4) is only accessible within the \code{try\{\}} block which starts from pc 0 and ends with pc 40.
+Let us now look at a more complicated example of the local variable table (\bytecoderef{localVarTableDuplicatedSlot1}). Local variables do have a limited lifespan. Let us have a look at the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{localVarTableDuplicatedSlot1}.
+This method consists of a \code{try-catch} block. We see that the variable \code{url} (declared at line 3 in \coderef{localVarTableDuplicatedSlot1SourceCode} and line 4 in \bytecoderef{localVarTableDuplicatedSlot1}) is only accessible within the \code{try\{\}} block which starts from pc 0 and ends with pc 40.
 This local variable is stored at the index 2 in the local variable table in \bytecoderef{localVarTableDuplicatedSlot1}, since the first two indexes occupy \textit{this} reference and the method parameter. Variable \code{url} is created at the pc 13 and is only accessible until pc 40 (excluded). 
 As soon as the lifespan of a local variable ends, the slot can be reused by the next instantiated local variable. 
 So, onward the pc 40, slot 2 is free again. 
 The freed slot can be immediately used by the next declared variable, which is the variable \code{e} in our example. 
 Looking at line 7 in \bytecoderef{localVarTableDuplicatedSlot1} we see that \code{e} also has the slot number 2. This is why we can find local variable tables that contain multiple entries with the same local variable slot.
-\nm{@Lina: Why is this relevant?}
 
 %===============================================================================
 \section{Javassist}
@@ -1306,7 +1274,7 @@ The \code{main()} method at line 6 invokes sequential three methods (\code{makeR
 
 Of course the call to \code{readNumbers()} at line 8 is not important for our demonstration, that is why we skip it.
 
-The \npe is triggered when the method \code{closeReader()} is called. There is an attempt at line 39 to close the reader. But because the field \code{reader} is assigned null, the method call \code{close()} causes the \npe. Since only the \textit{IOException} is caught there the \npe goes up the call hierarchy until the \code{main()} method. As discussed in \subsecref{processFlow}, in the catch-block of \code{main()} we extract information from the \npe stack trace, multiple comparisons are performed and finally the link to the null assignment and the \npe stack trace are displayed. The resulting stack trace is presented in \boxref{demonstrationStackTrace}.
+The \npe is triggered when the method \code{closeReader()} is called. There is an attempt at line 39 to close the reader. But because the field \code{reader} is assigned null, the method call \code{close()} causes the \npe. Since only the \textit{IOException} is caught there the \npe goes up the call hierarchy until the \code{main()} method. As discussed in \subsecref{processFlow}, in the catch-block of \code{main()} we extract information from the \npe stack trace, multiple comparisons are performed and finally the link to the null assignment and the \npe stack trace are displayed. The resulting stack trace is presented in \stacktraceref{demonstrationStackTrace}.
 
 \begin{Java}[caption={NullSpy demonstration example.}, label={code:demonstration}]
 public class Ideone {
@@ -1356,7 +1324,7 @@ public class Ideone {
 \end{Java}
 
 \begin{figure}[H]
-\renewcommand\figurename{Box}
+\renewcommand\figurename{Stack trace}
 	\begin{boxedminipage}{\textwidth}
 		\color{cadmiumred}
 		Field this.reader at line 18 is null: (\textcolor{blue}{Ideone.java: 18})\\
@@ -1365,7 +1333,7 @@ public class Ideone {
 		\tab at Ideone.main(\textcolor{blue}{Ideone.java:9})
 	\end{boxedminipage}
 	\caption{Stack trace of the demonstration example \coderef{demonstration}.}
-	\label{box:demonstrationStackTrace}
+	\label{stacktrace:demonstrationStackTrace}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

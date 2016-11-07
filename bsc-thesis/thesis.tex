@@ -450,7 +450,6 @@ Loading is done by traversing through all the subfolders of the folder whose loc
 In this section we will focus on the bytecode modification. \figref{modificationModules} shows that the modification part of NullSpy contains three different modules. Each class file of the loaded project will be run through the first two modules and the last module is only added once to the modified project at the end of the instrumentation.
 
 After class loading, we first extract data from the class bytecode, then instrument it and at the end we add the run-time supporter module to the project.
-\nm{This paragraph is not exactly true. You do not add run-time support every time you load and instrument a class. You add it just once, at the end, right? That said, every class actually goes through two and three phases?} \lt{better?}
 
 \begin{figure}[H]
 \centering
@@ -468,14 +467,14 @@ In this short and rough overview of the entire process we explain the reason why
 
 From the stack trace of a \npe we can obtain three kind of information, namely the class name, method name and the line number of where the \npe happened. But the aim of NullSpy is to reveal the location of the null assignment to the variable which caused the \npe. To achieve this goal we need to take information from the bytecode about \textbf{\mrs} and \textbf{null assignments}. Why we need to extract data about \mrs and null assignment is explained right away. 
 
-As soon as a \npe is thrown, we sequentially compare data to get the right location of the null assignment. The comparison-sequence looks as follows:
+As soon as a \npe is thrown, we sequentially compare data to get the right location of the null assignment. The comparison-sequence looks as follows (we use the symbol ``\textbf{$\|$}'' for the comparison):
 
 \begin{enumerate}
-	\item \npe data \textbf{$\|$} \mrs data $\rightarrow$ result\_1
-	\item result\_1 \textbf{$\|$} null assignment data $\rightarrow$ \textbf{result\_2}
+	\item \npe data \textbf{$\|$} \mrs data $\rightarrow$ \mr-identifier
+	\item \mr-identifier \textbf{$\|$} null assignment data $\rightarrow$ \textbf{result}
 \end{enumerate}
 
-Result\_2 contains the data needed to create the link to the null assignment.
+Result contains the data needed to create the link to the null assignment.
 
 The first step in the modification part is to gather information about the \mrs. We use the term \textbf{\mr} to refer to variables on which methods are invoked, or whose fields are accessed. What kind of information we store about the \mrs is listed in \subsecref{methodReceiver}. The reason why we need to store information about the \mrs is because they are candidates that could trigger a \npe. To find the location where the \mr is assigned null we form a unique identifier out of the gathered information. With the identifier we are able to find the null assignment entry that holds all information about where the variable is assigned null. The most important information is the line number of where the variable is assigned null. With that number we can build the link which takes the user directly to the location where the null assignment took place.
 
@@ -499,16 +498,16 @@ The second step is to collect information about the null assignments. After ever
 %
 %Right after the assignment and the data collection \nm{You are here confusing two things: right after the assignment (you refer to place in the code?) and right after data collection (you here refer to the time - when?) }NullSpy inserts the bytecode that represents a method call which is managed by the \textit{run time supporter} package. This method takes those extracted information as parameters and checks whether the variable is assigned null. \nm{Ok, I suppose it was actually ``an object" at the beginning of the paragraph?} \nm{When does it check whether the variable is null? At static time or at run time?} \chg{If it is assigned null}{if this is the case,} the information about the variable is stored.
 
-At the end of the bytecode modification part we wrap the \code{main()} method into a \textit{try-catch-block}. In the \textit{catch-block} those three information mentioned before about the place in code where \npe happened (class name, method name, line number) are extracted from the \npe stack trace. This information is passed on to a static method of the run time supporter package. The method compares the parameters with the stored information about the \mrs. \nm{It feels like something is missing. NullSpy compares class name, method name and LOC of the place where \npe happened with method receivers? Don't you need also the information about the variables used in that line of code so that you can compare this with the stored data about method receivers?} If there is a match regarding the comparison, NullSpy creates a variable identification with the information about the matched \mr. With this id another comparison is performed. This time NullSpy compares the id with the information stored about the null assignment. The result will be the stored entry about the null assignment of the variable that caused the \npe. From the entry we extract the line number of the assignment and create the additional link that reveals the location of the null assignment. This link of course is then added to the common \npe stack trace.
+At the end of the bytecode modification part we wrap the \code{main()} method into a \textit{try-catch-block}. In the \textit{catch-block} the information about the location where the \npe happened (class name, method name, line number) are extracted from the \npe stack trace. This information is passed on to a static method of the run time supporter package. The method compares the parameters with the stored information about the \mrs. If there is a match regarding the comparison, NullSpy creates a variable identifier with the information about the matched \mr. With this identifier another comparison is performed. This time NullSpy compares the identifier with the information stored about the null assignment. The result will be the stored entry about the null assignment of the variable that caused the \npe. From the entry we extract the line number of the assignment and create the additional link that reveals the location of the null assignment. This link of course is then added to the common \npe stack trace.
 
-Finally we add the \textit{run time supporter} module to the modified project.
+Finally we add the \textit{run-time supporter} module to the modified project.
 
-The way how we extract and store all those data are discussed in the following sections. \nm{These last three paragraphs are really confusing...}
+The way how we extract and store all those data are discussed in the following sections.
 
 %-------------------------------------------------------------------------------
 \subsection{\MR Data Collection}
 \label{subsec:methodReceiver}
-As mentioned in \subsecref{processFlow}, a big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr \nm{My suggestion is to make this name ``method receiver" in italic for example, just to distinguish it as a term every time you mention it. What do you think?}. A small synthetic example (\coderef{methodReceiverExample}) makes is easier to understand. \Mrs in \coderef{methodReceiverExample} are the variables \code{var} at line 9, \code{field} at line 10 and \code{b.foo} at line 11.
+As mentioned in \subsecref{processFlow}, a big part of NullSpy is extracting information from bytecode. One of the item we are interested to get information about is the \mr. A small synthetic example (\coderef{methodReceiverExample}) makes is easier to understand. \Mrs in \coderef{methodReceiverExample} are the variables \code{var} at line 9, \code{field} at line 10 and \code{b.foo} at line 11.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={\Mr example.}, label={code:methodReceiverExample}]

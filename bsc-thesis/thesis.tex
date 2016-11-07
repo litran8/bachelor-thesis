@@ -485,7 +485,7 @@ The first step in the modification part is to gather information about the \mrs.
 %\nm{Do not give example of what are you storing; say precisely what kind of information are you storing.}
 %\nm{Overall, you use too much sentences like ``we gather data", or ``we gather information". Always be precise: what kind of information.}
 
-The second step is to collect information about the null assignments. After every non-primitive variable assignment we collect information about it and insert some bytecode right after the bytecode of the assignment. The bytecode we insert represents a static method of ours which is managed by the \textit{run time supporter} package. The collected information about the variable is passed as parameters to our static method. This method checks whether the variable is assigned null. If this is the case we store the information about the variable in a HashMap.
+The second step is to collect information about the null assignments. After every non-primitive variable assignment we collect information about it and insert some bytecode right after the bytecode of the assignment. The bytecode we insert represents a static method of ours which is managed by the \textbf{run-time supporter} package. The collected information about the variable is passed as parameters to our static method. This method checks whether the variable is assigned null. If this is the case we store the information about the variable in a HashMap.
 
 %If a variable is assigned an object, we gather data about that variable from the bytecode.\\
 %\nm{Here for example, you can actually leave the sentence like this ``we gather data" since you already explained in the previous paragraph exactly what kind of information do you store.} 

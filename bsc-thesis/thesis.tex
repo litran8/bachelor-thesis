@@ -671,7 +671,7 @@ When iterating through the bytecode and finding the instruction \textit{``astore
         [pc: 94, line: 68]
 \end{JVMIS}
 
-With the line number table (shown in \bytecoderef{lineNrTable}) and the pc we can obtain the right line number. In the paragraph before the pc was 45, so the local variable assignment starts at line 64. The line number is essential for constructing the link which will be added to the common exception stack trace.
+With the line number table (shown in \bytecoderef{lineNrTable}) and the pc we can obtain the right line number. In the paragraph before we took a variable with pc 45 as an example, so the local variable assignment starts at line 64 according to the line number table. The line number is essential for constructing the link which will be added to the common exception stack trace.
 
 The other information we need in addition to the line number are listed in \listref{localVarInfo}.
 

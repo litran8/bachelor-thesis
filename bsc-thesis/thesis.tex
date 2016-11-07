@@ -88,6 +88,8 @@ public class DrawApplication {
 }
 \end{Java}
 
+\nm{@BS: Do you agree to skip the first example, as it is very easy and just go straight to the second one?}
+
 A more complicated way a \npe can be triggered is when it involves variables with larger scopes such as class members. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation. \ins{This code snippet defines the class named \code{DrawApplication} which has the field \code{fManager} (declared at line 3). This class contains four relevant methods: \code{open(...)}, \code{createIconkit()}, \code{getIconkitManager()} and \code{setTool(...)}.}
 
 The \code{open()} method \chg{calls}{invokes} the methods \code{createIconkit()} at line 7 and \code{setTool()} at line 9.

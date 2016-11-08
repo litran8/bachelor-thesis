@@ -894,7 +894,7 @@ The Object, in our case a field, is added by the method \code{addAload(...)} at 
 
 Important integers like the line number and pcs are added to the bytecode sequence from line 30 to 33. Finally all classes that the check-method takes as parameter are prepared at lines 35 to 38 and the instruction \textit{``invokestatic''} at line 40 is added to the bytecode. If we add a method invocation to the bytecode we have to specify what kind of parameter the invocation takes. For this reason we prepared the classes from line 35 to 38.
 
-With the classes \textit{CodeAttribute} and \textit{CodeIterator} from the Javassist API we can enter the bytecode sequence we created into existing ones. CodeAttribute represents the bytecode of a behavior and with CodeIterator we can iterate through that bytecode. So we first move the CodeIterator to the position (pc) in the bytecode where we want to enter our bytecode with \code{codeIterator.move(pc)} and than enter our sequence with \code{codeIterator.insert(ourByteCode)}.
+With the classes \textit{CodeAttribute} and \textit{CodeIterator} from the Javassist API we can enter the bytecode sequence we created into existing ones. CodeAttribute represents the bytecode of a behavior and with CodeIterator we can iterate through that bytecode. We obtain a CodeIterator object from the CodeAttribute. So we first move the CodeIterator to the position (pc) in the bytecode where we want to enter our bytecode with \code{codeIterator.move(pc)} and than enter our sequence with \code{codeIterator.insert(ourByteCode)}.
 
 There were again some challenges we had to get over, like getting the right data after an instrumentation or inserting the additional bytecode at the right position in the existing bytecode sequence. In (\subsecref{bytecodeAdaptationDifficulties}) we discuss more about our problems we had.
 
@@ -904,12 +904,12 @@ Once we have gone through the bytecode of all class files, the modified class fi
 \section{Challenges}
 \label{sec:challenges}
 
-In this section we could like to give present some of the difficulties which occurred during the implementation of NullSpy.
+In this section we would like to present some of the difficulties we encountered during the implementation of NullSpy.
 
 %-------------------------------------------------------------------------------
 \subsection{Obtaining \MR Data Difficulties}
 \label{subsec:methodReceiverDifficulties}
-Aforementioned in \subsecref{methodReceiver} (\textit{\MR Data Collection}) we were encountered with a persistent problem, namely getting the pc-interval of the \mr when the interval covers multiple lines in source code. In many development environment the written code can be formatted automatically and as well manually. See following figures:
+Aforementioned in \subsecref{methodReceiver} we were encountered with a persistent problem, namely getting the pc-interval of the \mr when the interval covers multiple lines in source code. In many development environment the written code can be formatted automatically and as well manually. 
 
 \begin{Java}[caption={Method invocation split in two lines example.}, label={code:4-1}, firstnumber=31]
 Image image = Iconkit.instance().registerAndLoadImage(
@@ -933,7 +933,7 @@ Image image = Iconkit.instance().registerAndLoadImage(
 [pc: 11, line: 31]
 \end{JVMIS}
 
-Figure shows a normal method invocation which is split into two lines in source code. This cannot be figured out by just looking at the bytecode therefore the line number attribute has to be consulted too. There is no \mr in the figure because the \mr would contain a method invocation itself, what is not supported in NullSpy. Another \mrs NullSpy does not support are elements of collections due to its complex structures that can be stored in the collections.
+Let us now look at an example that contains the situation where a method invocation is split into tow lines. The example is shown in \coderef{code:4-1}. The method invocation \code{registerAndLoadImage(...)} is formatted the way where it does not have enough space in one line. This cannot be figured out by just looking at the bytecode (\bytecoderef{bytecode:4-2}) therefore the line number attribute (\bytecoderef{bytecode:4-3}) has to be consulted too. \lt{vorwegnehmen??} There is no \mr in \coderef{code:4-1} because the \mr would contain a method invocation itself. NullSpy does not support \mrs which are return objects of method invocations. To enable to cover such situations can be a topic  what is not supported in NullSpy. Another \mrs NullSpy does not support are elements of collections due to its complex structures that can be stored in the collections.
 
 Only looking at bytecode is not enough, so we are looking at the line number attribute. Line number \textit{31} (\bytecoderef{4-3}) is listed twice, this indicates that the method invocation is split into multiple line in source code. The former declares the starting point of the interval and the latter the end of it. How to get the pc-interval will be presented shortly. But first take a look at more examples:
 

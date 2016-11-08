@@ -916,26 +916,26 @@ Image image = Iconkit.instance().registerAndLoadImage(
 	(Component)view, imageName);
 \end{Java}
 
-\renewcommand\lstlistingname{Bytecode}
-\begin{JVMIS}[caption={Bytecode to \coderef{4-1}.}, label={bytecode:4-2}, breaklines=true]
- 0  invokestatic org.jhotdraw.util.Iconkit.instance() : org.jhotdraw.util.Iconkit [22]
- 3  aload_1 [view]
- 4  checkcast java.awt.Component [28]
- 7  aload_0 [this]
- 8  getfield org.jhotdraw.samples.minimap.MiniMapDesktop.imageName : java.lang.String [14]
-11  invokevirtual org.jhotdraw.util.Iconkit.registerAndLoadImage(java.awt.Component, java.lang.String) : java.awt.Image [30]
-14  astore_2 [image]
-\end{JVMIS}
+%\renewcommand\lstlistingname{Bytecode}
+%\begin{JVMIS}[caption={Bytecode to \coderef{4-1}.}, label={bytecode:4-2}, breaklines=true]
+ %0  invokestatic org.jhotdraw.util.Iconkit.instance() : org.jhotdraw.util.Iconkit [22]
+ %3  aload_1 [view]
+ %4  checkcast java.awt.Component [28]
+ %7  aload_0 [this]
+ %8  getfield org.jhotdraw.samples.minimap.MiniMapDesktop.imageName : java.lang.String [14]
+%11  invokevirtual org.jhotdraw.util.Iconkit.registerAndLoadImage(java.awt.Component, java.lang.String) : java.awt.Image [30]
+%14  astore_2 [image]
+%\end{JVMIS}
 
-\begin{JVMIS}[caption={Line number table/interval to \coderef{4-1}.}, label={bytecode:4-3}, breaklines=true]
+\begin{JVMIS}[caption={Line number table/interval to \coderef{4-1}.}, label={bytecode:4-3}, breaklines=true, firstnumber=1]
 [pc: 0, line: 31]
 [pc: 3, line: 32]
 [pc: 11, line: 31]
 \end{JVMIS}
 
-Let us now look at an example that contains the situation where a method invocation is split into tow lines. The example is shown in \coderef{code:4-1}. The method invocation \code{registerAndLoadImage(...)} is formatted the way where it does not have enough space in one line. This cannot be figured out by just looking at the bytecode (\bytecoderef{bytecode:4-2}) therefore the line number attribute (\bytecoderef{bytecode:4-3}) has to be consulted too. \lt{vorwegnehmen??} There is no \mr in \coderef{code:4-1} because the \mr would contain a method invocation itself. NullSpy does not support \mrs which are return objects of method invocations. To enable to cover such situations can be a topic  what is not supported in NullSpy. Another \mrs NullSpy does not support are elements of collections due to its complex structures that can be stored in the collections.
+Let us now look at an example that contains the situation where a method invocation is split into tow lines. The example is shown in \coderef{4-1}. The method invocation \code{registerAndLoadImage(...)} is formatted the way where it does not have enough space in one line. This cannot be figured out by just looking at the bytecode, therefore the line number attribute (\bytecoderef{4-3}) has to be consulted. 
 
-Only looking at bytecode is not enough, so we are looking at the line number attribute. Line number \textit{31} (\bytecoderef{4-3}) is listed twice, this indicates that the method invocation is split into multiple line in source code. The former declares the starting point of the interval and the latter the end of it. How to get the pc-interval will be presented shortly. But first take a look at more examples:
+Beforehand we have to say that there is no \mr in \coderef{4-1} because the \mr would contain a method invocation itself. NullSpy does not support \mrs which are return objects of method invocations. To enable the coverage of such situations can be a topic of future works. Other \mrs NullSpy does not support are elements of collections due to its complex structures that can be stored in the collections.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Alternating line number example.}, label={code:3-1}, firstnumber=127]
@@ -943,44 +943,32 @@ Connector oldConnector = ((ChangeConnectionHandle.UndoActivity)
 			getUndoActivity()).getOldConnector();
 \end{Java}
 
-\renewcommand\lstlistingname{Bytecode}
-\begin{JVMIS}[caption={Bytecode to \coderef{3-1}.}, label={code:3-2}, breaklines=true]
-47  aload_0 [this]
-48  invokevirtual org.jhotdraw.standard.ChangeConnectionHandle.getUndoActivity() : org.jhotdraw.util.Undoable [72]
-51  checkcast org.jhotdraw.standard.ChangeConnectionHandle$UndoActivity [76]
-54  invokevirtual org.jhotdraw.standard.ChangeConnectionHandle$UndoActivity.getOldConnector() : org.jhotdraw.framework.Connector [142]
-57  astore 7 [oldConnector]
-\end{JVMIS}
+%\renewcommand\lstlistingname{Bytecode}
+%\begin{JVMIS}[caption={Bytecode to \coderef{3-1}.}, label={code:3-2}, breaklines=true]
+%47  aload_0 [this]
+%48  invokevirtual org.jhotdraw.standard.ChangeConnectionHandle.getUndoActivity() : org.jhotdraw.util.Undoable [72]
+%51  checkcast org.jhotdraw.standard.ChangeConnectionHandle$UndoActivity [76]
+%54  invokevirtual org.jhotdraw.standard.ChangeConnectionHandle$UndoActivity.getOldConnector() : org.jhotdraw.framework.Connector [142]
+%57  astore 7 [oldConnector]
+%\end{JVMIS}
 
-\begin{JVMIS}[caption={Line number table/interval to \coderef{3-1}.}, label={code:3-3}, breaklines=true]
+\begin{JVMIS}[caption={Line number table/interval to \coderef{3-1}.}, label={bytecode:3-3}, breaklines=true, numbers=left]
 [pc: 47, line: 128]
 [pc: 51, line: 127]
 [pc: 54, line: 128]
 [pc: 57, line: 127]
 \end{JVMIS}
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=\linewidth]{multipleLine/pic3-1}
-%\caption{Alternating line number example.}
-%  \label{fig:pic3-1}
-%\end{figure}
+Only looking at bytecode is not enough, so we are looking at the line number attribute. Line number \textit{31} (\bytecoderef{4-3}) is listed twice, this indicates that the method invocation is split into multiple lines in source code. The former declares the starting point of the interval and the latter the end of it. Line 32 indicates the starting point of parameter loading. How we get the pc-interval will be presented shortly. But before that we take a look at more examples.
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=\linewidth]{multipleLine/pic3-2}
-%\caption{Bytecode to \figref{pic3-1}.}
-%  \label{fig:pic3-2}
-%\end{figure}
+Special about the example shown in \coderef{3-1} is that the multiple line interval does not start with the smaller line number and end with the bigger one, apart from that it is alternated stored in the line number attribute shown in \bytecoderef{3-3}. The line number table indicates followings:
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=0.3\linewidth]{multipleLine/pic3-3}
-%\caption{Line number table/interval \figref{pic3-1}.}
-%  \label{fig:pic3-3}
-%\end{figure}
-
-Special about this example is that the multiple line interval does not start with the smaller line number and end with the bigger one, apart from that it is alternated stored in the line number attribute.
+\begin{enumerate}
+	\item line 1: the method invocation \code{getUndoActivity()}
+	\item line 2: the cast to \code{ChangeConnectionsHandle.UndoActivity}
+	\item line 3: the second method invocation \code{getOldConnector()}
+	\item line 4: the assignment to the variable \code{oldConnector}
+\end{enumerate}
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Nested interval example.}, label={code:2-1}, firstnumber=149]
@@ -995,29 +983,29 @@ for (int i = 0; i < ColorMap.size(); i++)
 	);
 \end{Java}
 
-\renewcommand\lstlistingname{Bytecode}
-\begin{JVMIS}[caption={Bytecode to \coderef{2-1}.}, label={code:2-2}, breaklines=true]
- 8  iconst_0
- 9  istore_3 [i]
-10  goto 37
-13  aload_2 [choice]
-14  new org.jhotdraw.standard.ChangeAttributeCommand [213]
-17  dup
-18  iload_3 [i]
-19  invokestatic org.jhotdraw.util.ColorMap.name(int) : java.lang.String [246]
-22  aload_1 [attribute]
-23  iload_3 [i]
-24  invokestatic org.jhotdraw.util.ColorMap.color(int) : java.awt.Color [252]
-27  aload_0 [this]
-28  invokespecial org.jhotdraw.standard.ChangeAttributeCommand(java.lang.String, org.jhotdraw.framework.FigureAttributeConstant, java.lang.Object, org.jhotdraw.framework.DrawingEditor) [222]
-31  invokevirtual org.jhotdraw.util.CommandChoice.addItem(org.jhotdraw.util.Command) : void [225]
-34  iinc 3 1 [i]
-37  iload_3 [i]
-38  invokestatic org.jhotdraw.util.ColorMap.size() : int [256]
-41  if_icmplt 13
-\end{JVMIS}
+%\renewcommand\lstlistingname{Bytecode}
+%\begin{JVMIS}[caption={Bytecode to \coderef{2-1}.}, label={code:2-2}, breaklines=true]
+ %8  iconst_0
+ %9  istore_3 [i]
+%10  goto 37
+%13  aload_2 [choice]
+%14  new org.jhotdraw.standard.ChangeAttributeCommand [213]
+%17  dup
+%18  iload_3 [i]
+%19  invokestatic org.jhotdraw.util.ColorMap.name(int) : java.lang.String [246]
+%22  aload_1 [attribute]
+%23  iload_3 [i]
+%24  invokestatic org.jhotdraw.util.ColorMap.color(int) : java.awt.Color [252]
+%27  aload_0 [this]
+%28  invokespecial org.jhotdraw.standard.ChangeAttributeCommand(java.lang.String, org.jhotdraw.framework.FigureAttributeConstant, java.lang.Object, org.jhotdraw.framework.DrawingEditor) [222]
+%31  invokevirtual org.jhotdraw.util.CommandChoice.addItem(org.jhotdraw.util.Command) : void [225]
+%34  iinc 3 1 [i]
+%37  iload_3 [i]
+%38  invokestatic org.jhotdraw.util.ColorMap.size() : int [256]
+%41  if_icmplt 13
+%\end{JVMIS}
 
-\begin{JVMIS}[caption={Line number table/interval to \coderef{2-1}.}, label={code:2-3}, breaklines=true]
+\begin{JVMIS}[numbers=left, caption={Line number table/interval to \coderef{2-1}.}, label={bytecode:2-3}, breaklines=true]
 [pc: 8, line: 149]
 [pc: 13, line: 150]
 [pc: 14, line: 151]
@@ -1030,29 +1018,19 @@ for (int i = 0; i < ColorMap.size(); i++)
 [pc: 34, line: 149]
 \end{JVMIS}
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=\linewidth]{multipleLine/pic2-1}
-%\caption{Nested interval example.}
-%  \label{fig:pic2-1}
-%\end{figure}
+Neither in bytecode nor in line number attribute we can extract the exact interval of method invocations. Another interesting thing is that in the line number table (\bytecoderef{2-3}) of the example shown in \coderef{2-1} shows multiple corresponding line numbers, \eg lines 1&10 or lines 2&9. Again, we examine the line number table the same way as in the previous example. 
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=\linewidth]{multipleLine/pic2-2}
-%\caption{Bytecode to \figref{pic2-1}.}
-%  \label{fig:pic2-2}
-%\end{figure}
+\begin{enumerate}
+	\item line 1: starting point of the for-loop
+	\item line 2: starting point of the method invocation \code{addItem(...)}
+	\item line 3: \code{new ChangeAttributeCommand(...)} starting point\\or parameter loading 
+	\item line 4-7: parameter loading 
+	\item line 8: actual object creation
+	\item line 9: actual call to \code{addItem(...)}
+	\item line 10: for-loop incrementation or its ending
+\end{enumerate}
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=0.3\linewidth]{multipleLine/pic2-3}
-%\caption{Line number table/interval to \figref{pic2-1}.}
-%  \label{fig:pic2-3}
-%\end{figure}
-
-Neither in bytecode nor in line number attribute we can extract the exact interval of method invocations. Generally, we cannot distinguish if the interval represents a method invocation or a loop. Another interesting thing is that in the figure multiple corresponding pcs are included.
-\lt{change to scntactic example}
+\lt{change to synthetic example}
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Incomplete interval example.}, label={code:5-1}, firstnumber=22]
 fooTestSupporter

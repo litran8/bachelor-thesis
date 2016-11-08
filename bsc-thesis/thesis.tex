@@ -217,7 +217,7 @@ private void loadDrawing(String filename) {
 	}
 \end{Java}
 
-As mentioned before, the bytecode of each method also holds a local variable table which is an array of the information about local variables (lines 13-15 in \bytecoderef{helloWorld}). This table has the information about the \textit{this} reference (if the method is an instance method or a constructor), about method parameters and method local variables, respectively. Example of the \textit{this} reference representation can be seen in the line 14. Each line of this table represents one variable. It has
+As mentioned before, the bytecode of each method also holds a local variable table which is an array of the information about local variables (lines 13-15 in \bytecoderef{helloWorld}). This table has the information about the \textit{this} reference (if the method is an instance method or a constructor), about method parameters and method local variables, respectively. Example of the \textit{this} reference representation can be seen in the line 14. Each line of this table represents one variable\chg{. It has}{ and contains the following:}
 
 \begin{enumerate}
 	\item the pc-s which represent the lexical scope of the variable, \ie the pc-s in between the square brackets 	
@@ -228,8 +228,6 @@ As mentioned before, the bytecode of each method also holds a local variable tab
 
 In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is class \code{HelloWorld}.
 
-The indexes of the the local variable table are important because we use them to get the right local variable we are interested in. How we make use of the indexes to find the aim variable is explained in \subsecref{variable}.
-
 Let us now look at a more complicated example of the local variable table (\bytecoderef{localVarTableDuplicatedSlot1}). Local variables do have a limited lifespan. Let us have a look at the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{localVarTableDuplicatedSlot1}.
 This method consists of a \code{try-catch} block. We see that the variable \code{url} (declared at line 3 in \coderef{localVarTableDuplicatedSlot1SourceCode} and line 4 in \bytecoderef{localVarTableDuplicatedSlot1}) is only accessible within the \code{try\{\}} block which starts from pc 0 and ends with pc 40.
 This local variable is stored at the index 2 in the local variable table in \bytecoderef{localVarTableDuplicatedSlot1}, since the first two indexes occupy \textit{this} reference and the method parameter. Variable \code{url} is created at the pc 13 and is only accessible until pc 40 (excluded). 
@@ -237,6 +235,8 @@ As soon as the lifespan of a local variable ends, the slot can be reused by the 
 So, onward the pc 40, slot 2 is free again. 
 The freed slot can be immediately used by the next declared variable, which is the variable \code{e} in our example. 
 Looking at line 7 in \bytecoderef{localVarTableDuplicatedSlot1} we see that \code{e} also has the slot number 2. This is why we can find local variable tables that contain multiple entries with the same local variable slot.
+
+The indexes of the the local variable table are important because we use them to get the right local variable we are interested in. How we make use of the indexes to find the aim\ins{ed} variable is explained in \subsecref{variable}.
 
 %===============================================================================
 \section{Javassist}

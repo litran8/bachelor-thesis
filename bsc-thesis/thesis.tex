@@ -400,7 +400,7 @@ In this chapter we give an overview of how we implemented NullSpy. We will also 
 
 The general approach of NullSpy is to statically analyze a project in which \npe occurs and instrument the corresponding bytecode. NullSpy is a console application which takes two arguments. The first argument to NullSpy is the local path to the folder containing the compiled class files of the original project and the second one is the path to the folder in which the user wants to store the modified class files.
 
-We provide the option to choose the destination in case the developer does not want to overwrite the original project with the modified one. This means that the updated bytecode can be stored in another location, keeping the original class files intact. Of course the original project can also be replaced by the modified one. But the developer has to think carefully about it because once replaced, the additional bytecode stays there and the execution time is slightly different than it was before (explanation can be found in the \secref{execTimeDiff}). To sweep away the additional bytecode, the developer has to recompile the source code to get the original class files when needed.
+We provide the option to choose the destination in case the developer does not want to overwrite the original project with the modified one. This means that the updated bytecode can be stored in another location, keeping the original class files intact. Of course the original project can also be replaced by the modified one. \del{But the developer has to think carefully about it because once replaced, the additional bytecode stays there and the execution time is slightly different than it was before (explanation can be found in the).} To sweep away the \chg{additional}{instrumented} bytecode, the developer has to recompile the source code to get the original class files when needed.
 
 \begin{figure}[H]
 \centering
@@ -409,7 +409,7 @@ We provide the option to choose the destination in case the developer does not w
   \label{fig:highLevelOverview}
 \end{figure}
 
-NullSpy contains three basic steps which we can see in \figref{highLevelOverview}: \textit{load, modify, store}. Those three steps of NullSpy are described in \listref{abstractSteps}:
+NullSpy contains three basic steps which we can see in \figref{highLevelOverview}: \textit{load, modify, store}. Those three steps of NullSpy are described in\ins{ the} \listref{abstractSteps}:
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
@@ -425,7 +425,7 @@ NullSpy contains three basic steps which we can see in \figref{highLevelOverview
 	\label{list:abstractSteps}
 \end{figure}
 
-Loading is done by traversing through all the subfolders of the folder whose local path was given as a parameter, and extracting all the \textit{.class} files. NullSpy modifies the class file directly when it is loaded. As soon as the modification is done, the class file is stored at the destination folder \ie the folder whose path is the second parameter of NullSpy. The structure of the source original folder is preserved also at the destination folder.
+Loading is done by traversing through all the subfolders of the folder whose local path was given as a \ins{first }parameter, and extracting all the \textit{.class} files. NullSpy modifies the class file directly when it is loaded. As soon as the modification is done, the class file is stored at the destination folder \ie the folder whose path is the second parameter of NullSpy. The structure of the source \del{original }folder is preserved also at the destination folder.
 
 %\chg{Storing is done by recreating the structure from the source folder in the destination folder. \ugh{and storing the modified class files.  using the Javasist API.}}{The structure of the source original folder is preserved also at the destination folder.} \nm{I would not mention JavaAssist here, no need for it.}
 
@@ -435,9 +435,9 @@ Loading is done by traversing through all the subfolders of the folder whose loc
 \section{Low Level Overview}
 \label{sec:lowLevelOverview}
 
-In this section we will focus on the bytecode modification. \figref{modificationModules} shows that the modification part of NullSpy contains three different modules. Each class file of the loaded project will be run through the first two modules and the last module is only added once to the modified project at the end of the instrumentation.
+In this section we will focus on the bytecode modification. \figref{modificationModules} shows that the modification part of NullSpy contains three different modules. Each class file of the loaded project will be run through the first two modules and the last module is only added once to the modified project at the end of the instrumentation\ins{ process}.
 
-After class loading, we first extract data from the class bytecode, then instrument it and at the end we add the run-time supporter module to the project.
+After class loading, we first extract data from the class bytecode,\ins{ and} then instrument it\del{ and at the end we add the run-time supporter module to the project}.
 
 \begin{figure}[H]
 \centering
@@ -453,7 +453,7 @@ We will look at these modules in more detail and explain what each one does.
 \label{subsec:processFlow}
 In this short and rough overview of the entire process we explain the reason why we have to extract data from bytecode and what they are used for. Details are discussed in the following subsections.
 
-From the stack trace of a \npe we can obtain three kind of information, namely the class name, method name and the line number of where the \npe happened. But the aim of NullSpy is to reveal the location of the null assignment to the variable which caused the \npe. To achieve this goal we need to take information from the bytecode about \textbf{\mrs} and \textbf{null assignments}. Why we need to extract data about \mrs and null assignment is explained right away. 
+From the stack trace of a \npe we can obtain three kind of information, namely the class name, method name and the line number of where the \npe happened. \chg{But t}{T}he aim of NullSpy is to reveal the location of the null assignment to the variable which caused the \npe. To achieve this goal we need to take information from the bytecode about \textbf{\mrs} and \textbf{null assignments}. \del{Why we need to extract data about \mrs and null assignment is explained right away.}
 
 As soon as a \npe is thrown, we sequentially compare data to get the right location of the null assignment. The comparison-sequence looks as follows (we use the symbol ``\textbf{$\|$}'' for the comparison):
 
@@ -464,7 +464,11 @@ As soon as a \npe is thrown, we sequentially compare data to get the right locat
 
 Result contains the data needed to create the link to the null assignment.
 
-The first step in the modification part is to gather information about the \mrs. We use the term \textbf{\mr} to refer to variables on which methods are invoked, or whose fields are accessed. What kind of information we store about the \mrs is listed in \subsecref{methodReceiver}. The reason why we need to store information about the \mrs is because they are candidates that could trigger a \npe. To find the location where the \mr is assigned null we form a unique identifier out of the gathered information. With the identifier we are able to find the null assignment entry that holds all information about where the variable is assigned null. The most important information is the line number of where the variable is assigned null. With that number we can build the link which takes the user directly to the location where the null assignment took place.
+The first step in the modification part is to \ins{statically }gather information about the \mrs. We use the term \textbf{\mr} to refer to variables on which methods are invoked, or whose fields are accessed.
+These variables are candidates \chg{that could trigger}{for triggering} a \npe.
+For each \mr we extract the information needed to create its unique identifier (details about this are listed in \subsecref{methodReceiver}). 
+These identifiers are used later to track the assignments to the aforementioned variable, and to find the null assignment entry for this variable, if any.
+\del{We aim for the line number of where the variable is assigned null, so that we can build the link which takes the user directly to the location where the null assignment took place.}
 
 %\nm{At the beginning of this paragraph, first explain what is the idea: 
 %why do you store anything about variables which are used as receivers for methods. 
@@ -476,7 +480,7 @@ The first step in the modification part is to gather information about the \mrs.
 %\nm{Do not give example of what are you storing; say precisely what kind of information are you storing.}
 %\nm{Overall, you use too much sentences like ``we gather data", or ``we gather information". Always be precise: what kind of information.}
 
-The second step is to collect information about the null assignments. After every non-primitive variable assignment we collect information about it and insert some bytecode right after the bytecode of the assignment. The bytecode we insert represents a static method of ours which is managed by the \textbf{run-time supporter} package. The collected information about the variable is passed as parameters to our static method. This method checks whether the variable is assigned null. If this is the case we store the information about the variable in a HashMap.
+The second step is to \chg{collect information about the null}{instrument the} assignments. \chg{After}{For} every non-primitive variable assignment we collect information about \chg{it}{the variable, needed to create its unique identifier.} After the assignment we insert code which represents a call to the \textbf{run-time supporter} package with the variable's identifier. The run-time supporter package checks at run-time whether the variable is assigned null. If this is the case we store the information about this variable \del{in a HashMap}.
 
 %If a variable is assigned an object, we gather data about that variable from the bytecode.\\
 %\nm{Here for example, you can actually leave the sentence like this ``we gather data" since you already explained in the previous paragraph exactly what kind of information do you store.} 
@@ -486,7 +490,7 @@ The second step is to collect information about the null assignments. After ever
 %
 %Right after the assignment and the data collection \nm{You are here confusing two things: right after the assignment (you refer to place in the code?) and right after data collection (you here refer to the time - when?) }NullSpy inserts the bytecode that represents a method call which is managed by the \textit{run time supporter} package. This method takes those extracted information as parameters and checks whether the variable is assigned null. \nm{Ok, I suppose it was actually ``an object" at the beginning of the paragraph?} \nm{When does it check whether the variable is null? At static time or at run time?} \chg{If it is assigned null}{if this is the case,} the information about the variable is stored.
 
-At the end of the bytecode modification part we wrap the \code{main()} method into a \textit{try-catch-block}. In the \textit{catch-block} the information about the location where the \npe happened (class name, method name, line number) are extracted from the \npe stack trace. This information is passed on to a static method of the run time supporter package. The method compares the parameters with the stored information about the \mrs. If there is a match regarding the comparison, NullSpy creates a variable identifier with the information about the matched \mr. With this identifier another comparison is performed. This time NullSpy compares the identifier with the information stored about the null assignment. The result will be the stored entry about the null assignment of the variable that caused the \npe. From the entry we extract the line number of the assignment and create the additional link that reveals the location of the null assignment. This link of course is then added to the common \npe stack trace.
+At the end of the bytecode modification part we wrap the \code{main()} method into a \textit{try-catch-block}. \chg{In the \textit{catch-block} the information about the location where the \npe happened (class name, method name, line number) are extracted from the \npe stack trace.}{This block extract from the \npe stack trace the information about the location where the exception happened (class name, method name, line number). This is the only information we can get from a stack trace.} This information is passed on to the run-time supporter package which compares it with the stored identifiers about the \mrs. If there is a match regarding the comparison, NullSpy uses this identifier to reveal the information stored about the assignments to this variable. If there is an entry about the null assignment of that variable, we extract from it the line number of the assignment and create the additional link that reveals the location of the null assignment. This link is then added to the common \npe stack trace.
 
 Finally we add the \textit{run-time supporter} module to the modified project.
 

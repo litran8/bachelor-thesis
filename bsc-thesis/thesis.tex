@@ -606,10 +606,10 @@ Statically analyzing bytecode for \mr means looking for certain opcodes which ma
 
 In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but it can be ignored because static method invocations are called on classes which can never be null. NullSpy ignores these instructions. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate. As for the other \textit{invoke} instructions, they are treated normally.
 
-As soon as we have the \mr pc-interval we can extract information about the \mr from the bytecode. The use of the Javassist API allows us to obtain the information about the \mr listed in \listref{methodReceiverInfo}.
+With the \mr pc-interval we extract the information listed in \listref{methodReceiverInfo} from the bytecode by using Javassist API.
 
 %-------------------------------------------------------------------------------
-\subsection{Variable Data Collection}
+\subsection{Assignments Collection}
 \label{subsec:variable}
 In the precious section we were looking for instructions which match the regex \textit{``invoke.*''} to detect \mrs in bytecode. This time we are looking for the regexs \textit{``astore.*''} and \textit{``put.*''}. The former refers to local variable assignments and the latter to field assignments. Unlike the information collection of the \mr, the data about the variables are stored in a HashMap.
 

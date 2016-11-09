@@ -178,16 +178,21 @@ We start with an easy \textit{HelloWorld} source code example (\coderef{helloWor
 
 The green words in \bytecoderef{helloWorld} are the string representations of Java bytecode instructions. We will also use the term \textbf{opcode} when referring to individual instructions. Multiple opcode instructions are referred to as \textbf{bytecode}.
 
-On the left-side of these instructions we see the \textbf{program counter} (pc) which is a processor register that contains the address (location) of the instruction being executed at the current time. It is also called an \textbf{instruction pointer}. We use these program counters, or pc-s also as an index in the bytecode. The instructions from pc 0 to pc 4 (lines 2-4) in \bytecoderef{helloWorld} represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textbf{pc-interval} to describe a set of instructions that represents a Java expression. This term will play an important role further in the thesis. We use the syntax \textbf{``<,>''} to represent an pc-interval, \eg just mentioned pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts and the latter one where it ends, both inclusive. In the same example, the pc-interval of the local variable \code{result} is <4,4>.
+On the left-side of these instructions we see the \textbf{program counter} (pc) which is a processor register that contains the address (location) of the instruction being executed at the current time. It is also called an \textbf{instruction pointer}.
+%We use these program counters, or pc-s also as an index in the bytecode. 
+The instructions from pc 0 to pc 4 (lines 2-4 in \bytecoderef{helloWorld}) represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textbf{pc-interval} to describe a set of instructions that represents a Java expression. This term will play an important role further in the thesis. We use the syntax \textbf{``<,>''} to represent an pc-interval, \eg just mentioned pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts and the latter one where it ends, both inclusive. In the same example, the pc-interval of the local variable \code{result} is <4,4>.
 
-If the opcode represents the read from a variable, on its right side there is the information about the name and type of the variable, \eg line 3. 
-In case of an invocation opcode, it shows the behavior/method name, the parameters it takes and the return type, \eg line 7. In \secref{lowLevelOverview} we will see how this information is used.
+If the opcode represents a variable, on its right side we can see the information about the name and type of the variable, \eg line 3. 
+In case of an invocation opcode, it shows the behavior/method name, the parameter types and the return type, \eg line 7. 
+We extract this information with the help of Javassist, and below mentioned tables.
+%In \secref{lowLevelOverview} we will see how this information is used.
 
 Each method bytecode representation holds a \textbf{line number table} and a \textbf{local variable table} which are listed underneath the instructions of the method (lines 9-15 in \bytecoderef{helloWorld}). 
 
-The line number table\footnote{In the jargon of Javasist, this is also called the line number attribute.} maps the pc to the source code line of the method. The line number table in \bytecoderef{helloWorld} is represented between the lines 9 and 12: source code line 5 starts with the pc 0 (represented by the line 10), source code line 6 starts with the pc 5 (in line 11) \etc. This mapping does not apply to cases where a statement is separated into multiple lines. In \subsecref{methodReceiverDifficulties} we explain further details about the line number table in a split Java statement case.
+The line number table\footnote{In the jargon of Javasist, this is also called the line number attribute.} maps source code line of the method with the pc which indicates the beginning of the bytecode to the corresponding source code line. The line number table in \bytecoderef{helloWorld} is represented between the lines 9 and 12: source code line 5 starts with the pc 0 (represented by the line 10), source code line 6 starts with the pc 5 (in line 11) \etc This mapping does not apply to cases where a statement is separated into multiple lines. \todo{Should we move next explanation to the appendix?}In \subsecref{methodReceiverDifficulties} we explain further details about the line number table in a split Java statement case.
 
-If we look back, to the \stacktraceref{stackTrace}, we can see the numbers at the end of each line. They indicate the lines of code, which are the part of the call-chain that led to \npe. The information the line number table holds is used to recover the information about the actual point in the code where the null was assigned to a reference. In \secref{lowLevelOverview} we will discuss how this is done.
+If we look back, to the \stacktraceref{stackTrace}, we see that the stack trace provides us with the numbers of lines of code, which are part of the call-chain that led to \npe. The information the line number table holds is used to recover the information about the actual point in the code where the null was assigned to a reference. 
+%In \secref{lowLevelOverview} we will discuss how this is done.
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot 2 (line 4\&7).}, label={bytecode:localVarTableDuplicatedSlot1}, breaklines=true]
@@ -472,63 +477,62 @@ The way how we extract and store all those data are discussed in the following s
 %-------------------------------------------------------------------------------
 \subsection{\MR Data Collection}
 \label{subsec:methodReceiver}
-In this section we explain how to get information about the \mr needed to construct a unique identifier. A small synthetic example (\coderef{methodReceiverAlgDemoCode}) makes is easier to understand. \Mrs in the example are the variables \code{fToolButton} at line 7, \code{fToolButton.myIcon} at line 8 and \code{activePanel} at line 11.
+In this section we explain how to get information about the \mr needed to construct a unique identifier. \Mrs in the example \coderef{methodReceiverAlgDemoCode} are the variables \code{fToolButton} at line 7, \code{fToolButton.myIcon} at line 8 and \code{activePanel} at line 11.
 
-%\renewcommand\lstlistingname{Code}
-%\begin{Java}[caption={\Mr example.}, label={code:methodReceiverExample}]
-%public class A {
-%
-	%private Object (@\textbf{field}@) = new Object();
-	%private Object b = new B();
-%
-	%public static void main() {
-		%Object (@\textbf{var}@) = new Object();
-%
-		%(@\textbf{var}@).toString();	// local variable on which method is invoked
-		%(@\textbf{field}@).toString();	// field access
-		%(@\textbf{b.foo}@).toString();	// field access
-	%}
-%}
-%
-%public class B {
-	%public Object foo = new Object();
-	%..
-%}
-%\end{Java}
+We use the library Javassist to partially extract this data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get all the information we need about the \mr, thus we need to do it manually. 
 
-We use the library Javassist to partially extract data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get all the information we need about the \mr, thus we need to do it manually. The exact information we need is listed in \listref{methodReceiverInfo} and it is stored in an external \textit{csv} file due to overhead minimization.
+\textbf{Finding the invocation opcode/end-pc}
 
-\begin{figure}[H]
-\renewcommand\figurename{List}
-	\begin{boxedminipage}{\textwidth}
-		\begin{itemize}
-		\itemsep8pt
-   	\item \mr counter (\mrs are counted)
-		\item source code line number of the method receiver
-		\item name of the class containing the method invocation
-		\item name of the method which contains the invocation
-		\item parameter types and return type of the method which contains the invocation
-		\item is the variable a local variable or a field
-		\item is variable static or not
-		\item variable name
-		\item statically declared variable type
-		\item name of the class declaring the variable, if the variable is a field, else empty string
-		\item attribute index, if the variable is a local variable, else empty string
-   \end{itemize}
-	\end{boxedminipage}
-	\caption{\Mr information.}
-	\label{list:methodReceiverInfo}
-\end{figure}
+Let us suppose that we are interested in the \mr \code{activePanel} of the method invocation \code{add(...)} at line 11 in the example \coderef{methodReceiverAlgDemoCode}.
+Its bytecode is presented in \bytecoderef{methodReceiverAlgDemoBytecode}.
 
-To get this data, we need the \textit{pc-interval} of the \mr.
-Let us have a look at line 11 of the example source code shown in \coderef{methodReceiverAlgDemoCode} and its bytecode presented in \bytecoderef{methodReceiverAlgDemoBytecode}. In this example we want to extract the pc-interval of the \mr \code{activePanel}.
-We will now explain the steps to get the pc-interval of the \mr \code{activePanel}, \ie <144,144>.
-
-\textbf{Finding the invocation opcode/end-pc}\\
-While iterating through the bytecode, NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation. For each method invocation we want to find the method receiver. Since bytecode first lists method receiver and all the method parameters, the pc of this \textit{``invoke.*''} opcode will represent the \textbf{end-pc}. In our example, the end-pc of the method invocation \code{add(...)} is 155.
+To get data about \mrs we iterate through the bytecode looking for the instructions which represent a method invocation.
+To do this, NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation. 
+For each method invocation we want to find the method receiver. 
+In our example bytecode instruction which matches the invocation of the method \code{add(...)} is at the line 6 in \bytecoderef{methodReceiverAlgDemoBytecode}.
+Since bytecode lists method receiver and all the method parameters before the \textit{``invoke.*"} instruction, the pc of this \textit{``invoke.*''} opcode will represent the \textbf{end-pc} of a method invocation. In our example, the end-pc of the method invocation \code{add(...)} is 155.
 
 \textbf{Finding the start-pc}\\ 
-The pc at which the bytecode which represents the source code line, containing the invocation, begins is called \textbf{start-pc}. This is done by using the line number table mentioned in \secref{bytecode}. This table is omitted from our example for simplicity. The start-pc is 144.
+The \textbf{start-pc} is the pc at which begins the bytecode which represents the source code line, containing the invocation. Finding the start-pc is done by using the line number table of the method. We compare the \textbf{end-pc} with the \textbf{start-pc}-s for each line of code, and take the last one which is smaller than the \textbf{end-pc}. The \textbf{start-pc} in our example is 144. \todo{Add tables to the bytecode C.1}
+
+We define the outermost \textbf{pc-interval} as the interval starting with the \textbf{start-pc} and ending with the \textbf{end-pc}. We know that the \mr is located in this interval. In our example, this is <144,155>.
+
+\textbf{Extracting candidate \mr pc-intervals}\\
+The outermost interval <144,155> could contain other invocations, which could have \mrs of their own. This is visible in our example, where the \code{getDesktop()} invocation (pc 146) is embedded in our outermost interval. For this reason, we explored all possible bytecode combinations of instructions that can represent \mrs and developed a system for identifying such embedded call sights. More about this system can be found in the appendix (\ref{cha:bytecodeCombinations}). This system allows us to split the outermost pc-interval into candidate \mr pc-intervals. In our example, the outermost pc-interval is divided into \{<144,144>,<145,149>,<152,152>\}. Each of the pc-intervals represents:
+
+\begin{enumerate}
+	\item <144,144>: variable \code{activePanel}
+	\item <145,149>: first parameter \code{(Component) getDesktop()}
+	\item <152,152>: second parameter \code{BorderLayout.CENTER}
+\end{enumerate}
+
+\textbf{Finding the actual \mr}\\
+The set of candidate pc-intervals ends with the arguments of the method.
+Javassist allows us to obtain the number of parameters of a method invocation by analyzing the method signature. 
+Thus, if the method expects $N$ arguments, we can ignore the last $N$ candidate pc-intervals. The one before them is the actual \mr pc-interval. 
+In our example, since the method takes two arguments, the actual \mr pc-interval is <144,144>.
+
+
+If the \mr is actually return object from another method invocation, it is unapparent where exactly the \mr is situated in bytecode. More about the challenges we encountered can be found in \subsecref{methodReceiverDifficulties}
+
+With the \mr pc-interval we extract the information needed to create a unique \mr identifier from the bytecode by using Javassist API.
+We get the index of the \mr by using Javassist (in our example the index is 3), and with the index and pc information of the \mr, we can 
+\todo{explain till the end}
+
+To create a unique identifier for a method receiver we need the information like:
+\begin{itemize}
+	\item source code line number of the method receiver
+	\item name of the class and signature of the method containing the method invocation
+	\item full variable name
+	\item statically declared variable type
+\end{itemize}
+
+The exact information we need can be found in the appendix \ref{cha:appReceivers}
+
+
+There are exactly five such bytecode instructions in Java: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}.
+
+In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but it can be ignored because static method invocations are called on classes which can never be null. NullSpy ignores these instructions. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate. As for the other \textit{invoke} instructions, they are treated normally.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Code snippet to demonstrate the \mr extracting algorithm.}, label={code:methodReceiverAlgDemoCode}]
@@ -559,44 +563,23 @@ public class DrawApplication {
 155  invokevirtual javax.swing.JPanel.add(java.awt.Component, java.lang.Object) : void [254]
 \end{JVMIS}
 
-\textbf{Defining the outermost pc-interval}\\
-We define the outermost \textbf{pc-interval} as the interval starting with the start-pc and ending with the end-pc. We know that the \mr is located in this interval. In our example, this is <144,155>.
-
-\textbf{Getting the number of parameters for the method}\\
-Javassist offers the functionality to count the number of parameters of a method invocation by analyzing the method signature. Our example method takes two  parameters.
-
-\textbf{Extracting candidate \mr pc-intervals}\\
-The outermost interval <144,155> could contain other invocations, which could have \mrs of their own. This is visible in our example, where the \code{getDesktop()} invocation (pc 146) is embedded in our outermost interval. For this reason, we explored all possible bytecode combinations of instructions that can represent \mrs and developed a system for identifying such embedded call sights. More about this system can be found in the appendix (\ref{cha:bytecodeCombinations}). This system allows us to split the outermost pc-interval into candidate \mr pc-intervals. In our example, the outermost pc-interval is divided into \{<144,144>,<145,149>,<152,152>\}. Each of the pc-intervals represents:
-
-\begin{enumerate}
-	\item <144,144>: variable \code{activePanel}
-	\item <145,149>: first parameter \code{(Component) getDesktop()}
-	\item <152,152>: second parameter \code{BorderLayout.CENTER}
-\end{enumerate}
-
-\textbf{Finding the actual \mr}\\
-Since the set of candidate pc-intervals ends with the arguments of the method, and we know that the method expects $N$ arguments, we can ignore the last $N$ candidate pc-intervals. The one before them is the actual \mr pc-interval. In our example, since the method takes two arguments, the actual \mr pc-interval is <144,144>.
-
-If the \mr is actually return object from another method invocation, it is unapparent where exactly the \mr is situated in bytecode. More about the challenges we encountered can be found in \subsecref{methodReceiverDifficulties}.
-
-Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex \textit{``invoke.*''}. There are exactly five such bytecode instructions in Java: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}.
-
-In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but it can be ignored because static method invocations are called on classes which can never be null. NullSpy ignores these instructions. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate. As for the other \textit{invoke} instructions, they are treated normally.
-
-With the \mr pc-interval we extract the information listed in \listref{methodReceiverInfo} from the bytecode by using Javassist API.
-
 %-------------------------------------------------------------------------------
 \subsection{Assignments Collection}
 \label{subsec:variable}
-In the precious section we were looking for instructions which match the regex \textit{``invoke.*''} to detect \mrs in bytecode. This time we are looking for the regexs \textit{``astore.*''} and \textit{``put.*''}. The former refers to local variable assignments and the latter to field assignments. Unlike the information collection of the \mr, the data about the variables are stored in a HashMap.
+%In the precious section we were looking for instructions which match the regex \textit{``invoke.*''} to detect \mrs in bytecode. 
+To find the assignments in the bytecode we search for the instructions matching regexs \textit{``astore.*''} and \textit{``put.*''}. The former refers to local variable assignments and the latter to field assignments. 
+%Unlike the information collection of the \mr, the data about the variables are stored in a HashMap, since it needs to be used at run time.
 
 In the next two subsections we will look at how the information about the assigned variables is extracted. Due to different variable types and the limitation of Javassist, the ways of gathering information about the local variables and fields are performed differently.
 
 \subsubsection{Local Variable}
 \label{subsubsec:localVariable}
-Unfortunately, Javassist does not provide any support for gaining information about local variables. This is why we have to understand how the bytecode is constructed concerning the local variables. In \secref{bytecode} we introduced the parts of the bytecode that are important for our project NullSpy.
+Unfortunately, Javassist does not provide any support for gaining information about local variables, thus we needed to do it manually. 
+%This is why we have to understand how the bytecode is constructed concerning the local variables. 
+%In \secref{bytecode} we introduced the parts of the bytecode that are important for our project NullSpy.
 
-We have to pay attention to get the right local variable every time we encounter one while iterating through bytecode. Every time we hit upon the opcode \textit{``astore.*''} we could only get its slot and the pc where it is situated in the bytecode sequence. A local variable has a limited lifespan. The lifespan of a local variable is important because multiple entries can have the same local variable slot (already described in \secref{bytecode}).
+%We have to pay attention to get the right local variable every time we encounter one while iterating through bytecode. 
+Every time we hit upon the opcode \textit{``astore.*''}  (which represents an assignment to a local variable) we get the index of the variable and the pc of the assignment instruction. A local variable has a limited lifespan. As we have already seen in \secref{bytecode} multiple entries can have the same local variable slot (one variable takes the index of the other whose lifespan expired).
 
 \begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot 2 (line 4\&7).}, label={bytecode:localVarTableDuplicatedSlot}, breaklines=true]
 Local variable table:
@@ -608,7 +591,16 @@ Local variable table:
  (@\textbf{[pc: 44, pc: 94] local: e index: 2 type: java.io.IOException}@)
 \end{JVMIS}
 
-When iterating through the bytecode and finding the instruction \textit{``astore.*''} we extract the slot from the opcode. Let us assume that we have a local variable assignment where its \textit{``astore\_2''} opcode is located at pc 45. In this example we can extract slot 2 from the opcode \textit{astore\_2}. After extracting the slot (index: 2) we get the first local variable table entry which contains that slot (line 4 in \bytecoderef{localVarTableDuplicatedSlot}). If the pc of the assignment is not included in the local variable lifespan of the entry (pc 45 $\notin$ [pc: 13, pc: 40], line 4), the next entry with the same slot (pc 45 $\in$ [pc: 44, pc: 94], line 7) will be examined. Checking the entries with the same slot goes on until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information we need.
+\todo{add assignment bytecode}
+Let us assume that we have a local variable assignment where its \textit{``astore\_2''} opcode is located at pc 45 (\bytecoderef{localVarTableDuplicatedSlot}). In this example we can extract slot 2 from the opcode \textit{astore\_2}. After extracting the slot (index: 2) we iterate through the local variable table and find the first entry which contains that slot (line 4 in \bytecoderef{localVarTableDuplicatedSlot}). If the pc of the assignment is not included in the local variable lifespan of the entry (pc 45 $\notin$ [pc: 13, pc: 40], line 4), the next entry with the same slot (pc 45 $\in$ [pc: 44, pc: 94], line 7) will be examined. Checking the entries with the same slot goes on until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information needed to create a unique identifier for the variable. We now extract from local variable table the information we need to create a unique identifier for a variable like:
+\begin{itemize}
+	\item source code line number of the assignment
+	\item name of the class and method signature containing the local variable
+	\item local variable name
+	\item statically declared local variable type
+\end{itemize}
+
+The exact list of the information we extract can be found in the appendix \ref{cha:appLocalVars}.
 
 \begin{JVMIS}[numbers=left, caption={Line number table.}, label={bytecode:lineNrTable}]
   Line numbers:
@@ -624,243 +616,34 @@ When iterating through the bytecode and finding the instruction \textit{``astore
         [pc: 94, line: 68]
 \end{JVMIS}
 
-With the line number table (shown in \bytecoderef{lineNrTable}) and the pc we can obtain the line number. In the paragraph before we looked a variable assignment with pc 45 as an example, so the local variable assignment starts at line 64 according to the line number table.
-
-The other information we need in addition to the line number are listed in \listref{localVarInfo}.
-
-\begin{figure}[H]
-\renewcommand\figurename{List}
-	\begin{boxedminipage}{\textwidth}
-\begin{itemize}
-		\itemsep8pt
-		\item source code line number of the local variable
-		\item name of the class containing the local variable
-		\item name of the method which contains the local variable
-		\item parameter types and return type of the method which contains the invocation
-    \item is the variable a local variable or a field
-		\item local variable name
-		\item statically declared local variable type
-		\item attribute index
-		\item local variable slot
-		\item start-pc: the pc where the local variable assignment actually starts
-		\item store-pc: the pc of the \textit{``astore.*''} opcode
-		\item after-pc: the next pc after store-pc; before that pc we insert our code
-   \end{itemize}
-	\end{boxedminipage}
-	\caption{Local variable information.}
-	\label{list:localVarInfo}
-\end{figure}
+On the other hand, by using the pc of the assignment (45) and line number table (shown in \bytecoderef{lineNrTable}) we obtain the source code line number of the assignment. As we can see in the table, the local variable assignment starts at source code line 64.
 
 \subsubsection{Instance and Class/Static variable (Field)}
 \label{subsec:field}
-Although Javassist does not support the access to local variable it provides a way for fields. Javassist allows to modify an expression in a method body with the class \code{Javassist.expt.ExprEditor}. 
+Although Javassist does not support the access to local variable it provides a way to access fields. Javassist allows us \nm{\url{http://scg.unibe.ch/wiki/howtos/commonwritingerrors/neverSayAllowsToAgain}} to modify an expression in a method body by using the class \code{Javassist.expt.ExprEditor}. 
 %In our case we only want to extract some information about the fields instead of any modification, nevertheless this class can be used appropriately. 
-What it does is to scan the bytecodes on instructions like \textit{``putfield''} for instance or \textit{``putstatic''} for static fields.
+It scans the bytecode on instructions like \textit{``putfield''} for instance or \textit{``putstatic''} for static fields, and allows us to directly get the information we need to create a unique identifier for the field, like:
+\begin{itemize}
+	\item source code line number of the assignment
+	\item name of the class and method signature containing the field assignment
+	\item full field name
+	\item statically declared field type
+\end{itemize}
 
-There are only two instructions that indicates an access to a field, but there are actually many different types of fields. To get the meaning of different types see \listref{fieldKeywords}.
 
-\begin{figure}[H]
-\renewcommand\figurename{List}
-	\begin{boxedminipage}{\textwidth}
-		(\textbar\dots\textbar: put value on operand stack for assigning to a field)
-\begin{enumerate}
-\itemsep8pt
-      \item aload\_0, \textbar\dots\textbar, putfield
-      \item \textbar\dots\textbar, putstatic
-			\item aload.*, \textbar\dots\textbar, putfield
-			\item aload\_0, (getfield)+, \textbar\dots\textbar, putfield
-			\item getstatic, (getfield)*, \textbar\dots\textbar, putfield
-   \end{enumerate}
-	\end{boxedminipage}
-	\caption{Field keywords.}
-	\label{list:fieldKeywords}
-\end{figure}
-
-Depending on the category a field belongs to, different kind of information is stored about it. Number 1 in \listref{fieldKeywords} indicates fields of the current analyzed class and number 2 can be static fields either of the current analyzed class or others classes. What Information we need about the field accessing 1\&2 is listed in \listref{variableInfo1}.
-
-\begin{figure}[H]
-\renewcommand\figurename{List}
-	\begin{boxedminipage}{\textwidth}
-		\begin{itemize}
-			\itemsep8pt
-			\item source code line number of the local variable
-			\item name of the class containing the field assignment
-			\item name of the method which contains the field assignment
-			\item parameter types and return type of the method which contains the field assignment
-			\item is the variable a local variable or a field
-			\item class name in which the field is declared		
-			\item is field static or not
-			\item field name
-			\item statically declared field type
-			\item start-pc: the pc where the field assignment actually starts
-			\item store-pc: the pc of the \textit{``put.*''} opcode
-			\item after-pc: the next pc after store-pc; before that pc we insert our code
-	  \end{itemize}
-	\end{boxedminipage}
-	\caption{Field information (I).}
-	\label{list:variableInfo1}
-\end{figure}
-
-In NullSpy we use the term \textbf{member field} to describe a field of another class than the class being analyzed. Such fields are listed as number 3-5 in \listref{fieldKeywords}.
-We call everything before the instruction \textit{``putfield''} \textbf{member object}. For those fields more data are needed to store for their identification. The same information as listed in \listref{variableInfo1} is needed plus additional data listed in \listref{variableInfo2}.
-
-\begin{figure}[H]
-\renewcommand\figurename{List}
-	\begin{boxedminipage}{\textwidth}
-		\begin{itemize}
-			\itemsep8pt
-			\item is the member object a local variable or a field
-			\item class name in which the member object is declared	
-			\item is member field static or not
-			\item member object name
-			\item statically declared member object type
-   \end{itemize}
-	\end{boxedminipage}
-	\caption{Additional member object information (II).}
-	\label{list:variableInfo2}
-\end{figure}
-
-The synthetic example \coderef{fieldExample} shows how exactly the instructions \textit{``putfield''} and \textit{``putstatic''} are used.
-
-\renewcommand\lstlistingname{Code}
-\begin{Java}[caption={Synthetic example to show how the instructions \textit{``putfield''} and \textit{``putstatic''} are used.}, label={code:fieldExample}]
-public class A {
-
-	private B b = new B();
-	private static B b2;
-
-	public void x() {
-
-		// |...|: value assigned to fields
-
-		// fields
-		this.b = ...; 	// aload_0, |...|, putfield
-		b2 = ...; 		// |...|, putstatic
-
-		B b3 = new B();
-
-		// member fields
-		b3.c = ...; 	// aload.*, (getfield)*, |...|, putfield
-		b3.c.d = ...
-
-		b.c = ...; 		// aload_0, (getfield)+, |...|, putfield
-		b.c.d = ...;
-
-		b2.c = ...; 	// getstatic, (getfield)*, |...|, putfield
-		b2.c.d = ...;
-	}
-}
-
-public class B {
-	public C c = new C();
-	..
-}
-
-public class C {
-	public D d = new D();
-	..
-}
-
-public class D {
-	..
-}
-\end{Java}
 
 During the data collection about the fields we encountered some difficulties which we will discuss in \subsecref{variableDifficulties}.
 
-As already mentioned earlier, every time when encountering an assignment either of a local variable or a field, NullSpy inserts bytecode to check whether the variable is assigned null. If the variable is assigned null, NullSpy stores all the data about the variable. How we insert bytecode is described next.
+As already mentioned earlier, every time when encountering an assignment either \chg{of}{to} a local variable or a field, NullSpy inserts bytecode \chg{to check}{which check at run time} whether the variable is assigned null. If the variable is assigned null, NullSpy stores all the data about the variable. How we insert bytecode is described next.
 
 %-------------------------------------------------------------------------------
 \subsection{Bytecode Adaptation}
 \label{bytecodeAdaptation}
-Each time encountering a variable assignment we first extract the needed data and then we  adapt the class file by adding extra bytecode right after the assignment bytecode. The function of the inserted bytecode is to check whether the variable is null. If this is the case, the information collected before and which is passed as parameters to the checking method, is stored either into the \textit{``localVariableMap''} or into a \textit{``fieldMap''} which are HashMaps.
+Each time we encounter a variable assignment we first extract the \del{needed }data\ins{ about the variable} and then we \chg{ adapt the class file by adding extra }{add }bytecode right after the assignment bytecode. The \chg{function}{role} of the inserted bytecode is to check\ins{ at run time} whether the \chg{variable}{value being assigned to the variable} is null. If this is the case, \chg{the information collected before and which is passed as parameters to the checking method, is stored either into the \textit{``localVariableMap''} or into a \textit{``fieldMap''} which are HashMaps}{we store the previously explained information about this assignment}.
 
-The added bytecode represents a static method of a class named \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}.} which will be added to the modified project after bytecode modification is done. Depending on what kind of variable (local variable, field) is analyzed, different bytecode is constructed, which means the bytecode represents different methods which accepts different parameter/variable data.
+The explanation of the way we do it can be found in the appendix \ref{cha:appInstrumentation}.
 
-In \secref{javassist} we mentioned that the library makes it possible to modify bytecode either with the source- or bytecode-level API. Due to a limitation of Javassist (\secref{limitations}) we modify the class file at bytecode-level by creating a \textit{bytecode-array} and include it in the file. \coderef{bytecodeCreation} shows the way how the inserted bytecode is created.
-
-\begin{Java}[caption={Inserted bytecode(-array) creation.}, label={code:bytecodeCreation}, firstnumber=1]
-private byte[] getInsertCodeByteArray(Variable var) {
-	Bytecode testMethodByteCode = new Bytecode(cp);
-
-	testMethodByteCode.addLdc(behavior.getDeclaringClass()
-		.getName());
-	testMethodByteCode.addLdc(behavior.getName());
-	testMethodByteCode.addLdc(behavior.getSignature());
-	testMethodByteCode.addLdc(varID);
-	testMethodByteCode.addLdc(varName);
-	testMethodByteCode.addLdc(varType);
-
-	Field field = (Field) var;
-
-	String fieldDeclaringClassName = field
-		.getFieldDeclaringClassName();
-
-	testMethodByteCode.addLdc(fieldDeclaringClassName);
-
-	// int 1 -> static, 0 -> nonStatic
-	if (field.isStatic()) {
-		addIntegerToBytecode(testMethodByteCode, 1);
-	} else {
-		addIntegerToBytecode(testMethodByteCode, 0);
-	}
-
-	testMethodByteCode.addAload(0);
-	testMethodByteCode.addGetfield(
-		fieldDeclaringClassName varName, varType);
-
-	addIntegerToBytecode(testMethodByteCode, var.getVarLineNr());
-	addIntegerToBytecode(testMethodByteCode, var.getStartPc());
-	addIntegerToBytecode(testMethodByteCode, var.getStorePc());
-	addIntegerToBytecode(testMethodByteCode, var.getAfterPc());
-
-	CtClass variableTester = ClassPool.getDefault().get(
-			"ch.unibe.scg.nullSpy.runtimeSupporter.VariableTester");
-	CtClass str = ClassPool.getDefault().get("java.lang.String");
-	CtClass object = ClassPool.getDefault().get("java.lang.Object");
-
-	testMethodByteCode.addInvokestatic(variableTester,
-		"testDirectField", CtClass.voidType, new CtClass[] {
-			str, str, str, str, str, str, str,
-			CtClass.intType, object, CtClass.intType,
-			CtClass.intType, CtClass.intType,
-			CtClass.intType });
-
-	byte[] byteCode = testMethodByteCode.get();
-
-	return byteCode;
-}
-\end{Java}
-
-\coderef{bytecodeCreation} is a code snippet from class \code{VariableTester}\textsuperscript{\ref{package1}} which NullSpy adds to the project after the bytecode modification. This snippet creates the static method invocation that tests whether a field is null. The header of that method is presented in \coderef{checkFieldMethodHeader}.
-
-\begin{Java}[caption={Check field method header.}, label={code:checkFieldMethodHeader}, firstnumber=31]
-public static void testDirectField(
-	String classNameInWhichVarIsAccessed,
-	String behaviorName,
-	String behaviorSignature, 
-	String varID, String varName, String varType, 
-	String varDeclaringClassName,
-	int isStatic, 
-	Object varValue, 
-	int varLineNr, 
-	int startPc, int storePc, int afterPc
-	) {...}
-\end{Java}
-
-Now we will go through the code snippet shown in \coderef{bytecodeCreation} and explain it. The method header of the behavior \code{VariableTester.testDirectField(...)} shown in \coderef{checkFieldMethodHeader} takes seven strings, one boolean, one object and four integers as parameter. The snippet \coderef{bytecodeCreation} reproduces those parameters. 
-
-From line 4 to 17 the instruction \textit{``addLdc''} is used to add strings to the bytecode. For adding a boolean we used the integers \textit{``1''} and \textit{``0''} to represent the boolean value \textit{true} respectively \textit{false}. Lines 20 to 24 adds an integer to the bytecode sequence. 
-
-The Object, in our case a field, is added by the method \code{addAload(...)} at line 26 and the method \code{addGetfield(...)} at lines 27 and 28. In our synthetic example shown in \coderef{fieldExample} we saw that how a field is assigned a value at line 11. The bytecode of this example is \textit{``aload\_0'', \textbar\dots\textbar, ``putfield''}. Even if we don't write the keyword \code{this} in front of the field \code{b}, the bytecode will still be the same. The example was about the field assignment, but if we only want to load a field the bytecode looks like \textit{``aload\_0'', ``getfield''}. Back to our bytecode creation example \coderef{bytecodeCreation}, lines 27 and 28 are exactly adding those instructions to the bytecode. We take the variable itself as parameter to evaluate its value in the check-method.
-
-Important integers like the line number and pcs are added to the bytecode sequence from line 30 to 33. Finally all classes that the check-method takes as parameter are prepared at lines 35 to 38 and the instruction \textit{``invokestatic''} at line 40 is added to the bytecode. If we add a method invocation to the bytecode we have to specify what kind of parameter the invocation takes. For this reason we prepared the classes from line 35 to 38.
-
-With the classes \textit{CodeAttribute} and \textit{CodeIterator} from the Javassist API we can enter the bytecode sequence we created into existing ones. CodeAttribute represents the bytecode of a behavior and with CodeIterator we can iterate through that bytecode. We obtain a CodeIterator object from the CodeAttribute. So we first move the CodeIterator to the position (pc) in the bytecode where we want to enter our bytecode with \code{codeIterator.move(pc)} and than enter our sequence with \code{codeIterator.insert(ourByteCode)}.
-
-There were again some challenges we had to get over, like getting the right data after an instrumentation or inserting the additional bytecode at the right position in the existing bytecode sequence. In (\subsecref{bytecodeAdaptationDifficulties}) we discuss more about our problems we had.
-
-Once we have gone through the bytecode of all class files, the modified class files are stored in the destination directory as mentioned in \secref{highLevelOverview}. After the instrumentation we add out supplementary supporter classes to the project. The most important ones are \code{VariableTester}\textsuperscript{\ref{package1}} which tests whether a variable is null and \code{NullDisplayer}\textsuperscript{\ref{package1}} which matches data and prints the location of a null assignment when a \npe is thrown.
+Once we have gone through the bytecode of all the class files, the modified class files are stored in the destination directory as mentioned in \secref{highLevelOverview}. After the instrumentation we add out supplementary supporter classes to the project. The most important ones are \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}} which tests whether a variable is null and \code{NullDisplayer}\textsuperscript{\ref{package1}} which matches data and prints the location of a null assignment when a \npe is thrown.
 
 %===============================================================================
 \section{Challenges}
@@ -1416,6 +1199,349 @@ While we iterate through the invocation pc-interval and run into the opcode \eg 
 If the following opcode after the first \textit{``aload.*} is another \textit{``aload.*} we can be sure that they are two separate \mr candidate because two local variables does not have any relationship with each other. Even if the first opcode is a \textit{aload\_0}.
 
 With this system we iterate through the outermost invocation pc-interval and split it into candiate \mr pc-intervals.
+
+\chapter{Method receivers}
+\label{cha:appReceivers}
+\todo{Work on this}
+
+In this section we explain how to get information about the \mr needed to construct a unique identifier. \Mrs in the example \coderef{methodReceiverAlgDemoCode} are the variables \code{fToolButton} at line 7, \code{fToolButton.myIcon} at line 8 and \code{activePanel} at line 11.
+
+%\renewcommand\lstlistingname{Code}
+%\begin{Java}[caption={\Mr example.}, label={code:methodReceiverExample}]
+%public class A {
+%
+	%private Object (@\textbf{field}@) = new Object();
+	%private Object b = new B();
+%
+	%public static void main() {
+		%Object (@\textbf{var}@) = new Object();
+%
+		%(@\textbf{var}@).toString();	// local variable on which method is invoked
+		%(@\textbf{field}@).toString();	// field access
+		%(@\textbf{b.foo}@).toString();	// field access
+	%}
+%}
+%
+%public class B {
+	%public Object foo = new Object();
+	%..
+%}
+%\end{Java}
+
+We use the library Javassist to partially extract this data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get all the information we need about the \mr, thus we need to do it manually. The exact information we need is listed in \listref{methodReceiverInfo} and it is stored in an external \textit{csv} file due to overhead minimization.
+
+\begin{figure}[H]
+\renewcommand\figurename{List}
+	\begin{boxedminipage}{\textwidth}
+		\begin{itemize}
+		\itemsep8pt
+   	\item \mr counter (\mrs are counted)
+		\item source code line number of the method receiver
+		\item name of the class containing the method invocation
+		\item name of the method which contains the invocation
+		\item parameter types and return type of the method which contains the invocation
+		\item is the variable a local variable or a field
+		\item is variable static or not
+		\item variable name
+		\item statically declared variable type
+		\item name of the class declaring the variable, if the variable is a field, else empty string
+		\item attribute index, if the variable is a local variable, else empty string
+   \end{itemize}
+	\end{boxedminipage}
+	\caption{\Mr information.}
+	\label{list:methodReceiverInfo}
+\end{figure}
+
+To get this data, we need the \textit{pc-interval} of the \mr.
+Let us have a look at line 11 of the example source code shown in \coderef{methodReceiverAlgDemoCode} and its bytecode presented in \bytecoderef{methodReceiverAlgDemoBytecode}. In this example we want to extract the pc-interval of the \mr \code{activePanel} which is a method receiver of the \code{add(...)} method invocation.
+We will now explain the steps to get the pc-interval of the \mr \code{activePanel}, \ie <144,144>.
+
+\textbf{Finding the invocation opcode/end-pc}\\
+While iterating through the bytecode, NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation. For each method invocation we want to find the method receiver. Since bytecode first lists method receiver and all the method parameters, the pc of this \textit{``invoke.*''} opcode will represent the \textbf{end-pc} of a method invocation. In our example, the end-pc of the method invocation \code{add(...)} is 155.
+
+\textbf{Finding the start-pc}\\ 
+The pc at which the bytecode which represents the source code line, containing the invocation, begins is called \textbf{start-pc}. Finding the start-pc is done by using the line number table of the method. We compare the end-pc with the start-pc-s for each line of code, and take the last one which is smaller than the end-pc. This table is omitted from our example for simplicity. The start-pc is 144.
+
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={Code snippet to demonstrate the \mr extracting algorithm.}, label={code:methodReceiverAlgDemoCode}]
+public class DrawApplication {
+
+	private ToolButton fToolButton;
+
+	protected void open(final DrawingView newDrawingView) {
+	...
+	(@\textbf{fToolButton}@).tool();			   // field access
+	(@\textbf{fToolButton.myIcon}@).toString();	// field access
+		
+	JPanel activePanel = new JPanel();		
+	(@\textbf{activePanel}@).add((Component) getDesktop(), BorderLayout.CENTER);	
+	// local variable as a method receiver
+	...
+	}
+}
+\end{Java}
+
+\renewcommand\lstlistingname{Bytecode}
+\begin{JVMIS}[numbers=left, caption={Bytecode of \coderef{methodReceiverAlgDemoCode}.}, label={bytecode:methodReceiverAlgDemoBytecode}, breaklines=true]
+144  aload_3 [activePanel]
+145  aload_0 [this]
+146  invokevirtual org.jhotdraw.application.DrawApplication.getDesktop() : org.jhotdraw.contrib.Desktop [271]
+149  checkcast java.awt.Component [274]
+152  ldc_w <String "Center"> [276]
+155  invokevirtual javax.swing.JPanel.add(java.awt.Component, java.lang.Object) : void [254]
+\end{JVMIS}
+
+\textbf{Defining the outermost pc-interval}\\
+We define the outermost \textbf{pc-interval} as the interval starting with the start-pc and ending with the end-pc. We know that the \mr is located in this interval. In our example, this is <144,155>.
+
+\textbf{Getting the number of parameters for the method}\\
+By using Javassist we obtain the number of parameters of a method invocation by analyzing the method signature. Our example method takes two  parameters.
+
+\textbf{Extracting candidate \mr pc-intervals}\\
+The outermost interval <144,155> could contain other invocations, which could have \mrs of their own. This is visible in our example, where the \code{getDesktop()} invocation (pc 146) is embedded in our outermost interval. For this reason, we explored all possible bytecode combinations of instructions that can represent \mrs and developed a system for identifying such embedded call sights. More about this system can be found in the appendix (\ref{cha:bytecodeCombinations}). This system allows us to split the outermost pc-interval into candidate \mr pc-intervals. In our example, the outermost pc-interval is divided into \{<144,144>,<145,149>,<152,152>\}. Each of the pc-intervals represents:
+
+\begin{enumerate}
+	\item <144,144>: variable \code{activePanel}
+	\item <145,149>: first parameter \code{(Component) getDesktop()}
+	\item <152,152>: second parameter \code{BorderLayout.CENTER}
+\end{enumerate}
+
+\textbf{Finding the actual \mr}\\
+Since the set of candidate pc-intervals ends with the arguments of the method, and we know that the method expects $N$ arguments, we can ignore the last $N$ candidate pc-intervals. The one before them is the actual \mr pc-interval. In our example, since the method takes two arguments, the actual \mr pc-interval is <144,144>.
+
+If the \mr is actually return object from another method invocation, it is unapparent where exactly the \mr is situated in bytecode. More about the challenges we encountered can be found in \subsecref{methodReceiverDifficulties}.
+
+Statically analyzing bytecode for \mr means looking for certain opcodes which matches the regex \textit{``invoke.*''}. There are exactly five such bytecode instructions in Java: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}.
+
+In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but it can be ignored because static method invocations are called on classes which can never be null. NullSpy ignores these instructions. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate. As for the other \textit{invoke} instructions, they are treated normally.
+
+With the \mr pc-interval we extract the information listed in \listref{methodReceiverInfo} from the bytecode by using Javassist API.
+
+\chapter{Local variables assignments}
+\label{cha:appLocalVars}
+
+The full information we need to create a unique identifier for a local variable is listed in \listref{localVarInfo}.
+
+\begin{figure}[H]
+\renewcommand\figurename{List}
+	\begin{boxedminipage}{\textwidth}
+\begin{itemize}
+		\itemsep8pt
+		\item source code line number of the local variable
+		\item name of the class containing the local variable
+		\item name of the method which contains the local variable
+		\item parameter types and return type of the method which contains the invocation
+    \item is the variable a local variable or a field
+		\item local variable name
+		\item statically declared local variable type
+		\item attribute index
+		\item local variable slot
+		\item start-pc: the pc where the local variable assignment actually starts
+		\item store-pc: the pc of the \textit{``astore.*''} opcode
+		\item after-pc: the next pc after store-pc; before that pc we insert our code
+   \end{itemize}
+	\end{boxedminipage}
+	\caption{Local variable information.}
+	\label{list:localVarInfo}
+\end{figure}
+
+\chapter{Field assignments}
+
+There are only two instructions that indicates an access to a field, but there are actually many different types of fields. To get the meaning of different types see \listref{fieldKeywords}.
+
+\begin{figure}[H]
+\renewcommand\figurename{List}
+	\begin{boxedminipage}{\textwidth}
+		(\textbar\dots\textbar: put value on operand stack for assigning to a field)
+\begin{enumerate}
+\itemsep8pt
+      \item aload\_0, \textbar\dots\textbar, putfield
+      \item \textbar\dots\textbar, putstatic
+			\item aload.*, \textbar\dots\textbar, putfield
+			\item aload\_0, (getfield)+, \textbar\dots\textbar, putfield
+			\item getstatic, (getfield)*, \textbar\dots\textbar, putfield
+   \end{enumerate}
+	\end{boxedminipage}
+	\caption{Field keywords.}
+	\label{list:fieldKeywords}
+\end{figure}
+
+Depending on the category a field belongs to, different kind of information is stored about it. Number \chg{1}{one} in \listref{fieldKeywords} indicates fields of the current\ins{ly} analyzed class and number \chg{2}{two} can be static fields either of the current analyzed class or others classes. What Information we need about \chg{the}{these} field\ins{s} accessing \del{1\&2 }is listed in \listref{variableInfo1}.
+
+\begin{figure}[H]
+\renewcommand\figurename{List}
+	\begin{boxedminipage}{\textwidth}
+		\begin{itemize}
+			\itemsep8pt
+			\item source code line number of the local variable
+			\item name of the class containing the field assignment
+			\item name of the method which contains the field assignment
+			\item parameter types and return type of the method which contains the field assignment
+			\item is the variable a local variable or a field
+			\item class name in which the field is declared		
+			\item is field static or not
+			\item field name
+			\item statically declared field type
+			\item start-pc: the pc where the field assignment actually starts
+			\item store-pc: the pc of the \textit{``put.*''} opcode
+			\item after-pc: the next pc after store-pc; before that pc we insert our code
+	  \end{itemize}
+	\end{boxedminipage}
+	\caption{Field information (I).}
+	\label{list:variableInfo1}
+\end{figure}
+
+In NullSpy we use the term \textbf{member field} to describe a field of another class than the class being analyzed. Such fields are listed as number 3-5 in \listref{fieldKeywords}.
+We call everything before the instruction \textit{``putfield''} \textbf{member object}. For those fields more data are needed to store for their identification. The same information as listed in \listref{variableInfo1} is needed plus additional data listed in \listref{variableInfo2}.
+
+\begin{figure}[H]
+\renewcommand\figurename{List}
+	\begin{boxedminipage}{\textwidth}
+		\begin{itemize}
+			\itemsep8pt
+			\item is the member object a local variable or a field
+			\item class name in which the member object is declared	
+			\item is member field static or not
+			\item member object name
+			\item statically declared member object type
+   \end{itemize}
+	\end{boxedminipage}
+	\caption{Additional member object information (II).}
+	\label{list:variableInfo2}
+\end{figure}
+
+The synthetic example \coderef{fieldExample} shows how exactly the instructions \textit{``putfield''} and \textit{``putstatic''} are used.
+
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={Synthetic example to show how the instructions \textit{``putfield''} and \textit{``putstatic''} are used.}, label={code:fieldExample}]
+public class A {
+
+	private B b = new B();
+	private static B b2;
+
+	public void x() {
+
+		// |...|: value assigned to fields
+
+		// fields
+		this.b = ...; 	// aload_0, |...|, putfield
+		b2 = ...; 		// |...|, putstatic
+
+		B b3 = new B();
+
+		// member fields
+		b3.c = ...; 	// aload.*, (getfield)*, |...|, putfield
+		b3.c.d = ...
+
+		b.c = ...; 		// aload_0, (getfield)+, |...|, putfield
+		b.c.d = ...;
+
+		b2.c = ...; 	// getstatic, (getfield)*, |...|, putfield
+		b2.c.d = ...;
+	}
+}
+
+public class B {
+	public C c = new C();
+	..
+}
+
+public class C {
+	public D d = new D();
+	..
+}
+
+public class D {
+	..
+}
+\end{Java}
+
+\chapter{Bytecode instrumentation}
+\label{cha:appInstrumentation}
+The added bytecode represents a static method of a class named \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}.} which \chg{will be}{is} added to the modified project after bytecode modification is done. Depending on what kind of variable (local variable, field) is analyzed, different bytecode is constructed, which means the bytecode represents different methods which accepts different parameter/variable data.
+
+In \secref{javassist} we mentioned that the library makes it possible to modify bytecode either with the source- or bytecode-level API. Due to a limitation of Javassist (\secref{limitations}) we modify the class file at bytecode-level by creating a \textit{bytecode-array} and include it in the file. \coderef{bytecodeCreation} shows the way how the inserted bytecode is created.
+
+\begin{Java}[caption={Inserted bytecode(-array) creation.}, label={code:bytecodeCreation}, firstnumber=1]
+private byte[] getInsertCodeByteArray(Variable var) {
+	Bytecode testMethodByteCode = new Bytecode(cp);
+
+	testMethodByteCode.addLdc(behavior.getDeclaringClass()
+		.getName());
+	testMethodByteCode.addLdc(behavior.getName());
+	testMethodByteCode.addLdc(behavior.getSignature());
+	testMethodByteCode.addLdc(varID);
+	testMethodByteCode.addLdc(varName);
+	testMethodByteCode.addLdc(varType);
+
+	Field field = (Field) var;
+
+	String fieldDeclaringClassName = field
+		.getFieldDeclaringClassName();
+
+	testMethodByteCode.addLdc(fieldDeclaringClassName);
+
+	// int 1 -> static, 0 -> nonStatic
+	if (field.isStatic()) {
+		addIntegerToBytecode(testMethodByteCode, 1);
+	} else {
+		addIntegerToBytecode(testMethodByteCode, 0);
+	}
+
+	testMethodByteCode.addAload(0);
+	testMethodByteCode.addGetfield(
+		fieldDeclaringClassName varName, varType);
+
+	addIntegerToBytecode(testMethodByteCode, var.getVarLineNr());
+	addIntegerToBytecode(testMethodByteCode, var.getStartPc());
+	addIntegerToBytecode(testMethodByteCode, var.getStorePc());
+	addIntegerToBytecode(testMethodByteCode, var.getAfterPc());
+
+	CtClass variableTester = ClassPool.getDefault().get(
+			"ch.unibe.scg.nullSpy.runtimeSupporter.VariableTester");
+	CtClass str = ClassPool.getDefault().get("java.lang.String");
+	CtClass object = ClassPool.getDefault().get("java.lang.Object");
+
+	testMethodByteCode.addInvokestatic(variableTester,
+		"testDirectField", CtClass.voidType, new CtClass[] {
+			str, str, str, str, str, str, str,
+			CtClass.intType, object, CtClass.intType,
+			CtClass.intType, CtClass.intType,
+			CtClass.intType });
+
+	byte[] byteCode = testMethodByteCode.get();
+
+	return byteCode;
+}
+\end{Java}
+
+\coderef{bytecodeCreation} is a code snippet from class \code{VariableTester}\textsuperscript{\ref{package1}} which NullSpy adds to the project after the bytecode modification. This snippet creates the static method invocation that tests whether a field is null. The header of that method is presented in \coderef{checkFieldMethodHeader}.
+
+\begin{Java}[caption={Check field method header.}, label={code:checkFieldMethodHeader}, firstnumber=31]
+public static void testDirectField(
+	String classNameInWhichVarIsAccessed,
+	String behaviorName,
+	String behaviorSignature, 
+	String varID, String varName, String varType, 
+	String varDeclaringClassName,
+	int isStatic, 
+	Object varValue, 
+	int varLineNr, 
+	int startPc, int storePc, int afterPc
+	) {...}
+\end{Java}
+
+Now we will go through the code snippet shown in \coderef{bytecodeCreation} and explain it. The method header of the behavior \code{VariableTester.testDirectField(...)} shown in \coderef{checkFieldMethodHeader} takes seven strings, one boolean, one object and four integers as parameter. The snippet \coderef{bytecodeCreation} reproduces those parameters. 
+
+From line 4 to 17 the instruction \textit{``addLdc''} is used to add strings to the bytecode. For adding a boolean we used the integers \textit{``1''} and \textit{``0''} to represent the boolean value \textit{true} respectively \textit{false}. Lines 20 to 24 adds an integer to the bytecode sequence. 
+
+The Object, in our case a field, is added by the method \code{addAload(...)} at line 26 and the method \code{addGetfield(...)} at lines 27 and 28. In our synthetic example shown in \coderef{fieldExample} we saw that how a field is assigned a value at line 11. The bytecode of this example is \textit{``aload\_0'', \textbar\dots\textbar, ``putfield''}. Even if we don't write the keyword \code{this} in front of the field \code{b}, the bytecode will still be the same. The example was about the field assignment, but if we only want to load a field the bytecode looks like \textit{``aload\_0'', ``getfield''}. Back to our bytecode creation example \coderef{bytecodeCreation}, lines 27 and 28 are exactly adding those instructions to the bytecode. We take the variable itself as parameter to evaluate its value in the check-method.
+
+Important integers like the line number and pcs are added to the bytecode sequence from line 30 to 33. Finally all classes that the check-method takes as parameter are prepared at lines 35 to 38 and the instruction \textit{``invokestatic''} at line 40 is added to the bytecode. If we add a method invocation to the bytecode we have to specify what kind of parameter the invocation takes. For this reason we prepared the classes from line 35 to 38.
+
+With the classes \textit{CodeAttribute} and \textit{CodeIterator} from the Javassist API we can enter the bytecode sequence we created into existing ones. CodeAttribute represents the bytecode of a behavior and with CodeIterator we can iterate through that bytecode. We obtain a CodeIterator object from the CodeAttribute. So we first move the CodeIterator to the position (pc) in the bytecode where we want to enter our bytecode with \code{codeIterator.move(pc)} and than enter our sequence with \code{codeIterator.insert(ourByteCode)}.
+
+There were again some challenges we had to get over, like getting the right data after an instrumentation or inserting the additional bytecode at the right position in the existing bytecode sequence. In (\subsecref{bytecodeAdaptationDifficulties}) we discuss more about our problems we had.
 
 \end{appendices}
 

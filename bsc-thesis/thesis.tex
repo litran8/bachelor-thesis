@@ -634,12 +634,12 @@ It scans the bytecode on instructions like \textit{``putfield''} for instance or
 
 During the data collection about the fields we encountered some difficulties which we will discuss in \subsecref{variableDifficulties}.
 
-As already mentioned earlier, every time when encountering an assignment either \chg{of}{to} a local variable or a field, NullSpy inserts bytecode \chg{to check}{which check at run time} whether the variable is assigned null. If the variable is assigned null, NullSpy stores all the data about the variable. How we insert bytecode is described next.
+As already mentioned earlier, every time when encountering an assignment either to a local variable or a field, NullSpy inserts bytecode which checks at run time whether the variable is assigned null. If the variable is assigned null, NullSpy stores all the data about the variable. How we insert bytecode is described next.
 
 %-------------------------------------------------------------------------------
 \subsection{Bytecode Adaptation}
 \label{bytecodeAdaptation}
-Each time we encounter a variable assignment we first extract the \del{needed }data\ins{ about the variable} and then we \chg{ adapt the class file by adding extra }{add }bytecode right after the assignment bytecode. The \chg{function}{role} of the inserted bytecode is to check\ins{ at run time} whether the \chg{variable}{value being assigned to the variable} is null. If this is the case, \chg{the information collected before and which is passed as parameters to the checking method, is stored either into the \textit{``localVariableMap''} or into a \textit{``fieldMap''} which are HashMaps}{we store the previously explained information about this assignment}.
+Each time we encounter a variable assignment we first extract the data about the variable and then we add bytecode right after the assignment bytecode. The role of the inserted bytecode is to check at run time whether the value being assigned to the variable is null. If this is the case, we store the previously explained information about this assignment.
 
 The explanation of the way we do it can be found in the appendix \ref{cha:appInstrumentation}.
 
@@ -843,7 +843,7 @@ By only using the algorithm of extracting the pc-interval of a \mr (described in
 \label{subsec:variableDifficulties}
 We mentioned that NullSpy first collects data about fields with help of the class \code{Javassist.expt.ExprEditor}. That class uses the method \code{loopBody(...)} to iterate through bytecode of a method and scans for specific opcodes, in our place we are only interested into the opcodes which matches the regex \textit{``put.*''}. One parameter passed to the method \code{loopBody(...)} is the \code{mehodInfo} object which contains the bytecode sequence of the method we want to instrument.
 
-Since the \code{loopBody(...)} is invoked within a \code{while-loop}, it iterates through the given \code{methodInfo} until it reaches the end of the bytecode sequence. When it goes through the byte sequence we instrument the bytecode. But because the changes made on the bytecode is updated after the \codde{while-loop}, the method \code{loopBody(...)} still finds the specific opcodes at locations within the origin bytecode sequence instead of the modified one.
+Since the \code{loopBody(...)} is invoked within a \code{while-loop}, it iterates through the given \code{methodInfo} until it reaches the end of the bytecode sequence. When it goes through the byte sequence we instrument the bytecode. But because the changes made on the bytecode is updated after the \code{while-loop}, the method \code{loopBody(...)} still finds the specific opcodes at locations within the origin bytecode sequence instead of the modified one.
 
 Due to this situation had difficulties finding the right \textbf{start-pc} of field assignments. The class \code{FieldAnalyzer}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller}.} serves as the explanation of how we still managed to find the \textbf{start-pc} of a field assignment.
 
@@ -1354,7 +1354,7 @@ There are only two instructions that indicates an access to a field, but there a
 	\label{list:fieldKeywords}
 \end{figure}
 
-Depending on the category a field belongs to, different kind of information is stored about it. Number \chg{1}{one} in \listref{fieldKeywords} indicates fields of the current\ins{ly} analyzed class and number \chg{2}{two} can be static fields either of the current analyzed class or others classes. What Information we need about \chg{the}{these} field\ins{s} accessing \del{1\&2 }is listed in \listref{variableInfo1}.
+Depending on the category a field belongs to, different kind of information is stored about it. Number one in \listref{fieldKeywords} indicates fields of the currently analyzed class and number two can be static fields either of the current analyzed class or others classes. What Information we need about these fields accessing is listed in \listref{variableInfo1}.
 
 \begin{figure}[H]
 \renewcommand\figurename{List}
@@ -1446,7 +1446,7 @@ public class D {
 
 \chapter{Bytecode instrumentation}
 \label{cha:appInstrumentation}
-The added bytecode represents a static method of a class named \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}.} which \chg{will be}{is} added to the modified project after bytecode modification is done. Depending on what kind of variable (local variable, field) is analyzed, different bytecode is constructed, which means the bytecode represents different methods which accepts different parameter/variable data.
+The added bytecode represents a static method of a class named \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}.} which is added to the modified project after bytecode modification is done. Depending on what kind of variable (local variable, field) is analyzed, different bytecode is constructed, which means the bytecode represents different methods which accepts different parameter/variable data.
 
 In \secref{javassist} we mentioned that the library makes it possible to modify bytecode either with the source- or bytecode-level API. Due to a limitation of Javassist (\secref{limitations}) we modify the class file at bytecode-level by creating a \textit{bytecode-array} and include it in the file. \coderef{bytecodeCreation} shows the way how the inserted bytecode is created.
 

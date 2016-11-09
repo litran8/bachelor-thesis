@@ -763,7 +763,7 @@ for (int i = 0; i < ColorMap.size(); i++)
 [pc: 34, line: 149]
 \end{JVMIS}
 
-Neither in bytecode nor in line number attribute we can extract the exact interval of method invocations. Another interesting thing is that in the line number table (\bytecoderef{2-3}) of the example shown in \coderef{2-1} shows multiple corresponding line numbers, \eg lines 1\&10 or lines 2\&9. Again, we examine the line number table the same way as in the previous example. 
+Neither in bytecode nor in line number attribute we can extract the exact interval of method invocations. Another interesting thing is that in the line number table (\bytecoderef{2-3}) of the example shown in \coderef{2-1} shows multiple corresponding line numbers, \eg lines 1\&10 or lines 2\&9. Again, we examine the line number table: 
 
 \begin{enumerate}
 	\item line 1: starting point of the for-loop
@@ -775,28 +775,27 @@ Neither in bytecode nor in line number attribute we can extract the exact interv
 	\item line 10: for-loop incrementation or its ending
 \end{enumerate}
 
-\lt{change to synthetic example}
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Incomplete interval example.}, label={code:5-1}, firstnumber=22]
-fooTestSupporter
-	.bla(getObject(),
-		staticMethod(o),
-		fooTestSupporter2.bla2(null,
-			o));
+var_1
+	.method_1(staticMethod_1(),
+		staticMethod_2(param_1),
+		var_2.method_2(null,
+			param_2));
 \end{Java}
 
-\renewcommand\lstlistingname{Bytecode}
-\begin{JVMIS}[caption={Bytecode to \coderef{5-1}.}, label={code:5-2}, breaklines=true]
-18  aload_1 [fooTestSupporter]
-19  invokestatic isFieldOrLocalVariableNullExample.testMethodCall.FooTest.getObject() : java.lang.Object [26]
-22  aload_3 [o]
-23  invokestatic isFieldOrLocalVariableNullExample.testMethodCall.FooTest.staticMethod(java.lang.Object) : java.lang.Object [30]
-26  aload_2 [fooTestSupporter2]
-27  aconst_null
-28  aload_3 [o]
-29  invokevirtual isFieldOrLocalVariableNullExample.testMethodCall.FooTestSupporter.bla2(java.lang.Object, java.lang.Object) : java.lang.Object [34]
-32  invokevirtual isFieldOrLocalVariableNullExample.testMethodCall.FooTestSupporter.bla(java.lang.Object, java.lang.Object, java.lang.Object) : void [38]
-\end{JVMIS}
+%\renewcommand\lstlistingname{Bytecode}
+%\begin{JVMIS}[caption={Bytecode to \coderef{5-1}.}, label={code:5-2}, breaklines=true]
+%18  aload_1 [var_1]
+%19  invokestatic staticMethod_1() : java.lang.Object [26]
+%22  aload_3 [param_1]
+%23  invokestatic staticMethod_2(java.lang.Object) : java.lang.Object [30]
+%26  aload_2 [var_2]
+%27  aconst_null
+%28  aload_3 [param_2]
+%29  invokevirtual method_2(java.lang.Object, java.lang.Object) : java.lang.Object [34]
+%32  invokevirtual method_1(java.lang.Object, java.lang.Object, java.lang.Object) : void [38]
+%\end{JVMIS}
 
 \begin{JVMIS}[caption={Line number table/interval to \coderef{5-1}.}, label={code:5-3}, breaklines=true]
 [pc: 18, line: 22]
@@ -808,54 +807,36 @@ fooTestSupporter
 [pc: 32, line: 23]
 \end{JVMIS}
 
+By only using the algorithm of extracting the pc-interval of a \mr (described in \subsecref{methodReceiver}) we would get the wrong outermost pc-interval of a method invocation, when the invocation is split into multiple lines. To handle this mistake we implemented a supporting class named \code{MultipleLineManager}\footnote{\label{package2}In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.}. Its responsibility is to extract the outermost pc-interval of invocations in split line situations. How we implemented it is very complex. That is why we skip the explanation of how the extraction works and would recommend to to look at the class \code{MultipleLineManager} if interested.
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=\linewidth]{multipleLine/pic5-1}
-%\caption{Incomplete interval example.}
-%  \label{fig:pic5-1}
-%\end{figure}
+\todo{leave this or not write about the multiple line stuff.}
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=\linewidth]{multipleLine/pic5-2}
-%\caption{Bytecode to \figref{pic5-1}.}
-%  \label{fig:pic5-2}
-%\end{figure}
-
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=0.3\linewidth]{multipleLine/pic5-3}
-%\caption{Line number table/interval to \figref{pic5-1}.}
-%  \label{fig:pic5-3}
-%\end{figure}
-
-By using the algorithm we only get the interval from pc 19-32, but actually pc 18 also belongs to the interval. That the missing pc is missing will be detected in step 4\&5 when traversing back the ArrayList by the number of parameters. If it is not a static method invocation and there is not enough possible \mrs stored in that ArrayList to traverse back, the missing pc is added in retrospect.
-
-\renewcommand\lstlistingname{Pseudocode}
-\begin{Java}[caption={Multiple line interval algorithm.}, label={alg:multipleLineAlg}]
-i = index in line number attribute which contains the invoke.* opcode
-
-if (lineNrAttribute[j>i] <= lineNrAttribute[i]) {
-
-	if (isAlternating(i,j))
-		return getAlternatingInterval(i, j);
-
-	// non-alternating
-	b = j which has the smallest line number after j;
-	a = corresponding index to b; // index<k which has the same line number as b||k
-	return getNonAlternatingInterval(a, b);
-
-} else if (lineNrAttribute[j<i] == lineNrAttribute[i]) {
-
-		b = i;
-		a = j;
-		return getInterval(a, b);
-
-}
-\end{Java}
-
-This pseudocode will give a very rough idea how the invocation interval can be read out. The detailed implementation can be seen in the classes \code{MultipleLineManager}\footnote{\label{package2}In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.} and \code{MethodInvocationAnalyzer}\textsuperscript{\ref{package2}}.
+%only get the pc-interval <47,>, but actually pc 18 also belongs to the interval. That the missing pc is missing will be detected in step 4\&5 when traversing back the ArrayList by the number of parameters. If it is not a static method invocation and there is not enough possible \mrs stored in that ArrayList to traverse back, the missing pc is added in retrospect.
+%
+%\renewcommand\lstlistingname{Pseudocode}
+%\begin{Java}[caption={Multiple line interval algorithm.}, label={alg:multipleLineAlg}]
+%i = index in line number attribute which contains the invoke.* opcode
+%
+%if (lineNrAttribute[j>i] <= lineNrAttribute[i]) {
+%
+	%if (isAlternating(i,j))
+		%return getAlternatingInterval(i, j);
+%
+	%// non-alternating
+	%b = j which has the smallest line number after j;
+	%a = corresponding index to b; // index<k which has the same line number as b||k
+	%return getNonAlternatingInterval(a, b);
+%
+%} else if (lineNrAttribute[j<i] == lineNrAttribute[i]) {
+%
+		%b = i;
+		%a = j;
+		%return getInterval(a, b);
+%
+%}
+%\end{Java}
+%
+%This pseudocode will give a very rough idea how the invocation interval can be read out. The detailed implementation can be seen in the classes \code{MultipleLineManager}\footnote{\label{package2}In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.} and \code{MethodInvocationAnalyzer}\textsuperscript{\ref{package2}}.
 
 %-------------------------------------------------------------------------------
 \subsection{Obtaining Variable Data Difficulties - Fields}

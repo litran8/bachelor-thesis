@@ -923,7 +923,7 @@ Connector oldConnector = ((ChangeConnectionHandle.UndoActivity)
 
 Only looking at bytecode is not enough, so we are looking at the line number attribute. Line number \textit{31} (\bytecoderef{4-3}) is listed twice, this indicates that the method invocation is split into multiple lines in source code. The former declares the starting point of the interval and the latter the end of it. Line 32 indicates the starting point of parameter loading. How we get the pc-interval will be presented shortly. But before that we take a look at more examples.
 
-Special about the example shown in \coderef{3-1} is that the multiple line interval does not start with the smaller line number and end with the bigger one, apart from that it is alternated stored in the line number attribute shown in \bytecoderef{3-3}. The line number table indicates followings:
+Special about the example shown in \coderef{3-1} is that the multiple line interval does not start with the smaller line number and end with the bigger one. Apart from that the pc is alternated stored in the line number attribute shown in \bytecoderef{3-3}. The line number table indicates followings:
 
 \begin{enumerate}
 	\item line 1: the method invocation \code{getUndoActivity()}
@@ -1056,45 +1056,50 @@ By only using the algorithm of extracting the pc-interval of a \mr (described in
 %This pseudocode will give a very rough idea how the invocation interval can be read out. The detailed implementation can be seen in the classes \code{MultipleLineManager}\footnote{\label{package2}In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.} and \code{MethodInvocationAnalyzer}\textsuperscript{\ref{package2}}.
 
 %-------------------------------------------------------------------------------
-\subsection{Obtaining Variable Data Difficulties - Fields}
+\subsection{Obtaining Assignment Data Difficulties - Fields}
 \label{subsec:variableDifficulties}
-We previously mentioned that NullSpy first collects data about fields and we met some difficulties regarding this. By using the method \code{loopBody()} from class \code{Javassist.expt.ExprEditor} (\subsecref{field}) for gathering information caused those troubles because it loops through the GIVEN \code{methodInfo} which contains the bytecode sequence of a method. Even after finding a field assignment and adding some additional bytecode to it, the method still iterates through the unchanged \code{methodInfo} it got as parameter without the additional bytecode. Getting the right start-pc of a field assignment is not a straight forward process as it may seem.
+We mentioned that NullSpy first collects data about fields with help of the class \code{Javassist.expt.ExprEditor}. That class uses the method \code{loopBody(...)} to iterate through bytecode of a method and scans for specific opcodes, in our place we are only interested into the opcodes which matches the regex \textit{``put.*''}. One parameter passed to the method \code{loopBody(...)} is the \code{mehodInfo} object which contains the bytecode sequence of the method we want to instrument.
 
-After entered extra instructions the method \code{loopBody()} iterates onwards until it finds a key which indicates an access to a field. Normally, Javassist provides a method with which the start-pc of the field access can be find out easily, but in our case not due to bytecode alternation. This method returns the start-pc of the field as if there was no changes, however it actually has to return a bigger start-pc than it does. The start-pc is needed to distinguish in what category the field has to be assigned to (\subsecref{field}).
+Since the \code{loopBody(...)} is invoked within a \code{while-loop}, it iterates through the given \code{methodInfo} until it reaches the end of the bytecode sequence. When it goes through the byte sequence we instrument the bytecode. But because the changes made on the bytecode is updated after the \codde{while-loop}, the method \code{loopBody(...)} still finds the specific opcodes at locations within the origin bytecode sequence instead of the modified one.
 
-To find the right start-pc of the field assignment, we compare the start-pc returned by a method of Javassist with the \code{afterStorePc} of the previously found field assignment. Every time an assignment is found we store it as a reference for the next assignment to obtain the right data. Even for the store-pc of an assignment (\textit{``put.*"} the last found field is essential. If there is more interest how those pcs are obtained, please see the class \code{FieldAnalyzer}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller}.}.
+Due to this situation had difficulties finding the right \textbf{start-pc} of field assignments. The class \code{FieldAnalyzer}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller}.} serves as the explanation of how we still managed to find the \textbf{start-pc} of a field assignment.
+
+%This method caused us some.  troubles because it loops through the GIVEN \code{methodInfo} which contains the bytecode sequence of a method. Even after finding a field assignment and adding bytecode to it, the method still iterates through the unchanged \code{methodInfo} it got as parameter without the additional bytecode. Getting the right start-pc of a field assignment is not a straight forward process as it may seem.
+%
+%After entered extra instructions the method \code{loopBody()} iterates onwards until it finds a key which indicates an access to a field. Normally, Javassist provides a method with which the start-pc of the field access can be find out easily, but in our case not due to bytecode alternation. This method returns the start-pc of the field as if there was no changes, however it actually has to return a bigger start-pc than it does. The start-pc is needed to distinguish in what category the field has to be assigned to (\subsecref{field}).
+%
+%To find the right start-pc of the field assignment, we compare the start-pc returned by a method of Javassist with the \code{afterStorePc} of the previously found field assignment. Every time an assignment is found we store it as a reference for the next assignment to obtain the right data. Even for the store-pc of an assignment (\textit{``put.*"} the last found field is essential. If there is more interest how those pcs are obtained, please see the class \code{FieldAnalyzer}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller}.}.
 
 %-------------------------------------------------------------------------------
 \subsection{Bytecode Adaptation Difficulties}
 \label{subsec:bytecodeAdaptationDifficulties}
-The reason why we decided to use Javassist for our NullSpy project is because the thought of only using the source-level API \figref{bytecodeModificationLevels} to implement everything. It would have been much easier to only operate at source-level instead of learning how to read bytecode or extract data from it or enter extra code into it, yet at the end we still had to do everything at bytecode-level.
+The reason why we decided to use Javassist for our NullSpy project was due to the thought of only using the source-level API for the instrumentation. \ugh{It would have been much easier to only operate at source-level instead of learning to read bytecode, yet we still had to do everything at bytecode-level at the end.}
 
-One big problem encountered while inserting the test method between an assignment and a closing bracket \code{\}}. We tried to insert additional code as shown in \figref{insertionCodeExample} by specifying the exact line number where it should be entered in source code. Unfortunately Javassist first checks the specified line whether it contains some code (only symbols excluded). If there is no code at that line it computes the next line that contains some and inserts the test method right before it. Please visualize a situation where for example a local variable is created/instantiated at the end of a \code{if-body}. In this situation Javassist adds the extra code right before the next code line which is outside the existing scope of the local variable.
+One big problem we encountered was the insertion of our code between a variable assignment and a closing bracket \code{\}}. We tried to insert code as shown in \figref{insertionCodeExample} by specifying the exact line number where we want to enter in source code. Unfortunately Javassist first checks the specified line whether it contains some code (standalone symbols and Java keywords excluded). If there is no code at the specified line, Javassist computes the next line containing some code and inserts our code right before that line. Let us look at a situation where for example the local variable \code{var} is assigned a value at the end of a \code{if-body} at line 3 in \coderef{bytecodeAdaptationExample_1}. In this situation Javassist adds the extra code right before the next code line which is the beginning of the \code{else-body} (line 5 in \coderef{bytecodeAdaptionExample_2}). So our added code to check the local variable \code{var} for its value can not be reached. 
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Bytecode adaptation example.}, label={code:bytecodeAdaptationExample_1}]
-Object fontName;
-if (fName.startsWith("A")) {
-	fontName = new Arial();
+Object var;
+if (...) {
+	var = ...;
 } else {
-	fontName = new Calibri();
+	var = ...;
 }
 \end{Java}
 
 \begin{Java}[caption={Wrong Adaptation to \coderef{bytecodeAdaptationExample_1}.}, label={code:bytecodeAdaptionExample_2}]
-Object fontName;
-if (fName.startsWith("A")) {
-	fontName = new Arial();
+Object var;
+if (...) {
+	var = ...;
  } else {
-	--<inserted code which takes ``fontName'' as parameter>--
-	fontName = new Calibri();
+	--<inserted code to check the variable var at line 3>--
+	var = ...;
 }
 \end{Java}
 
+Due to this problem we changed the way to insert our code at bytecode-level. This way we first have to build up the bytecode sequence and then enter it before a specific pc. How we build the bytecode sequence is explained in .
 
-That is why changed the way to insert the test method at bytecode-level. Like this we first have to build up the bytecode sequence and then enter it before a specific pc. Please take a look at the class \code{ByteCodeAdapter}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller}.} how the bytecode sequence is created.
-
-There are of course many other small problems during the implementation of NullSpy but these mentioned are the most troublesome ones.
+There are more problems during the implementation of NullSpy but we mentioned the most troublesome ones in this subsection.
 
 %===============================================================================
 \section{Limitations}
@@ -1103,6 +1108,8 @@ There are of course many other small problems during the implementation of NullS
 During the implementation of NullSpy we had to change the concept few times due to limitations or an overhead that could have grown immense.
 
 Our first idea of how NullSpy could track the \npes is to gather information about variable assignment, which is the case now, and also inject another test method right before each method invocations. In small projects this way could have worked fine but in larger projects which could contain hundreds of classes with a lot of method invocations the execution time would be strongly influenced.
+
+\lt{rewrite the next three paragraphs}
 
 Being able to collect data about variables we still are not able to avoid injecting bytecode even it affects the runtime. Related to this issue a limitation about Javassist is mentioned before namely inserting bytecode right before a closing bracket (\subsecref{bytecodeAdaptationDifficulties}). Because of this it highly depends on the location where additional code should be inserted whether using the source-level API is possible or not. \ugh{Avoiding checking all the location where something new should be added it is more secure to do this on bytecode-level.}\lt{ändern} But in cases like entering something at the beginning or at the end of a method body the source-level is just fine.
 

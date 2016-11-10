@@ -184,18 +184,18 @@ The instructions from pc 0 to pc 4 (lines 2-4 in \bytecoderef{helloWorld}) repre
 
 If the opcode represents a variable, on its right side we can see the information about the name and type of the variable, \eg line 3. 
 In case of an invocation opcode, it shows the behavior/method name, the parameter types and the return type, \eg line 7. 
-We extract this information with the help of Javassist, and below mentioned tables.
+\del{We extract this information with the help of Javassist, and below mentioned tables.}\brs{what we do is irrelevant in technical background}
 %In \secref{lowLevelOverview} we will see how this information is used.
 
 Each method bytecode representation holds a \textbf{line number table} and a \textbf{local variable table} which are listed underneath the instructions of the method (lines 9-15 in \bytecoderef{helloWorld}). 
 
-The line number table\footnote{In the jargon of Javasist, this is also called the line number attribute.} maps source code line of the method with the pc which indicates the beginning of the bytecode to the corresponding source code line. The line number table in \bytecoderef{helloWorld} is represented between the lines 9 and 12: source code line 5 starts with the pc 0 (represented by the line 10), source code line 6 starts with the pc 5 (in line 11) \etc This mapping does not apply to cases where a statement is separated into multiple lines. \todo{Should we move next explanation to the appendix?}In \subsecref{methodReceiverDifficulties} we explain further details about the line number table in a split Java statement case.
+The line number table\footnote{In the jargon of Javasist, this is also called the line number attribute.} maps source code line of the method with the pc which indicates the beginning of the bytecode to the corresponding source code line. The line number table in \bytecoderef{helloWorld} is represented between the lines 9 and 12: source code line 5 starts with the pc 0 (\chg{represented by the}{as shown on} line 10), source code line 6 starts with the pc 5 (in line 11) \etc This mapping does not apply to cases where a statement is separated into multiple lines. \todo{Should we move next explanation to the appendix?}\del{In }\subsecref{methodReceiverDifficulties} \del{we explain further details about the line number table in a split Java statement case.}\brs{irrelevant, just say that this should be noted as it will have great impact on our implementation}
 
-If we look back, to the \stacktraceref{stackTrace}, we see that the stack trace provides us with the numbers of lines of code, which are part of the call-chain that led to \npe. The information the line number table holds is used to recover the information about the actual point in the code where the null was assigned to a reference. 
+If we look back, to the \stacktraceref{stackTrace}, we see that the stack trace provides us with \chg{the numbers of lines of code, which are part of the call-chain that led to \npe}{a part of the call-chain that led to the \npe. This includes the line numbers in the source code where the invocations happened.} The information the line number table holds is used to recover the information about the actual point in the code where the null was assigned to a reference. 
 %In \secref{lowLevelOverview} we will discuss how this is done.
 
 \renewcommand\lstlistingname{Bytecode}
-\begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot 2 (line 4\&7).}, label={bytecode:localVarTableDuplicatedSlot1}, breaklines=true]
+\begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot 2 (line 4 and 7).}, label={bytecode:localVarTableDuplicatedSlot1}, breaklines=true]
 Local variable table:
  [pc: 0, pc: 95] local: this index: 0 type: org.jhotdraw.samples.javadraw.JavaDrawViewer
  [pc: 0, pc: 95] local: filename index: 1 type: java.lang.String
@@ -233,21 +233,21 @@ As mentioned before, the bytecode of each method also holds a local variable tab
 
 In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is class \code{HelloWorld}.
 
-Let us now look at a more complicated example of the local variable table (\bytecoderef{localVarTableDuplicatedSlot1}). Local variables do have a limited lifespan. Let us have a look at the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{localVarTableDuplicatedSlot1}.
-This method consists of a \code{try-catch} block. We see that the variable \code{url} (declared at line 3 in \coderef{localVarTableDuplicatedSlot1SourceCode} and line 4 in \bytecoderef{localVarTableDuplicatedSlot1}) is only accessible within the \code{try\{\}} block which starts from pc 0 and ends with pc 40.
-This local variable is stored at the index 2 in the local variable table in \bytecoderef{localVarTableDuplicatedSlot1}, since the first two indexes occupy \textit{this} reference and the method parameter. Variable \code{url} is created at the pc 13 and is only accessible until pc 40 (excluded). 
+Let us now look at a more complicated example of the local variable table {(\bytecoderef{localVarTableDuplicatedSlot1})\brs{<-- delete this reference, and move the source code above the byte code and bold the interesting parts}. \del{Local variables do have a limited lifespan. }\chg{Let us have a look at}{Consider} the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{localVarTableDuplicatedSlot1}.
+This method consists of a \code{try-catch} block. We see that the variable \code{url} (declared at line 3 in \coderef{localVarTableDuplicatedSlot1SourceCode} and line 4 in \bytecoderef{localVarTableDuplicatedSlot1}) is only accessible within the \code{try\{\}} block which starts from pc \chg{0}{13} \brs{please TRIPLE check all numbers} and ends with pc 40.
+This local variable is stored at the index 2 in the local variable table in \bytecoderef{localVarTableDuplicatedSlot1}, since the first two indexes occupy \textit{this} reference and the method parameter. \del{Variable \code{url} is created at the pc 13 and is only accessible until pc 40 (excluded)}\brs{already said in last paragraph}. 
 As soon as the lifespan of a local variable ends, the slot can be reused by the next instantiated local variable. 
 So, onward the pc 40, slot 2 is free again. 
 The freed slot can be immediately used by the next declared variable, which is the variable \code{e} in our example. 
-Looking at line 7 in \bytecoderef{localVarTableDuplicatedSlot1} we see that \code{e} also has the slot number 2. This is why we can find local variable tables that contain multiple entries with the same local variable slot.
+Looking at line 7 in \bytecoderef{localVarTableDuplicatedSlot1} we see that \code{e} also has the slot number 2. This is why we can find local variable tables that contain multiple entries with the same local variable slot.\brs{this paragraph is HUGE! Split the URL talk in to one paragraph, and the reuse part in another}
 
-The indexes of the the local variable table are important because we use them to get the right local variable we are interested in. How we make use of the indexes to find the aimed variable is explained in \subsecref{variable}.
+The indexes of the the local variable table are important because we use them to get the right local variable we are interested in. \del{How we make use of the indexes to find the aimed variable is explained in }\subsecref{variable}. \brs{the first sentence should be where you first mention the indexes, the second is irrelevant}
 
 %===============================================================================
 \section{Javassist}
 \label{sec:javassist}
 
-\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}~\cite{Chib00}~\cite{Chib03}, a subproject of Jboss, is a library which enables manipulation of the Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way. Examples of this manipulation include defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. A tutorial for using Javassist\footnote{\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}} is available online and was used as a starting point for this work.
+\textit{Javassist} or \textit{Java Programming Assistant}\footnote{\url{http://jboss-javassist.github.io/javassist/}}~\cite{Chib00}~\cite{Chib03}, a subproject of \chg{Jboss}{JBoss}, is a library which enables manipulation of the Java bytecode. Since 1999 it is used as an engineering toolkit in a broad domain, and is still being extended by Shigeru Chiba. It enables developers to manipulate Java bytecode in a simplified way. Examples of this manipulation include defining a new class at runtime or modifying a class file when it is loaded by the JVM. All manipulations are performed at load-time through a provided class loader. A tutorial for using Javassist\footnote{\url{http://jboss-javassist.github.io/javassist/tutorial/tutorial.html}} is available online and was used as a starting point for this work.
 
 Unlike many other bytecode manipulation libraries, Javassist offers two levels of API: \textbf{source}-level and \textbf{bytecode}-level. Using the source-level API, the user can edit a class file without any familiarity with the specifications of the Java bytecode. Knowledge of the Java language is enough since the API is designed only with the vocabulary of Java. On this level the programmer has to write Java source code and Javassist compiles it automatically. The bytecode level allows the user to modify classes by modifying the bytecode directly.
 
@@ -260,7 +260,7 @@ Unlike many other bytecode manipulation libraries, Javassist offers two levels o
 
 %In \figref{bytecodeModificationLevels}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} the term \textit{``Low Level''} is used for \textit{bytecode}-level and \textit{``High Level''} for \textit{source}-level. Using the libraries \textit{ASM} and \textit{BCEL} \brs{links or refs to these libs}the user has to construct bytecode itself and is not able to only write simple source code to modify a class file. The library \textit{AspectJ} on the other hand only allows the user to write source code which is than translated into bytecode. This way of course the user is limited by the functionality of the library \textit{AspectJ}. \textit{Javassist}\brs{not consistent, sometimes textit sometimes not. I don't see why it should be textit, I receomend droping it} and \textit{CGLIB} provide the user the choice of whether to work on \textit{bytecode}- or \textit{source}-level, or even on both. \brs{this whole story about ``levels'' is important because...}\lt{figure shows that javassist can use both apis.. take out?}
 
-At this point, let us look at the small example shown in \coderef{javassistExample}\footnote{Example taken from Javassist tutorial.} of how the bytecode manipulation with javasist works. We go through the example line by line.
+\del{At this point, }let us look at the small example shown in \coderef{javassistExample}\footnote{Example taken from Javassist tutorial.} of how the bytecode manipulation with javasist works. We go through the example line by line.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Javassist example.}, label={code:javassistExample}][H]
@@ -275,7 +275,7 @@ cc.writeFile();
 
 	\item The class \textit{CtClass} (compile-time class) represents the class file. This means that all manipulations are performed on the \textit{CtClass} object. We obtain a reference to the \textit{CtClass} object representing the \code{test.Rectangle} class by invoking the \code{get()} method on the \textit{ClassPool} instance.
 
-	\item In this example the only bytecode modification done is changing the superclass of \code{test.Rectangle} to \code{test.Point}. This does not serve any purpose and is only illustrative.
+	\item In this example the only bytecode modification done is changing the superclass of \code{test.Rectangle} to \code{test.Point}. \ugh{This does not serve any purpose and is only illustrative.}\brs{Illustration is a purpose, so say ``This change serves only for illustration''}
 
 	\item Once the bytecode modification is done, the method call \code{writeFile()} on the instance of \textit{CtClass} is necessary to make sure that the changes are reflected on the original class file. The method \code{writeFile()} converts the modified \textit{CtClass} object into a class file and stores it on a local disk.
 \end{enumerate}
@@ -348,7 +348,7 @@ public static void main(String args[]) {
 	System.out.println("This is an example class.");
 }
 \end{Java}
-
+\brs{I feel the captions are a bit uninformative. For example: ``Bytecode example.'' has no context whatsoever, especially since we had a ton of bytecode examples}
 %===============================================================================
 \section{JAD}
 \label{sec:jad}
@@ -387,7 +387,8 @@ public void itemStateChanged(ItemEvent e) {
 	loadDrawing((String)e.getItem());
 }
 \end{Java}
-
+\brs{indentation}
+ 
 JAD is in no way a dependency of NullSpy but it was a big help during the implementation phase since after running NullSpy on a project only the modified bytecode is available. The use of JAD is for the sake of debugging NullSpy; to check whether the modification made by Javassist, \ie inserting source code, was successful. Another way to check the result for correctness is looking at bytecode itself but that would have taken a lot more effort and time.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

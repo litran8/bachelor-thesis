@@ -29,9 +29,9 @@ By tracking the null assignments through static analysis and by instrumenting th
 \chapter{Introduction}
 \label{ch:introduction}
 
-\Npe is a commonly occurring \rte in object-oriented languages. \todo{Add some references} In most OOP languages there is a special \textit{null} value that is assigned to references in order to indicate that the reference does not refer to an object. A \npe is caused by invoking a method or accessing a field through a null-value reference, \ie a reference with the null value.
+\Npe is a commonly occurring \rte in object-oriented languages. \todo{Add some references} \brs{this todo has been here forever, do it or remove it}In most OOP languages there is a special \textit{null} value that is assigned to references in order to indicate that the reference does not refer to an object. A \npe is caused by invoking a method or accessing a field through a null-value reference, \ie a reference with the null value.
 
-Previous research has found that 35\% of conditional checks in Java projects are null checks~\cite{Osma16a}. This reduces the readability of source code and has a negative impact on performance~\cite{Osma16a}. It is also considered the number one error Java programmers make\footnote{\url{http://www.webcitation.org/6lNPzbIyy}}.
+Previous research has found that 35\% of conditional checks in Java projects are null checks~\cite{Osma16a}. This reduces the readability of source code and has a negative impact on performance~\cite{Osma16a}\brs{two identical references for two consecutive sentences is lame, just remove the first one}. It is also considered the number one error Java programmers make\footnote{\url{http://www.webcitation.org/6lNPzbIyy}}.
 
 To better understand occurrences of \npes we present two different example situations in which a \npe can be thrown.
 
@@ -90,7 +90,7 @@ public class DrawApplication {
 
 A more complicated way a \npe can be triggered is when it involves variables with larger scopes such as class members. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation. This code snippet defines the class named \code{DrawApplication} which has the field \code{fManager} (declared at line 3). This class contains four relevant methods: \code{open(...)}, \code{createIconkit()}, \code{getIconkitManager()} and \code{setTool(...)}.
 
-The \code{open(...)} method invokes the methods \code{createIconkit()} at line 7 and \code{setTool(...)} at line 9. By calling \code{createIconkit()} at line 7 the field \code{fManager} is assigned \textbf{null}. The field is assigned \textbf{null} by performing the method \code{getIconkitManager()} at line 14, which just returns the \textbf{null} value at line 19.
+The \code{open(...)} method invokes the methods \code{createIconkit()} at line 7 and \code{setTool(...)} at line 9. By calling \code{createIconkit()} at line 7 the field \code{fManager} is assigned \textbf{null}\brs{null was code a while ago now it's bold. be consistent}. The field is assigned \textbf{null} by performing the method \code{getIconkitManager()} at line 14, which just returns the \textbf{null} value at line 19.
 
 Afterwards, when the method \code{open(...)} calls \code{setTool()}, the attempt to call the method \code{getComponent()} on field \code{fManager} at line 24 causes the \npe. The resulting \npe stack trace is shown in \stacktraceref{stackTrace}:
 
@@ -107,7 +107,7 @@ Afterwards, when the method \code{open(...)} calls \code{setTool()}, the attempt
 	\label{stacktrace:stackTrace}
 \end{figure}
 
-In \stacktraceref{stackTrace} we can see that the stack trace points only to the line 24, where \npe occured, and it does not track to the location where the variable is assigned the null value. We call this location the root of an exception. That means the Java developer has to debug his/her way to the exception root.
+In \stacktraceref{stackTrace} we can see that the stack trace points only to the line 24, where \npe occured, and it does not track to the location where the variable is assigned the null value. We call this location the root of an exception. That means the Java developer has to debug \chg{his/her}{their} way to the exception root.
 
 At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developer the exact location of the null assignment next to the ordinary stack trace, as shown in \stacktraceref{stackTrace2}.
 

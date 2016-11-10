@@ -396,7 +396,7 @@ JAD is in no way a dependency of NullSpy but it was a big help during the implem
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{NullSpy}
 
-As explained in \charef{introduction}, this project is about providing the user with an additional link next to the common stack trace containing the location of a \textit{null} assignment to the variable that caused the \npe.
+As explained in \charef{introduction}, this project is about providing the user with an additional \ugh{link }next to the common stack trace containing the location of a \textit{null} assignment to the variable that caused the \npe.
 
 In this chapter we give an overview of how we implemented NullSpy. We will also address the challenges (\secref{challenges}) we encountered during the implementation as well as the limitations of the tool (\secref{limitations}).
 
@@ -451,7 +451,7 @@ We will look at these modules in more detail and explain what each one does.
 \label{subsec:processFlow}
 In this short and rough overview of the entire process we explain the reason why we have to extract data from bytecode and what they are used for. Details are discussed in the following subsections.
 
-From the stack trace of a \npe we can obtain three kind of information, namely the class name, method name and the line number of where the \npe happened. The aim of NullSpy is to reveal the location of the null assignment to the variable which caused the \npe. To achieve this goal we need to take information from the bytecode about \textbf{\mrs} and \textbf{null assignments}.
+From the stack trace of a \npe we can obtain three kind\ins{s} of information\chg{, namely}{:} the class name, method name and the line number of where the \npe happened. The aim of NullSpy is to reveal the location of the null assignment to the variable which caused the \npe. To achieve this goal we need to take information from the bytecode about \textbf{\mrs} and \textbf{null assignments}.
 
 The first step in the modification part is to statically gather information about the \mrs. We use the term \textbf{\mr} to refer to variables on which methods are invoked, or whose fields are accessed.
 These variables are candidates for triggering a \npe.
@@ -460,8 +460,9 @@ These identifiers are used later to track the assignments to the aforementioned 
 
 The second step is to instrument the assignments. For every non-primitive variable assignment we collect information about the variable, needed to create its unique identifier. After the assignment we insert code which represents a call to the \textbf{run-time supporter} package with the variable's identifier. The run-time supporter package checks at run-time whether the variable is assigned null. If this is the case we store the information about this variable.
 
-At the end of the bytecode modification part we wrap the \code{main()} method into a \textit{try-catch-block}. This block extract from the \npe stack trace the information about the location where the exception happened (class name, method name, line number). This is the only information we can get from a stack trace. This information is passed on to the run-time supporter package which compares it with the stored identifiers about the \mrs. If there is a match regarding the comparison, NullSpy uses this identifier to reveal the information stored about the assignments to this variable. If there is an entry about the null assignment of that variable, we extract from it the line number of the assignment and create the additional link that reveals the location of the null assignment. This link is then added to the common \npe stack trace.
+At the end of the bytecode modification part we wrap the \code{main()} method into a \textit{try-catch-block}. This block extract from the \npe stack trace the information about the location where the exception happened (class name, method name, line number). This is the only information we can get from a stack trace. This information is passed on to the run-time supporter package which compares it with the stored identifiers about the \mrs. If there is a match regarding the comparison, NullSpy uses this identifier to reveal the information stored about the assignments to this variable. If there is an entry about the null assignment of that variable, we extract from it the line number of the assignment and create the additional \ugh{link }\brs{what are these links you are talking about? just because eclipse allows you to click on stack traces does not mean we can create a link in a console aplication}that reveals the location of the null assignment. This link is then added to the common \npe stack trace.
 
+\brs{everything in this subsection after this point makes no sense to me. ``As soon as a \npe is thrown'' how do we know when it's thrown? ``sequentially compare data'' what does this even mean?}
 As soon as a \npe is thrown, we sequentially compare data to get the right location of the null assignment. The comparison-sequence looks as follows (we use the symbol ``\textbf{$\|$}'' for the comparison):
 
 \begin{enumerate}
@@ -478,7 +479,7 @@ The way how we extract and store all those data are discussed in the following s
 %-------------------------------------------------------------------------------
 \subsection{\MR Data Collection}
 \label{subsec:methodReceiver}
-In this section we explain how to get information about the \mr needed to construct a unique identifier. \Mrs in the example \coderef{methodReceiverAlgDemoCode} are the variables \code{fToolButton} at line 7, \code{fToolButton.myIcon} at line 8 and \code{activePanel} at line 11.
+In this section we explain how to get information about the \mr needed to construct a unique identifier. \Mrs in the example \coderef{methodReceiverAlgDemoCode} \brs{examples in appendix? nope!} are the variables \code{fToolButton} at line 7, \code{fToolButton.myIcon} at line 8 and \code{activePanel} at line 11.
 
 We use the library Javassist to partially extract this data from bytecode. Unfortunately, Javassist does not provide the functionality to directly get all the information we need about the \mr, thus we need to do it manually. 
 
@@ -491,10 +492,10 @@ To get data about \mrs we iterate through the bytecode looking for the instructi
 To do this, NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation. 
 For each method invocation we want to find the method receiver. 
 In our example bytecode instruction which matches the invocation of the method \code{add(...)} is at the line 6 in \bytecoderef{methodReceiverAlgDemoBytecode}.
-Since bytecode lists method receiver and all the method parameters before the \textit{``invoke.*"} instruction, the pc of this \textit{``invoke.*''} opcode will represent the \textbf{end-pc} of a method invocation. In our example, the end-pc of the method invocation \code{add(...)} is 155.
+Since bytecode lists method receiver and all the method parameters before the \textit{``invoke.*"} instruction, the pc of this \textit{``invoke.*''} opcode will represent the \textbf{end-pc} of a method invocation\brs{wtf is an end-pc? say that the invocation spreads over multiple pcs}. In our example, the end-pc of the method invocation \code{add(...)} is 155.
 
 \textbf{Finding the start-pc}\\ 
-The \textbf{start-pc} is the pc at which begins the bytecode which represents the source code line, containing the invocation. Finding the start-pc is done by using the line number table of the method. We compare the \textbf{end-pc} with the \textbf{start-pc}-s for each line of code, and take the last one which is smaller than the \textbf{end-pc}. The \textbf{start-pc} in our example is 144. \todo{Add tables to the bytecode C.1}
+The \textbf{start-pc} is the pc at which begins the bytecode which represents the source code line, containing the invocation. Finding the start-pc is done by using the line number table of the method. We compare the \textbf{end-pc} with the \textbf{start-pc}-s for each line of code\brs{do all lines of code have a start-pc or just the ones with invocations?}, and take the last one which is smaller than the \textbf{end-pc}. The \textbf{start-pc} in our example is 144. \todo{Add tables to the bytecode C.1}
 
 We define the outermost \textbf{pc-interval} as the interval starting with the \textbf{start-pc} and ending with the \textbf{end-pc}. We know that the \mr is located in this interval. In our example, this is <144,155>.
 
@@ -511,8 +512,7 @@ The outermost interval <144,155> could contain other invocations, which could ha
 The set of candidate pc-intervals ends with the arguments of the method.
 Javassist allows us to obtain the number of parameters of a method invocation by analyzing the method signature. 
 Thus, if the method expects $N$ arguments, we can ignore the last $N$ candidate pc-intervals. The one before them is the actual \mr pc-interval. 
-In our example, since the method takes two arguments, the actual \mr pc-interval is <144,144>.
-
+In our example, since the method takes two arguments, the actual \mr pc-interval is <144,144>. \brs{is this true if the method arguments are not all invocations? e.g. o.foo(bar, buzz());}
 
 If the \mr is actually return object from another method invocation, it is unapparent where exactly the \mr is situated in bytecode. More about the challenges we encountered can be found in \subsecref{methodReceiverDifficulties}
 
@@ -520,7 +520,7 @@ With the \mr pc-interval we extract the information needed to create a unique \m
 We get the index of the \mr by using Javassist (in our example the index is 3), and with the index and pc information of the \mr, we can 
 \todo{explain till the end}
 
-To create a unique identifier for a method receiver we need the information like:
+To create a unique identifier for a method receiver we need \ugh{the information like}\brs{``like'' implies similar, do we need this data or similar data?}:
 \begin{itemize}
 	\item source code line number of the method receiver
 	\item name of the class and signature of the method containing the method invocation
@@ -531,9 +531,9 @@ To create a unique identifier for a method receiver we need the information like
 The exact information we need can be found in the appendix \ref{cha:appReceivers}
 
 
-There are exactly five such bytecode instructions in Java: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}.
+There are exactly five such bytecode instructions in Java: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. \brs{woah, what? context switch out of nowhere! how does this relate to appendix C and method receivers?}
 
-In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but it can be ignored because static method invocations are called on classes which can never be null. NullSpy ignores these instructions. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate. As for the other \textit{invoke} instructions, they are treated normally.
+In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but it can be ignored because static method invocations are called on classes which can never be null. NullSpy ignores these instructions. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate. As for the other \textit{invoke} instructions, they are treated normally.\brs{including invokedynamic which is not used by java?}
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Code snippet to demonstrate the \mr extracting algorithm.}, label={code:methodReceiverAlgDemoCode}]
@@ -567,6 +567,7 @@ public class DrawApplication {
 %-------------------------------------------------------------------------------
 \subsection{Assignments Collection}
 \label{subsec:variable}
+
 %In the precious section we were looking for instructions which match the regex \textit{``invoke.*''} to detect \mrs in bytecode. 
 To find the assignments in the bytecode we search for the instructions matching regexs \textit{``astore.*''} and \textit{``put.*''}. The former refers to local variable assignments and the latter to field assignments. 
 %Unlike the information collection of the \mr, the data about the variables are stored in a HashMap, since it needs to be used at run time.
@@ -582,7 +583,7 @@ Unfortunately, Javassist does not provide any support for gaining information ab
 %We have to pay attention to get the right local variable every time we encounter one while iterating through bytecode. 
 Every time we hit upon the opcode \textit{``astore.*''}  (which represents an assignment to a local variable) we get the index of the variable and the pc of the assignment instruction. A local variable has a limited lifespan. As we have already seen in \secref{bytecode} multiple entries can have the same local variable slot (one variable takes the index of the other whose lifespan expired).
 
-\begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot 2 (line 4\&7).}, label={bytecode:localVarTableDuplicatedSlot}, breaklines=true]
+\begin{JVMIS}[numbers=left, caption={Local variable table entries with same slot 2 (line 4\&7\brs{do not use \&}).}, label={bytecode:localVarTableDuplicatedSlot}, breaklines=true]
 Local variable table:
  [pc: 0, pc: 95] local: this index: 0 type: org.jhotdraw.samples.javadraw.JavaDrawViewer
  [pc: 0, pc: 95] local: filename index: 1 type: java.lang.String
@@ -593,7 +594,7 @@ Local variable table:
 \end{JVMIS}
 
 \todo{add assignment bytecode}
-Let us assume that we have a local variable assignment where its \textit{``astore\_2''} opcode is located at pc 45 (\bytecoderef{localVarTableDuplicatedSlot}). In this example we can extract slot 2 from the opcode \textit{astore\_2}. After extracting the slot (index: 2) we iterate through the local variable table and find the first entry which contains that slot (line 4 in \bytecoderef{localVarTableDuplicatedSlot}). If the pc of the assignment is not included in the local variable lifespan of the entry (pc 45 $\notin$ [pc: 13, pc: 40], line 4), the next entry with the same slot (pc 45 $\in$ [pc: 44, pc: 94], line 7) will be examined. Checking the entries with the same slot goes on until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information needed to create a unique identifier for the variable. We now extract from local variable table the information we need to create a unique identifier for a variable like:
+Let us assume that we have a local variable assignment where its \textit{``astore\_2''} opcode is located at pc 45 (\bytecoderef{localVarTableDuplicatedSlot})\brs{Clearly not in this bytecode}. In this example we can extract slot 2 from the opcode \textit{astore\_2}. After extracting the slot (index: 2) we iterate through the local variable table and find the first entry which contains that slot (line 4 in \bytecoderef{localVarTableDuplicatedSlot}). If the pc of the assignment is not included in the local variable lifespan of the entry (pc 45 $\notin$ [pc: 13, pc: 40], line 4), the next entry with the same slot (pc 45 $\in$ [pc: 44, pc: 94], line 7) will be examined. Checking the entries with the same slot goes on until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information needed to create a unique identifier for the variable. We now extract from local variable table the information we need to create a unique identifier for a variable like\brs{same as before about ``like''}:
 \begin{itemize}
 	\item source code line number of the assignment
 	\item name of the class and method signature containing the local variable
@@ -621,9 +622,9 @@ On the other hand, by using the pc of the assignment (45) and line number table 
 
 \subsubsection{Instance and Class/Static variable (Field)}
 \label{subsec:field}
-Although Javassist does not support the access to local variable it provides a way to access fields. Javassist allows us \nm{\url{http://scg.unibe.ch/wiki/howtos/commonwritingerrors/neverSayAllowsToAgain}} to modify an expression in a method body by using the class \code{Javassist.expt.ExprEditor}. 
+Although Javassist does not support the access to\ins{ information about} local variable\ins{s} it provides a way to access\ins{information about} fields. Javassist allows us \nm{\url{http://scg.unibe.ch/wiki/howtos/commonwritingerrors/neverSayAllowsToAgain}}\brs{remove this link if you have seen it} to modify an expression in a method body by using the class \code{Javassist.expt.ExprEditor}. 
 %In our case we only want to extract some information about the fields instead of any modification, nevertheless this class can be used appropriately. 
-It scans the bytecode on instructions like \textit{``putfield''} for instance or \textit{``putstatic''} for static fields, and allows us to directly get the information we need to create a unique identifier for the field, like:
+It scans the bytecode \chg{on}{for} instructions like \textit{``putfield''} for instance\brs{instance what?} or \textit{``putstatic''} for static fields, and allows us to directly get the information we need to create a unique identifier for the field, like\brs{again}:
 \begin{itemize}
 	\item source code line number of the assignment
 	\item name of the class and method signature containing the field assignment
@@ -631,18 +632,16 @@ It scans the bytecode on instructions like \textit{``putfield''} for instance or
 	\item statically declared field type
 \end{itemize}
 
-
-
 During the data collection about the fields we encountered some difficulties which we will discuss in \subsecref{variableDifficulties}.
 
-As already mentioned earlier, every time when encountering an assignment either to a local variable or a field, NullSpy inserts bytecode which checks at run time whether the variable is assigned null. If the variable is assigned null, NullSpy stores all the data about the variable. How we insert bytecode is described next.
+As already mentioned earlier, every time when encountering an assignment either to a local variable or a field, NullSpy inserts bytecode which checks at run time whether the variable is assigned null. If the variable is assigned null, NullSpy stores all the data about the variable. \del{How we insert bytecode is described next.}
 
 %-------------------------------------------------------------------------------
 \subsection{Bytecode Adaptation}
 \label{bytecodeAdaptation}
-Each time we encounter a variable assignment we first extract the data about the variable and then we add bytecode right after the assignment bytecode. The role of the inserted bytecode is to check at run time whether the value being assigned to the variable is null. If this is the case, we store the previously explained information about this assignment.
+Each time we encounter a variable assignment we first extract the data about the variable and then we add\ins{ our own} bytecode right after the assignment bytecode. The \del{role of the }inserted bytecode \del{is to }check\ins{s} at run time whether the value being assigned to the variable is null. If this is the case, we store the previously explained information about this assignment.
 
-The explanation of the way we do it can be found in the appendix \ref{cha:appInstrumentation}.
+The explanation of the way we do it can be found in the \chg{a}{A}ppendix \ref{cha:appInstrumentation}.
 
 Once we have gone through the bytecode of all the class files, the modified class files are stored in the destination directory as mentioned in \secref{highLevelOverview}. After the instrumentation we add out supplementary supporter classes to the project. The most important ones are \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}} which tests whether a variable is null and \code{NullDisplayer}\textsuperscript{\ref{package1}} which matches data and prints the location of a null assignment when a \npe is thrown.
 

@@ -29,9 +29,9 @@ By tracking the null assignments through static analysis and by instrumenting th
 \chapter{Introduction}
 \label{ch:introduction}
 
-\Npe is a commonly occurring \rte in object-oriented languages. \todo{Add some references} \brs{this todo has been here forever, do it or remove it}In most OOP languages there is a special \textit{null} value that is assigned to references in order to indicate that the reference does not refer to an object. A \npe is caused by invoking a method or accessing a field through a null-value reference, \ie a reference with the null value.
+\Npe is a commonly occurring \rte in object-oriented languages. \todo{Add some references} \brs{this todo has been here forever, do it or remove it}\lt{falls noch zeit übrig bleibt, werde ich noch mehr danach suchen. bis jetzt noch nichts gefunden.}In most OOP languages there is a special \textbf{null} value that is assigned to references in order to indicate that the reference does not refer to an object. A \npe is caused by invoking a method or accessing a field through a null value reference, \ie a reference with the null value.
 
-Previous research has found that 35\% of conditional checks in Java projects are null checks~\cite{Osma16a}. This reduces the readability of source code and has a negative impact on performance~\cite{Osma16a}\brs{two identical references for two consecutive sentences is lame, just remove the first one}. It is also considered the number one error Java programmers make\footnote{\url{http://www.webcitation.org/6lNPzbIyy}}.
+Previous research has found that 35\% of conditional checks in Java projects are null checks. This reduces the readability of source code and has a negative impact on performance~\cite{Osma16a}. It is also considered the number one error Java programmers make\footnote{\url{http://www.webcitation.org/6lNPzbIyy}}.
 
 To better understand occurrences of \npes we present two different example situations in which a \npe can be thrown.
 
@@ -54,7 +54,7 @@ public void drop(...) {
 }
 \end{Java}
 
-Assume that in the example shown in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value as the result of assigning the return value of the method \code{DNDHelper.processReceivedData()} to the variable. This means that the same variable \code{ff} is \code{null} at line 7 and when a method is invoked on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was thrown but not to the real culprit which is the assignment at line 5.
+Assume that in the example shown in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value as the result of assigning the return value of the method \code{DNDHelper.processReceivedData()} to the variable. This means that the same variable \code{ff} is null at line 7 and when a method is invoked on this object a \npe is thrown. Because the \npe occurred in the \code{try\{\}} block the following \code{catch\{\}} block will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was thrown but not to the real culprit which is the assignment at line 5.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={\Npe example (II).}, label={code:npeExampleFieldAccess}]
@@ -90,7 +90,7 @@ public class DrawApplication {
 
 A more complicated way a \npe can be triggered is when it involves variables with larger scopes such as class members. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}} shows such a situation. This code snippet defines the class named \code{DrawApplication} which has the field \code{fManager} (declared at line 3). This class contains four relevant methods: \code{open(...)}, \code{createIconkit()}, \code{getIconkitManager()} and \code{setTool(...)}.
 
-The \code{open(...)} method invokes the methods \code{createIconkit()} at line 7 and \code{setTool(...)} at line 9. By calling \code{createIconkit()} at line 7 the field \code{fManager} is assigned \textbf{null}\brs{null was code a while ago now it's bold. be consistent}. The field is assigned \textbf{null} by performing the method \code{getIconkitManager()} at line 14, which just returns the \textbf{null} value at line 19.
+The \code{open(...)} method invokes the methods \code{createIconkit()} at line 7 and \code{setTool(...)} at line 9. By calling \code{createIconkit()} at line 7 the field \code{fManager} is assigned null. The field is assigned null by performing the method \code{getIconkitManager()} at line 14, which just returns the null value at line 19.
 
 Afterwards, when the method \code{open(...)} calls \code{setTool()}, the attempt to call the method \code{getComponent()} on field \code{fManager} at line 24 causes the \npe. The resulting \npe stack trace is shown in \stacktraceref{stackTrace}:
 
@@ -107,7 +107,7 @@ Afterwards, when the method \code{open(...)} calls \code{setTool()}, the attempt
 	\label{stacktrace:stackTrace}
 \end{figure}
 
-In \stacktraceref{stackTrace} we can see that the stack trace points only to the line 24, where \npe occured, and it does not track to the location where the variable is assigned the null value. We call this location the root of an exception. That means the Java developer has to debug \chg{his/her}{their} way to the exception root.
+In \stacktraceref{stackTrace} we can see that the stack trace points only to the line 24, where \npe occured, and it does not track to the location where the variable is assigned the null value. We call this location the root of an exception. That means the Java developer has to debug their way to the exception root.
 
 At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developer the exact location of the null assignment next to the ordinary stack trace, as shown in \stacktraceref{stackTrace2}.
 
@@ -184,14 +184,13 @@ The instructions from pc 0 to pc 4 (lines 2-4 in \bytecoderef{helloWorld}) repre
 
 If the opcode represents a variable, on its right side we can see the information about the name and type of the variable, \eg line 3. 
 In case of an invocation opcode, it shows the behavior/method name, the parameter types and the return type, \eg line 7. 
-\del{We extract this information with the help of Javassist, and below mentioned tables.}\brs{what we do is irrelevant in technical background}
 %In \secref{lowLevelOverview} we will see how this information is used.
 
 Each method bytecode representation holds a \textbf{line number table} and a \textbf{local variable table} which are listed underneath the instructions of the method (lines 9-15 in \bytecoderef{helloWorld}). 
 
-The line number table\footnote{In the jargon of Javasist, this is also called the line number attribute.} maps source code line of the method with the pc which indicates the beginning of the bytecode to the corresponding source code line. The line number table in \bytecoderef{helloWorld} is represented between the lines 9 and 12: source code line 5 starts with the pc 0 (\chg{represented by the}{as shown on} line 10), source code line 6 starts with the pc 5 (in line 11) \etc This mapping does not apply to cases where a statement is separated into multiple lines. \todo{Should we move next explanation to the appendix?}\del{In }\subsecref{methodReceiverDifficulties} \del{we explain further details about the line number table in a split Java statement case.}\brs{irrelevant, just say that this should be noted as it will have great impact on our implementation}
+The line number table\footnote{In the jargon of Javasist, this is also called the line number attribute.} maps source code line of the method with the pc which indicates the beginning of the bytecode to the corresponding source code line. The line number table in \bytecoderef{helloWorld} is represented between the lines 9 and 12: source code line 5 starts with the pc 0 (as shown on line 10), source code line 6 starts with the pc 5 (in line 11) \etc This mapping does not apply to cases where a statement is separated into multiple lines. \todo{Should we move next explanation to the appendix?}\del{In }\subsecref{methodReceiverDifficulties} \del{we explain further details about the line number table in a split Java statement case.}\brs{irrelevant, just say that this should be noted as it will have great impact on our implementation}
 
-If we look back, to the \stacktraceref{stackTrace}, we see that the stack trace provides us with \chg{the numbers of lines of code, which are part of the call-chain that led to \npe}{a part of the call-chain that led to the \npe. This includes the line numbers in the source code where the invocations happened.} The information the line number table holds is used to recover the information about the actual point in the code where the null was assigned to a reference. 
+If we look back, to the \stacktraceref{stackTrace}, we see that the stack trace provides us with a part of the call-chain that led to the \npe. This includes the line numbers in the source code where the invocations happened. The information the line number table holds is used to recover the information about the actual point in the code where the null was assigned to a reference. 
 %In \secref{lowLevelOverview} we will discuss how this is done.
 
 \renewcommand\lstlistingname{Bytecode}
@@ -233,8 +232,11 @@ As mentioned before, the bytecode of each method also holds a local variable tab
 
 In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is class \code{HelloWorld}.
 
-Let us now look at a more complicated example of the local variable table {(\bytecoderef{localVarTableDuplicatedSlot1})\brs{<-- delete this reference, and move the source code above the byte code and bold the interesting parts}. \del{Local variables do have a limited lifespan. }\chg{Let us have a look at}{Consider} the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{localVarTableDuplicatedSlot1}.
-This method consists of a \code{try-catch} block. We see that the variable \code{url} (declared at line 3 in \coderef{localVarTableDuplicatedSlot1SourceCode} and line 4 in \bytecoderef{localVarTableDuplicatedSlot1}) is only accessible within the \code{try\{\}} block which starts from pc \chg{0}{13} \brs{please TRIPLE check all numbers} and ends with pc 40.
+Let us now look at a more complicated example of the local variable table {(\bytecoderef{localVarTableDuplicatedSlot1})\brs{<-- delete this reference, and move the source code above the byte code and bold the interesting parts}\t{because of the ``float'' I can't put the examples the way I want.}. Consider the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{localVarTableDuplicatedSlot1}.
+This method consists of a \code{try-catch} block. 
+We see that the variable \code{url} (declared at line 3 in \coderef{localVarTableDuplicatedSlot1SourceCode} and line 4 in \bytecoderef{localVarTableDuplicatedSlot1}) is only accessible within the \code{try\{\}} block. 
+\chk{The \code{try\{\}} block starts with pc 0 and ends with pc 40. The variable \code{url} is build up from pc 0 on and is accessible fom pc 13 on.}
+\del{which starts from pc \chg{0}{13}} \brs{please TRIPLE check all numbers}\lt{eigentlich fängt es mit 0 an, denn ab 0 wird die variable url erstellt und erst mit pc 13 richtig verfügbar. } and ends with pc 40.
 This local variable is stored at the index 2 in the local variable table in \bytecoderef{localVarTableDuplicatedSlot1}, since the first two indexes occupy \textit{this} reference and the method parameter. \del{Variable \code{url} is created at the pc 13 and is only accessible until pc 40 (excluded)}\brs{already said in last paragraph}. 
 As soon as the lifespan of a local variable ends, the slot can be reused by the next instantiated local variable. 
 So, onward the pc 40, slot 2 is free again. 

@@ -194,7 +194,7 @@ If we look back, to the \stacktraceref{stackTrace}, we see that the stack trace 
 %In \secref{lowLevelOverview} we will discuss how this is done.
 
 \renewcommand\lstlistingname{Code}
-\begin{Java}[caption={\chk{The source code for which the local variable table of its bytecode contains two entries with the same slot.}}, label={code:localVarTableDuplicatedSlot1SourceCode}]
+\begin{Java}[caption={The source code for which the local variable table of its bytecode contains two entries with the same slot.}, label={code:localVarTableDuplicatedSlot1SourceCode}]
 private void loadDrawing(String filename) {
 		try {
 			URL url = new URL(getCodeBase(), filename);
@@ -211,7 +211,7 @@ private void loadDrawing(String filename) {
 \end{Java}
 
 \renewcommand\lstlistingname{Bytecode}
-\begin{JVMIS}[numbers=left, caption={Bytecode of \coderef{localVarTableDuplicatedSlot1SourceCode}.\chk{please check if this bytecode is ok.}}, label={bytecode:bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}, breaklines=true]
+\begin{JVMIS}[numbers=left, caption={Bytecode of \coderef{localVarTableDuplicatedSlot1SourceCode}.}, label={bytecode:bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}, breaklines=true]
 private void loadDrawing(java.lang.String filename);
 	0  new java.net.URL [98]
 	...
@@ -220,17 +220,13 @@ private void loadDrawing(java.lang.String filename);
 	40  goto 94
 	...
 	94  return
-\end{JVMIS} 
-
-\renewcommand\lstlistingname{Bytecode}
-\begin{JVMIS}[numbers=left, caption={Local variable table of \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode} entries with same slot 2 (line 4 and 7).}, label={bytecode:localVarTableDuplicatedSlot1}, breaklines=true]
 Local variable table:
  [pc: 0, pc: 95] local: this index: 0 type: org.jhotdraw.samples.javadraw.JavaDrawViewer
  [pc: 0, pc: 95] local: filename index: 1 type: java.lang.String
  (@\textbf{[pc: 13, pc: 40] local: url index: 2 type: java.net.URL}@)
  [pc: 18, pc: 40] local: stream index: 3 type: java.io.InputStream
  [pc: 28, pc: 40] local: reader index: 4 type: org.jhotdraw.util.StorableInput
- (@\textbf{[pc: 44, pc: 94] local: e index: 2 type: java.io.IOException}@)
+ (@\textbf{[pc: 44, pc: 94] local: newTool index: 2 type: org.jhotdraw.framework.Tool}@)
 \end{JVMIS}
 
 As mentioned before, the bytecode of each method also holds a local variable table which is an array of the information about local variables (lines 13-15 in \bytecoderef{helloWorld}). This table has the information about the \textit{this} reference (if the method is an instance method or a constructor), about method parameters and method local variables, respectively. Example of the \textit{this} reference representation can be seen in the line 14. Each line of this table represents one variable and contains the following:
@@ -244,16 +240,16 @@ As mentioned before, the bytecode of each method also holds a local variable tab
 
 In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is class \code{HelloWorld}. The indexes of the the local variable table are important because we use them to get the right local variable we are interested in.
 
-Let us now look at a more complicated example of the local variable table. Consider the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{localVarTableDuplicatedSlot1}.
+Let us now look at a more complicated example of the local variable table. Consider the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}.
 This method consists of a \code{try-catch} block. 
-We see that the variable \code{url} \chk{(declared at line 3 in \coderef{localVarTableDuplicatedSlot1SourceCode},  stored at line 4 in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode} and contained in the entry at line 4 in \bytecoderef{localVarTableDuplicatedSlot1})} is only accessible within the \code{try\{\}} block. 
-\chk{The \code{try\{\}} block starts with pc 0 and ends with pc 40 and the variable \code{url} is accessible from pc 13 onwards until pc 40 ([pc: 13, pc: 40]), as it can be seen in the local variable table in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}.}
+We see that the variable \code{url} (declared at line 3 in \coderef{localVarTableDuplicatedSlot1SourceCode},  stored at line 4 in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode} and contained in the local variable table entry at line 12 within the same bytecode) is only accessible within the \code{try\{\}} block. 
+The \code{try\{\}} block starts with pc 0 and ends with pc 40 and the variable \code{url} is accessible from pc 13 onwards until pc 40 ([pc: 13, pc: 40]), as it can be seen in the local variable table in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}.
 
-The local variable \code{url} is stored at the index 2 in the local variable table in \bytecoderef{localVarTableDuplicatedSlot1}, since the first two indexes occupy \textit{this} reference and the method parameter.
+The local variable \code{url} is stored at the index 2 in the local variable table in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}, since the first two indexes occupy \textit{this} reference and the method parameter.
 As soon as the lifespan of a local variable ends, the slot can be reused by the next instantiated local variable. 
 So, onward the pc 40, slot 2 is free again. 
-The freed slot can be immediately used by the next declared variable, which is the variable \code{e} in our example. 
-Looking at line 7 in \bytecoderef{localVarTableDuplicatedSlot1} we see that \code{e} also has the slot number 2. This is why we can find local variable tables that contain multiple entries with the same local variable slot.
+The freed slot can be immediately used by the next declared variable, which is the variable \code{newTool} in our example. 
+Looking at line 15 in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode} we see that the variable \code{newTool} also has the slot number 2. This is why we can find local variable tables that contain multiple entries with the same local variable slot.
 
 %===============================================================================
 \section{Javassist}
@@ -331,8 +327,7 @@ public class BytecodeModifier {
 		behavior.insertBefore("System.out.println(\"This is the inserted code.\");");
 
 		cc.writeFile();
-
-		//...
+		...
 	}
 }
 \end{Java}
@@ -407,7 +402,7 @@ JAD is in no way a dependency of NullSpy but it was a big help during the implem
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{NullSpy}
 
-As explained in \charef{introduction}, this project is about providing the user with an additional link next to the common stack trace containing the location of a \textit{null} assignment to the variable that caused the \npe. \chk{We use the term \textbf{link} to address the line which includes the information where the variable that caused the \npe was assigned null, and which we add to the common stack trace.}
+As explained in \charef{introduction}, this project is about providing the user with an additional link next to the common stack trace containing the location of a \textit{null} assignment to the variable that caused the \npe. We use the term \textbf{link} to address the line which includes the information where the variable that caused the \npe was assigned null, and which we add to the common stack trace.
 
 In this chapter we give an overview of how we implemented NullSpy. We will also address the challenges (\secref{challenges}) we encountered during the implementation as well as the limitations of the tool (\secref{limitations}).
 
@@ -533,10 +528,10 @@ To do this, NullSpy looks for the opcodes which matches the regex \textit{``invo
 
 For each method invocation we want to find the method receiver. 
 In our example bytecode instruction which matches the invocation of the method \code{add(...)} is at the line 6 in \bytecoderef{methodReceiverAlgDemoBytecode}.
-Since bytecode lists method receiver and all the method parameters before the \textit{``invoke.*"} instruction, the pc of this \textit{``invoke.*''} opcode will represent the \textbf{end-pc} \chk{of the method invocation pc-interval}. In our example, the end-pc of the method invocation \code{add(...)} is 155.
+Since bytecode lists method receiver and all the method parameters before the \textit{``invoke.*"} instruction, the pc of this \textit{``invoke.*''} opcode will represent the \textbf{end-pc} of the method invocation pc-interval. In our example, the end-pc of the method invocation \code{add(...)} is 155.
 
 \textbf{Finding the start-pc}\\ 
-The \textbf{start-pc} \chk{of the method invocation pc-interval} is the pc at which begins the bytecode which represents the source code line, containing the invocation. Finding the start-pc is done by using the line number table of the method. We compare the \textbf{end-pc} with the \chk{entries of the line number table and take the last entry which has the smaller pc than the \textbf{end-pc}. The line number table of the example bytecode is shown in \bytecoderef{mrBytecodeExampleLineNumberTable}.}. 
+The \textbf{start-pc} of the method invocation pc-interval is the pc at which begins the bytecode which represents the source code line, containing the invocation. Finding the start-pc is done by using the line number table of the method. We compare the \textbf{end-pc} with the entries of the line number table and take the last entry which has the smaller pc than the \textbf{end-pc}. The line number table of the example bytecode is shown in \bytecoderef{mrBytecodeExampleLineNumberTable}. 
 The \textbf{start-pc} in our example is 144.
 
 \renewcommand\lstlistingname{Bytecode}
@@ -571,7 +566,7 @@ If the \mr is actually return object from another method invocation, it is unapp
 In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but NullSpy ignores these instructions because static method invocations are called on classes which can never be null. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate. As for the other \textit{invoke} instructions, they are treated normally as explained.
 
 With the \mr pc-interval we extract the information needed to create a unique \mr identifier from the bytecode by using Javassist API.
-We get the index of the \mr by using Javassist (in our example the index is 3), and with this index and pc information of the \mr, \chk{we can obtain the needed information from the local variable table shown in \bytecoderef{mrBytecodeExampleLocalVariableTable}.}
+We get the index of the \mr by using Javassist (in our example the index is 3), and with this index and pc information of the \mr, we can obtain the needed information from the local variable table shown in \bytecoderef{mrBytecodeExampleLocalVariableTable}.
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[caption={Part of the local variable table of the example bytecode shown in \bytecoderef{methodReceiverAlgDemoBytecode}.}, label={bytecode:mrBytecodeExampleLocalVariableTable}, breaklines=true]
@@ -581,7 +576,7 @@ Local variable table:
 	...
 \end{JVMIS}
 
-\chk{The next listing shows a part of the extracted information about the \mr to create its unique identifier:}
+The next listing shows a part of the extracted information about the \mr to create its unique identifier:
 \begin{itemize}
 	\item source code line number of the method receiver
 	\item name of the class and signature of the method containing the method invocation
@@ -631,7 +626,7 @@ Local variable table:
 	...
 \end{JVMIS}
     
-Let us assume that we have a local variable assignment where its \textit{``astore\_2''} opcode is located at pc 45 (\bytecoderef{localVarAssignment}). In this example we can extract slot 2 from the opcode \textit{astore\_2}. After extracting the slot (index: 2) we iterate through the local variable table and find the first entry which contains that slot (line 4 in \bytecoderef{localVarTableDuplicatedSlot}). If the pc of the assignment is not included in the local variable lifespan of the entry (pc 45 $\notin$ [pc: 13, pc: 40], line 4), the next entry with the same slot (pc 45 $\in$ [pc: 44, pc: 94], line 7) will be examined. Checking the entries with the same slot goes on until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information needed to create a unique identifier for the variable. We now extract from local variable table the information we need to create a unique identifier for a variable. \chk{A part of the extracted information is listed below:}
+Let us assume that we have a local variable assignment where its \textit{``astore\_2''} opcode is located at pc 45 (\bytecoderef{localVarAssignment}). In this example we can extract slot 2 from the opcode \textit{astore\_2}. After extracting the slot (index: 2) we iterate through the local variable table and find the first entry which contains that slot (line 4 in \bytecoderef{localVarTableDuplicatedSlot}). If the pc of the assignment is not included in the local variable lifespan of the entry (pc 45 $\notin$ [pc: 13, pc: 40], line 4), the next entry with the same slot (pc 45 $\in$ [pc: 44, pc: 94], line 7) will be examined. Checking the entries with the same slot goes on until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information needed to create a unique identifier for the variable. We now extract from local variable table the information we need to create a unique identifier for a variable. A part of the extracted information is listed below:
 \begin{itemize}
 	\item source code line number of the assignment
 	\item name of the class and method signature containing the local variable
@@ -661,7 +656,7 @@ On the other hand, by using the pc of the assignment (45) and line number table 
 \label{subsec:field}
 Although Javassist does not support the access to information about local variables it provides a way to access information about fields. Javassist allows us to modify an expression in a method body by using the class \code{Javassist.expt.ExprEditor}. 
 %In our case we only want to extract some information about the fields instead of any modification, nevertheless this class can be used appropriately. 
-It scans the bytecode for instructions like \textit{``putfield''} for instance fields or \textit{``putstatic''} for static fields, and allows us to directly get the information we need to create a unique identifier for the field. \chk{Next we list a part of the information we are interested in:}
+It scans the bytecode for instructions like \textit{``putfield''} for instance fields or \textit{``putstatic''} for static fields, and allows us to directly get the information we need to create a unique identifier for the field. Next we list a part of the information we are interested in:
 \begin{itemize}
 	\item source code line number of the assignment
 	\item name of the class and method signature containing the field assignment

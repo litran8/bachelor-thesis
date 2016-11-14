@@ -686,7 +686,10 @@ In this section we would like to present some of the difficulties we encountered
 %-------------------------------------------------------------------------------
 \subsection{Obtaining \MR Data Difficulties}
 \label{subsec:methodReceiverDifficulties}
-Aforementioned in \subsecref{methodReceiver} we were encountered with a persistent problem, namely getting the pc-interval of the \mr when the interval covers multiple lines in source code. In many development environment the written code can be formatted automatically and as well manually. 
+
+In the section \subsecref{methodReceiver} we have explained how to extract the information about \mr when the whole method invocation is contained within one line of code. 
+%In many development environment the written code can be formatted automatically and as well manually. 
+However, we have encountered a persistent problem, namely getting the pc-interval of the \mr when the method invocation is split throughout multiple lines of code, thus when pc-interval covers multiple lines in source code.  
 
 \begin{Java}[caption={Method invocation split in two lines example.}, label={code:4-1}, firstnumber=31]
 Image image = Iconkit.instance().registerAndLoadImage(
@@ -710,9 +713,11 @@ Image image = Iconkit.instance().registerAndLoadImage(
 [pc: 11, line: 31]
 \end{JVMIS}
 
-Let us now look at an example that contains the situation where a method invocation is split into tow lines. The example is shown in \coderef{4-1}. The method invocation \code{registerAndLoadImage(...)} is formatted the way where it does not have enough space in one line. This cannot be figured out by just looking at the bytecode, therefore the line number attribute (\bytecoderef{4-3}) has to be consulted. 
+Let us now look at an example that contains the explained situation, where a method invocation is split into two lines. The example is shown in \coderef{4-1}. 
+%The method invocation \code{registerAndLoadImage(...)} is formatted the way where it does not have enough space in one line. 
+These situations cannot be figured out by just looking at the bytecode, therefore the line number table (\bytecoderef{4-3}) has to be consulted. 
 
-Beforehand we have to say that there is no \mr in \coderef{4-1} because the \mr would contain a method invocation itself. NullSpy does not support \mrs which are return objects of method invocations. To enable the coverage of such situations can be a topic of future works. Other \mrs NullSpy does not support are elements of collections due to its complex structures that can be stored in the collections.
+Beforehand we have to say that there is no \mr in \coderef{4-1} because the \mr would contain a method invocation itself. NullSpy does not support \mrs which are return objects of method invocations. Enabling the coverage of such situations is a topic of future work. Other \mrs NullSpy does not support are elements of collections since a collection can hold other collections.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Alternating line number example.}, label={code:3-1}, firstnumber=127]
@@ -736,7 +741,10 @@ Connector oldConnector = ((ChangeConnectionHandle.UndoActivity)
 [pc: 57, line: 127]
 \end{JVMIS}
 
-Only looking at bytecode is not enough, so we are looking at the line number attribute. Line number \textit{31} (\bytecoderef{4-3}) is listed twice, this indicates that the method invocation is split into multiple lines in source code. The former declares the starting point of the interval and the latter the end of it. Line 32 indicates the starting point of parameter loading. How we get the pc-interval will be presented shortly. But before that we take a look at more examples.
+To find these kind of invocations, we need to look at the line number table.
+%Only looking at bytecode is not enough, so we are looking at the line number attribute. 
+Line number \textit{31} (\bytecoderef{4-3}) is listed twice, this indicates that the method invocation is split into multiple lines in source code. The former declares the starting point of the interval and the latter the end of it. \todo{Line 32 indicates the starting point of parameter loading.}
+%How we get the pc-interval will be presented shortly. But before that we take a look at more examples.
 
 Special about the example shown in \coderef{3-1} is that the multiple line interval does not start with the smaller line number and end with the bigger one. Apart from that the pc is alternated stored in the line number attribute shown in \bytecoderef{3-3}. The line number table indicates followings:
 
@@ -873,7 +881,10 @@ By only using the algorithm of extracting the pc-interval of a \mr (described in
 %-------------------------------------------------------------------------------
 \subsection{Obtaining Assignment Data Difficulties - Fields}
 \label{subsec:variableDifficulties}
-We mentioned that NullSpy first collects data about fields with help of the class \code{Javassist.expt.ExprEditor}. That class uses the method \code{loopBody(...)} to iterate through bytecode of a method and scans for specific opcodes, in our place we are only interested into the opcodes which matches the regex \textit{``put.*''}. One parameter passed to the method \code{loopBody(...)} is the \code{mehodInfo} object which contains the bytecode sequence of the method we want to instrument.
+
+\nm{Boris, could you have a look at this? We need to discuss this on Tuesday.}
+
+We mentioned that NullSpy collects data about fields with help of the class \code{Javassist.expt.ExprEditor}. This class uses the method \code{loopBody(...)} to iterate through bytecode of a method and scans for specific opcodes, in our place we are only interested into the opcodes which matches the regex \textit{``put.*''}. One parameter passed to the method \code{loopBody(...)} is the \code{mehodInfo} object which contains the bytecode of the method we want to instrument.
 
 Since the \code{loopBody(...)} is invoked within a \code{while-loop}, it iterates through the given \code{methodInfo} until it reaches the end of the bytecode sequence. When it goes through the byte sequence we instrument the bytecode. But because the changes made on the bytecode is updated after the \code{while-loop}, the method \code{loopBody(...)} still finds the specific opcodes at locations within the origin bytecode sequence instead of the modified one.
 
@@ -888,9 +899,17 @@ Due to this situation had difficulties finding the right \textbf{start-pc} of fi
 %-------------------------------------------------------------------------------
 \subsection{Bytecode Adaptation Difficulties}
 \label{subsec:bytecodeAdaptationDifficulties}
-The reason why we decided to use Javassist for our NullSpy project was due to the thought of only using the source-level API for the instrumentation. \ugh{It would have been much easier to only operate at source-level instead of learning to read bytecode, yet we still had to do everything at bytecode-level at the end.}
 
-One big problem we encountered was the insertion of our code between a variable assignment and a closing bracket \code{\}}. We tried to insert code as shown in \figref{insertionCodeExample} by specifying the exact line number where we want to enter in source code. Unfortunately Javassist first checks the specified line whether it contains some code (standalone symbols and Java keywords excluded). If there is no code at the specified line, Javassist computes the next line containing some code and inserts our code right before that line. Let us look at a situation where for example the local variable \code{var} is assigned a value at the end of a \code{if-body} at line 3 in \coderef{bytecodeAdaptationExample_1}. In this situation Javassist adds the extra code right before the next code line which is the beginning of the \code{else-body} (line 5 in \coderef{bytecodeAdaptionExample_2}). So our added code to check the local variable \code{var} for its value can not be reached. 
+The reason why we decided to use Javassist for our NullSpy project was that it allows us to instrument code at the source-level API.
+
+One big problem we encountered was the insertion of the code if a variable assignment is the code before a closing bracket \code{\}}. 
+We tried to insert code as shown in \figref{insertionCodeExample} by specifying the exact line number where we want to enter in source code. 
+Unfortunately Javassist first checks whether the specified line contains some code (standalone symbols and Java keywords excluded). 
+If there is no code at the specified line, Javassist computes the next line containing a code and inserts our code right before that line. 
+Let us look at a situation where, for example, the local variable \code{var} is assigned a value at the end of the \code{if-body} at line 3 in \coderef{bytecodeAdaptationExample_1}.
+We want to add the code for assignment check just after, at line 4. 
+Since line 4 does not contain any source code, except the closing curly bracket, Javassist adds the code right before the next line which contains the code, which, in this case, is the beginning of the \code{else-body}, line 5 in \coderef{bytecodeAdaptionExample_2}). 
+So our added code which serves to check the value of the local variable \code{var} at run time is added at the wrong place. 
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Bytecode adaptation example.}, label={code:bytecodeAdaptationExample_1}]
@@ -912,7 +931,10 @@ if (...) {
 }
 \end{Java}
 
-Due to this problem we changed the way to insert our code at bytecode-level. This way we first have to build up the bytecode sequence and then enter it before a specific pc. How we build the bytecode sequence is explained in .
+Due to this problem we need to work on the bytecode-level. 
+%This way we first have to build up the bytecode sequence and then enter it before a specific pc.
+\nm{I vote to remove this part of the appendix completely. Boris, your opinion?} 
+How we build the bytecode sequence inserted is explained in \todo{}.
 
 There are more problems during the implementation of NullSpy but we mentioned the most troublesome ones in this subsection.
 
@@ -940,7 +962,8 @@ The last limitation we want to discuss here is that unfortunately NullSpy is not
 \chapter{Validation}
 \label{ch:validation}
 
-This chapter will provide some numbers to compare the execution time each project takes, the original and the instrumented one. To get the numbers we instrumented the example project JHotDraw.
+We have evaluated NullSpy on the JHotDraw project.
+We compared the time it takes to execute both original and the instrumented version of the project.
 
 %===============================================================================
 \section{JHotDraw}
@@ -952,7 +975,7 @@ This chapter will provide some numbers to compare the execution time each projec
 \section{Execution Time Difference}
 \label{sec:execTimeDiff}
 
-JHotDraw already provides an Ant buildfile \textit{built.xml} that packs the project into an executable jar file. We modified the buildfile a little bit so that it also creates a jar file out of the modified project stored in the destination the user has chosen before. The steps to create an executable jar of the modified project are followings: load project, modify project, store modified project, build project that creates jar file of the original project and one of the modified one. We then simulate the terminal with a Java class to run the tests included in each jar file thirty times, each time it returns the execution time. At the end we calculate the average time for the original and the modified project. The the execution times are listed in \tabref{executionTime} and the average times are shown in \tabref{averageTime}.
+JHotDraw already provides an Ant buildfile \textit{built.xml} that packs the project into an executable jar file. We modified the buildfile a little so that it also creates a jar file out of the modified project stored in the destination the user has chosen before. The steps to create an executable jar of the modified project are followings: load project, modify project, store modified project, build project that creates jar file of the original project and one of the modified one. We then simulate the terminal with a Java class to run the tests included in each jar file thirty times, each time it returns the execution time. At the end we calculate the average time for the original and the modified project. The the execution times are listed in \tabref{executionTime} and the average times are shown in \tabref{averageTime}.
 
 \begin{table}[H]
 \centering
@@ -1006,18 +1029,21 @@ JHotDraw already provides an Ant buildfile \textit{built.xml} that packs the pro
 	\label{tab:averageTime}
 \end{table}
 
-The runtime of the modified project takes 0.362734s longer than the original one, this means after adding additional code to the project results in approximately \textbf{5\%} overhead. This small overhead is quite negligible. But this numbers have to be interpreted with caution because the overhead is only measured on JHotDraw.
+The runtime of the modified project takes 0.362734s longer than the original one, this means that after instrumenting the code, the project results in approximately \textbf{5\%} overhead. This small overhead is quite negligible. 
+%But this numbers have to be interpreted with caution because the overhead is only measured on JHotDraw.
 
 %===============================================================================
 \section{NullSpy demonstration on a real project}
 \label{sec:demonstration}
-We want to demonstrate on a real project how the project NullSpy helps the user to find the real culprit that leads to a \npe. The example shown in \coderef{demonstration} will be the real world project NullSpy supports.
+We want to demonstrate on a real project how the project NullSpy helps the user to find the real culprit that leads to a \npe. 
+%The example shown in \coderef{demonstration} will be the real world project NullSpy supports.
+Let us have a look at the example shown in \coderef{demonstration}. \todo{Reference it}
 
-The \code{main()} method at line 6 invokes sequential three methods (\code{makeReader()}, \code{readNumbers()}, \code{closeReader}) and prints out the field \code{numbers}. In make \code{makeReager()} method it tries to read a file named ``file.txt''. If the example does not find that file, it will execute the catch-block and assign null to the field \code{reader} at line 18.
+The \code{main()} method at line 6 invokes sequential three methods (\code{makeReader()}, \code{readNumbers()}, \code{closeReader}) and prints out the field \code{numbers}. In \code{makeReader()} method it tries to read a file named ``file.txt''. If the example does not find that file, it will execute the catch-block and assign null to the field \code{reader} at line 18.
 
-Of course the call to \code{readNumbers()} at line 8 is not important for our demonstration, that is why we skip it.
+The call to \code{readNumbers()} at line 8 is not important for our demonstration, that is why we skip it.
 
-The \npe is triggered when the method \code{closeReader()} is called. There is an attempt at line 39 to close the reader. But because the field \code{reader} is assigned null, the method call \code{close()} causes the \npe. Since only the \textit{IOException} is caught there the \npe goes up the call hierarchy until the \code{main()} method. As discussed in \subsecref{processFlow}, in the catch-block of \code{main()} we extract information from the \npe stack trace, multiple comparisons are performed and finally the link to the null assignment and the \npe stack trace are displayed. The resulting stack trace is presented in \stacktraceref{demonstrationStackTrace}.
+The \npe is triggered when the method \code{closeReader()} is called. There is an attempt at line 39 to close the reader. But because the field \code{reader} is assigned null, the method call \code{close()} causes the \npe. Since only the \textit{IOException} is caught with the \code{catch{}} block, the \npe goes up the call hierarchy until the \code{main()} method. As discussed in \subsecref{processFlow}, in the catch-block of \code{main()} we extract information from the \npe stack trace, multiple comparisons are performed and finally the link to the null assignment and the \npe stack trace are displayed. The resulting stack trace is presented in \stacktraceref{demonstrationStackTrace}.
 
 \begin{Java}[caption={NullSpy demonstration example.}, label={code:demonstration}]
 public class Ideone {

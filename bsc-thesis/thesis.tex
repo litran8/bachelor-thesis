@@ -180,7 +180,7 @@ The green words in \bytecoderef{helloWorld} are the string representations of Ja
 
 On the left-side of these instructions we see the \textbf{program counter} (pc) which is a processor register that contains the address (location) of the instruction being executed at the current time. It is also called an \textbf{instruction pointer}.
 %We use these program counters, or pc-s also as an index in the bytecode. 
-The instructions from pc 0 to pc 4 (lines 2-4 in \bytecoderef{helloWorld}) represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textbf{pc-interval} to describe a set of instructions that represents a Java expression. This term will play an important role further in the thesis. We use the syntax \textbf{``<,>''} to represent an pc-interval, \eg just mentioned pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts \chk{(\textbf{start-pc})} and the latter one where it ends \chk{(\textbf{end-pc}})}, both inclusive. In the same example, the pc-interval of the local variable \code{result} is <4,4>.
+The instructions from pc 0 to pc 4 (lines 2-4 in \bytecoderef{helloWorld}) represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textbf{pc-interval} to describe a set of instructions that represents a Java expression. This term will play an important role further in the thesis. We use the syntax \textbf{``<,>''} to represent an pc-interval, \eg just mentioned pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts, thus we name it \textbf{start-pc} and the latter one where it ends, hence the name \textbf{end-pc}, both inclusive. In the same example, the pc-interval of the local variable \code{result} is <4,4>.
 
 If the opcode represents a variable, on its right side we can see the information about the name and type of the variable, \eg line 3. 
 In case of an invocation opcode, it shows the behavior/method name, the parameter types and the return type, \eg line 7. 
@@ -193,7 +193,7 @@ If we look back, to the \stacktraceref{stackTrace}, we see that the stack trace 
 %In \secref{lowLevelOverview} we will discuss how this is done.
 
 \renewcommand\lstlistingname{Code}
-\begin{Java}[caption={\chk{The source code where the local variable table of its bytecode contains two entries with the same slot.}}, label={code:localVarTableDuplicatedSlot1SourceCode}]
+\begin{Java}[caption={\chk{The source code for which the local variable table of its bytecode contains two entries with the same slot.}}, label={code:localVarTableDuplicatedSlot1SourceCode}]
 private void loadDrawing(String filename) {
 		try {
 			URL url = new URL(getCodeBase(), filename);
@@ -246,7 +246,7 @@ In our example, \textit{this} reference has the lexical scope of the whole metho
 Let us now look at a more complicated example of the local variable table. Consider the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{localVarTableDuplicatedSlot1}.
 This method consists of a \code{try-catch} block. 
 We see that the variable \code{url} \chk{(declared at line 3 in \coderef{localVarTableDuplicatedSlot1SourceCode},  stored at line 4 in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode} and contained in the entry at line 4 in \bytecoderef{localVarTableDuplicatedSlot1})} is only accessible within the \code{try\{\}} block. 
-\chk{The \code{try\{\}} block starts with pc 0 and ends with pc 40. The variable \code{url} is accessible from pc 13 onwards until pc 40 ([pc: 13, pc: 40]).}
+\chk{The \code{try\{\}} block starts with pc 0 and ends with pc 40 and the variable \code{url} is accessible from pc 13 onwards until pc 40 ([pc: 13, pc: 40]), as it can be seen in the local variable table in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}.}
 
 The local variable \code{url} is stored at the index 2 in the local variable table in \bytecoderef{localVarTableDuplicatedSlot1}, since the first two indexes occupy \textit{this} reference and the method parameter.
 As soon as the lifespan of a local variable ends, the slot can be reused by the next instantiated local variable. 
@@ -570,7 +570,7 @@ If the \mr is actually return object from another method invocation, it is unapp
 In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but NullSpy ignores these instructions because static method invocations are called on classes which can never be null. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate. As for the other \textit{invoke} instructions, they are treated normally as explained.
 
 With the \mr pc-interval we extract the information needed to create a unique \mr identifier from the bytecode by using Javassist API.
-We get the index of the \mr by using Javassist (in our example the index is 3), and with the index and pc information of the \mr, \chk{we can obtain the needed information from the local variable table shown in \bytecoderef{mrBytecodeExampleLocalVariableTable}.}
+We get the index of the \mr by using Javassist (in our example the index is 3), and with this index and pc information of the \mr, \chk{we can obtain the needed information from the local variable table shown in \bytecoderef{mrBytecodeExampleLocalVariableTable}.}
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[caption={Part of the local variable table of the example bytecode shown in \bytecoderef{methodReceiverAlgDemoBytecode}.}, label={bytecode:mrBytecodeExampleLocalVariableTable}, breaklines=true]

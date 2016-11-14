@@ -691,6 +691,7 @@ In the section \subsecref{methodReceiver} we have explained how to extract the i
 %In many development environment the written code can be formatted automatically and as well manually. 
 However, we have encountered a persistent problem, namely getting the pc-interval of the \mr when the method invocation is split throughout multiple lines of code, thus when pc-interval covers multiple lines in source code.  
 
+\renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Method invocation split in two lines example.}, label={code:4-1}, firstnumber=31]
 Image image = Iconkit.instance().registerAndLoadImage(
 	(Component)view, imageName);
@@ -707,17 +708,34 @@ Image image = Iconkit.instance().registerAndLoadImage(
 %14  astore_2 [image]
 %\end{JVMIS}
 
-\begin{JVMIS}[caption={Line number table/interval to \coderef{4-1}.}, label={bytecode:4-3}, breaklines=true, firstnumber=1]
-[pc: 0, line: 31]
-[pc: 3, line: 32]
-[pc: 11, line: 31]
+\renewcommand\lstlistingname{Bytecode}
+\begin{JVMIS}[numbers=left, caption={Line number table of \coderef{4-1}.}, label={bytecode:4-3}, breaklines=true, firstnumber=1]
+Line number table:
+	(@\textbf{[pc: 0, line: 31]}@)
+	[pc: 3, line: 32]
+	(@\textbf{[pc: 11, line: 31]}@)
+	...
 \end{JVMIS}
 
-Let us now look at an example that contains the explained situation, where a method invocation is split into two lines. The example is shown in \coderef{4-1}. 
-%The method invocation \code{registerAndLoadImage(...)} is formatted the way where it does not have enough space in one line. 
+\chk{Let us now look at an example that contains the explained situation, where a method invocation is split into two lines. The example is shown in \coderef{4-1}. 
+In this example we are interested in the method invocation \code{registerAndLoadImage(...)}. 
+The invocation starts at line 31 and ends at line 32.
+The second line only contains the parameters the method needs.}
 These situations cannot be figured out by just looking at the bytecode, therefore the line number table (\bytecoderef{4-3}) has to be consulted. 
 
 Beforehand we have to say that there is no \mr in \coderef{4-1} because the \mr would contain a method invocation itself. NullSpy does not support \mrs which are return objects of method invocations. Enabling the coverage of such situations is a topic of future work. Other \mrs NullSpy does not support are elements of collections since a collection can hold other collections.
+
+The line number \textit{31} is listed twice int the line number table (\bytecoderef{4-3}), this indicates that the method invocation is split into multiple lines in source code.
+
+\chk{The line number table entries indicate the followings:
+\begin{itemize}
+	\item line 2: execution of the static method invocation \code{Iconkit.instance()}
+	\item line 3: starting point where the parameters are loaded onto the operand stack
+	\item line 4: execution of the method \code{registerAndLoadImage(...)}
+\end{itemize}
+}
+
+\chk{To obtain the method invocation pc-interval we had to make further analyses. Only using the algorithm described in \subsecref{methodReceiver} we would only get <11,11> as the method invocation pc-interval. But the correct method invocation pc-interval in this example is <0,11>.}
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Alternating line number example.}, label={code:3-1}, firstnumber=127]
@@ -729,31 +747,36 @@ Connector oldConnector = ((ChangeConnectionHandle.UndoActivity)
 %\begin{JVMIS}[caption={Bytecode to \coderef{3-1}.}, label={code:3-2}, breaklines=true]
 %47  aload_0 [this]
 %48  invokevirtual org.jhotdraw.standard.ChangeConnectionHandle.getUndoActivity() : org.jhotdraw.util.Undoable [72]
-%51  checkcast org.jhotdraw.standard.ChangeConnectionHandle$UndoActivity [76]
-%54  invokevirtual org.jhotdraw.standard.ChangeConnectionHandle$UndoActivity.getOldConnector() : org.jhotdraw.framework.Connector [142]
+%51  checkcast org.jhotdraw.standard.ChangeConnectionHandle(@\$@)UndoActivity [76]
+%54  invokevirtual org.jhotdraw.standard.ChangeConnectionHandle(@\$@)UndoActivity.getOldConnector() : org.jhotdraw.framework.Connector [142]
 %57  astore 7 [oldConnector]
 %\end{JVMIS}
 
+\renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[caption={Line number table/interval to \coderef{3-1}.}, label={bytecode:3-3}, breaklines=true, numbers=left]
-[pc: 47, line: 128]
-[pc: 51, line: 127]
-[pc: 54, line: 128]
-[pc: 57, line: 127]
+Line number table:
+	...
+	[pc: 47, line: 128]
+	[pc: 51, line: 127]
+	[pc: 54, line: 128]
+	[pc: 57, line: 127]
+	...
 \end{JVMIS}
 
-To find these kind of invocations, we need to look at the line number table.
-%Only looking at bytecode is not enough, so we are looking at the line number attribute. 
-Line number \textit{31} (\bytecoderef{4-3}) is listed twice, this indicates that the method invocation is split into multiple lines in source code. The former declares the starting point of the interval and the latter the end of it. \todo{Line 32 indicates the starting point of parameter loading.}
-%How we get the pc-interval will be presented shortly. But before that we take a look at more examples.
+\chk{The second example we look at is the example shown in \coderef{3-1}. In this example we see that the method invocation is situated in the second line unlike the invocation in the previous example.} This example is interesting because the line numbers 127 and 128 are stored in an alternated way in the line number table shown in \bytecoderef{3-3}. The line number table indicates followings:
 
-Special about the example shown in \coderef{3-1} is that the multiple line interval does not start with the smaller line number and end with the bigger one. Apart from that the pc is alternated stored in the line number attribute shown in \bytecoderef{3-3}. The line number table indicates followings:
+\begin{itemize}
+	\item line 3: the method invocation \code{getUndoActivity()}
+	\item line 4: the cast to \code{ChangeConnectionsHandle.UndoActivity}
+	\item line 5: the second method invocation \code{getOldConnector()}
+	\item line 6: the assignment to the variable \code{oldConnector}
+\end{itemize}
 
-\begin{enumerate}
-	\item line 1: the method invocation \code{getUndoActivity()}
-	\item line 2: the cast to \code{ChangeConnectionsHandle.UndoActivity}
-	\item line 3: the second method invocation \code{getOldConnector()}
-	\item line 4: the assignment to the variable \code{oldConnector}
-\end{enumerate}
+\chk{First, the method invocation \code{getUndoActivity()} at line 128 is executed and then the execution order\lt{execution order ok? oder doch ein anderes wort?} jumps back to line 127 to perform the cast to \code{ChangeConnectionsHandle.UndoActivity}. After the cast, again we change to line 128 where the method \code{getOldConnector()} is invoked.}
+
+\chk{With the further analyses we obtain <47,54> as the invocation pc-interval. 
+Another interesting thing is that the start-pc of the invocation is mapped to line 128. So the invocation does not start with the smaller line number, \ie line 127 what normally would be expected.
+}
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Nested interval example.}, label={code:2-1}, firstnumber=149]
@@ -791,38 +814,41 @@ for (int i = 0; i < ColorMap.size(); i++)
 %\end{JVMIS}
 
 \begin{JVMIS}[numbers=left, caption={Line number table/interval to \coderef{2-1}.}, label={bytecode:2-3}, breaklines=true]
-[pc: 8, line: 149]
-[pc: 13, line: 150]
-[pc: 14, line: 151]
-[pc: 18, line: 152]
-[pc: 22, line: 153]
-[pc: 23, line: 154]
-[pc: 27, line: 155]
-[pc: 28, line: 151]
-[pc: 31, line: 150]
-[pc: 34, line: 149]
+Line number table:
+	...
+	[pc: 8, line: 149]
+	[pc: 13, line: 150]
+	[pc: 14, line: 151]
+	[pc: 18, line: 152]
+	[pc: 22, line: 153]
+	[pc: 23, line: 154]
+	[pc: 27, line: 155]
+	[pc: 28, line: 151]
+	[pc: 31, line: 150]
+	[pc: 34, line: 149]
+	...
 \end{JVMIS}
 
-Neither in bytecode nor in line number attribute we can extract the exact interval of method invocations. Another interesting thing is that in the line number table (\bytecoderef{2-3}) of the example shown in \coderef{2-1} shows multiple corresponding line numbers, \eg lines 1\&10 or lines 2\&9. Again, we examine the line number table: 
+\chk{The interesting part of third example (\coderef{2-1}) is the presence of multiple corresponding line numbers (line number table shown in \bytecoderef{2-3}), \ie lines 3 and 12, lines 4 and 11 and lines 5 and 10. The first line number indicates the starting point of an expression and the latter represents the ending point of the expression. Again, we examine the line number table:}
 
 \begin{enumerate}
-	\item line 1: starting point of the for-loop
-	\item line 2: starting point of the method invocation \code{addItem(...)}
-	\item line 3: \code{new ChangeAttributeCommand(...)} starting point\\or parameter loading 
-	\item line 4-7: parameter loading 
-	\item line 8: actual object creation
-	\item line 9: actual call to \code{addItem(...)}
-	\item line 10: for-loop incrementation or its ending
+	\item line 3: starting point of the for-loop
+	\item line 4: starting point of the method invocation \code{addItem(...)}
+	\item line 5: \code{new ChangeAttributeCommand(...)} starting point\\or parameter loading onto the stack
+	\item line 6-8: parameter loading onto the operand stack
+	\item line 9-10: actual object creation \code{new ChangeAttributeCommand(...)}
+	\item line 11: actual call to \code{addItem(...)}
+	\item line 12: for-loop incrementation
 \end{enumerate}
 
-\renewcommand\lstlistingname{Code}
-\begin{Java}[caption={Incomplete interval example.}, label={code:5-1}, firstnumber=22]
-var_1
-	.method_1(staticMethod_1(),
-		staticMethod_2(param_1),
-		var_2.method_2(null,
-			param_2));
-\end{Java}
+%\renewcommand\lstlistingname{Code}
+%\begin{Java}[caption={Incomplete interval example.}, label={code:5-1}, firstnumber=22]
+%var_1
+	%.method_1(staticMethod_1(),
+		%staticMethod_2(param_1),
+		%var_2.method_2(null,
+			%param_2));
+%\end{Java}
 
 %\renewcommand\lstlistingname{Bytecode}
 %\begin{JVMIS}[caption={Bytecode to \coderef{5-1}.}, label={code:5-2}, breaklines=true]
@@ -837,17 +863,18 @@ var_1
 %32  invokevirtual method_1(java.lang.Object, java.lang.Object, java.lang.Object) : void [38]
 %\end{JVMIS}
 
-\begin{JVMIS}[caption={Line number table/interval to \coderef{5-1}.}, label={code:5-3}, breaklines=true]
-[pc: 18, line: 22]
-[pc: 19, line: 23]
-[pc: 22, line: 24]
-[pc: 26, line: 25]
-[pc: 28, line: 26]
-[pc: 29, line: 25]
-[pc: 32, line: 23]
-\end{JVMIS}
+%\begin{JVMIS}[caption={Line number table/interval to \coderef{5-1}.}, label={code:5-3}, breaklines=true]
+%[pc: 18, line: 22]
+%[pc: 19, line: 23]
+%[pc: 22, line: 24]
+%[pc: 26, line: 25]
+%[pc: 28, line: 26]
+%[pc: 29, line: 25]
+%[pc: 32, line: 23]
+%\end{JVMIS}
 
-By only using the algorithm of extracting the pc-interval of a \mr (described in \subsecref{methodReceiver}) we would get the wrong outermost pc-interval of a method invocation, when the invocation is split into multiple lines. To handle this mistake we implemented a supporting class named \code{MultipleLineManager}\footnote{\label{package2}In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.}. Its responsibility is to extract the outermost pc-interval of invocations in split line situations. How we implemented it is very complex. That is why we skip the explanation of how the extraction works and would recommend to to look at the class \code{MultipleLineManager} if interested.
+By only using the algorithm of extracting the pc-interval of a \mr (described in \subsecref{methodReceiver}) we would get the wrong outermost pc-interval a the method invocation, when the invocation is split into multiple lines. To handle this mistake we implemented a supporting class called \code{MultipleLineManager}\footnote{\label{package2}In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.}. Its responsibility is to extract the outermost pc-interval of invocations in split line situations. 
+\chk{For complexity reasons we omit the exmplanation how we implemented the class \code{MultipleLineManager}.}
 
 \todo{leave this or not write about the multiple line stuff.}
 
@@ -884,11 +911,11 @@ By only using the algorithm of extracting the pc-interval of a \mr (described in
 
 \nm{Boris, could you have a look at this? We need to discuss this on Tuesday.}
 
-We mentioned that NullSpy collects data about fields with help of the class \code{Javassist.expt.ExprEditor}. This class uses the method \code{loopBody(...)} to iterate through bytecode of a method and scans for specific opcodes, in our place we are only interested into the opcodes which matches the regex \textit{``put.*''}. One parameter passed to the method \code{loopBody(...)} is the \code{mehodInfo} object which contains the bytecode of the method we want to instrument.
+We mentioned that NullSpy collects data about fields with help of the class \code{Javassist.expt.ExprEditor}. This class uses the method \code{loopBody(...)} to iterate through bytecode of a method and scans for specific opcodes, in our place we are only interested in the opcodes which matches the regex \textit{``put.*''}. One parameter passed to the method \code{loopBody(...)} is the \code{mehodInfo} object which contains the bytecode of the method we want to instrument.
 
-Since the \code{loopBody(...)} is invoked within a \code{while-loop}, it iterates through the given \code{methodInfo} until it reaches the end of the bytecode sequence. When it goes through the byte sequence we instrument the bytecode. But because the changes made on the bytecode is updated after the \code{while-loop}, the method \code{loopBody(...)} still finds the specific opcodes at locations within the origin bytecode sequence instead of the modified one.
+Since the \code{loopBody(...)} is invoked within a \code{while-loop}, it iterates through the given \code{methodInfo} until it reaches the end of the bytecode sequence. When it goes through the bytecode sequence we instrument the bytecode. But because the changes made on the bytecode is updated after the \code{while-loop}, the method \code{loopBody(...)} still finds the specific opcodes at locations within the origin bytecode sequence instead of the modified one.
 
-Due to this situation had difficulties finding the right \textbf{start-pc} of field assignments. The class \code{FieldAnalyzer}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller}.} serves as the explanation of how we still managed to find the \textbf{start-pc} of a field assignment.
+Due to this situation we had difficulties finding the right \textbf{start-pc} of field assignments. The class \code{FieldAnalyzer}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller}.} serves as the explanation of how we still managed to find the \textbf{start-pc} of a field assignment.
 
 %This method caused us some.  troubles because it loops through the GIVEN \code{methodInfo} which contains the bytecode sequence of a method. Even after finding a field assignment and adding bytecode to it, the method still iterates through the unchanged \code{methodInfo} it got as parameter without the additional bytecode. Getting the right start-pc of a field assignment is not a straight forward process as it may seem.
 %
@@ -902,10 +929,11 @@ Due to this situation had difficulties finding the right \textbf{start-pc} of fi
 
 The reason why we decided to use Javassist for our NullSpy project was that it allows us to instrument code at the source-level API.
 
-One big problem we encountered was the insertion of the code if a variable assignment is the code before a closing bracket \code{\}}. 
-We tried to insert code as shown in \figref{insertionCodeExample} by specifying the exact line number where we want to enter in source code. 
+One big problem we encountered was the insertion of the code if a variable assignment is the code before a closing curly bracket \code{\}}. 
+We tried to insert code \chk{similar to the example as shown in \coderef{bytecodeModifier}} by specifying the exact line number where we want to enter in source code. 
 Unfortunately Javassist first checks whether the specified line contains some code (standalone symbols and Java keywords excluded). 
 If there is no code at the specified line, Javassist computes the next line containing a code and inserts our code right before that line. 
+
 Let us look at a situation where, for example, the local variable \code{var} is assigned a value at the end of the \code{if-body} at line 3 in \coderef{bytecodeAdaptationExample_1}.
 We want to add the code for assignment check just after, at line 4. 
 Since line 4 does not contain any source code, except the closing curly bracket, Javassist adds the code right before the next line which contains the code, which, in this case, is the beginning of the \code{else-body}, line 5 in \coderef{bytecodeAdaptionExample_2}). 
@@ -916,6 +944,7 @@ So our added code which serves to check the value of the local variable \code{va
 Object var;
 if (...) {
 	var = ...;
+	--<inserted code to check the variable var>--
 } else {
 	var = ...;
 }
@@ -934,7 +963,7 @@ if (...) {
 Due to this problem we need to work on the bytecode-level. 
 %This way we first have to build up the bytecode sequence and then enter it before a specific pc.
 \nm{I vote to remove this part of the appendix completely. Boris, your opinion?} 
-How we build the bytecode sequence inserted is explained in \todo{}.
+How we build the bytecode sequence insert is explained in Appendix \ref{cha:appInstrumentation}.
 
 There are more problems during the implementation of NullSpy but we mentioned the most troublesome ones in this subsection.
 

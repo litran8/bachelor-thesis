@@ -689,7 +689,7 @@ In this section we would like to present some of the difficulties we encountered
 
 In the section \subsecref{methodReceiver} we have explained how to extract the information about \mr when the whole method invocation is contained within one line of code. 
 %In many development environment the written code can be formatted automatically and as well manually. 
-However, we have encountered a persistent problem, namely getting the pc-interval of the \mr when the method invocation is split throughout multiple lines of code, thus when pc-interval covers multiple lines in source code.  
+However, we have encountered a persistent problem, namely getting the pc-interval of the \mr when the method invocation is split throughout multiple lines of code, thus when method invocation pc-interval covers multiple lines in source code.  
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Method invocation split in two lines example.}, label={code:4-1}, firstnumber=31]
@@ -717,15 +717,15 @@ Line number table:
 	...
 \end{JVMIS}
 
-\chk{Let us now look at an example that contains the explained situation, where a method invocation is split into two lines. The example is shown in \coderef{4-1}. 
+\chk{Let us now have a look at an example that contains the explained situation, where a method invocation is split into two lines. The example is shown in \coderef{4-1}. 
 In this example we are interested in the method invocation \code{registerAndLoadImage(...)}. 
 The invocation starts at line 31 and ends at line 32.
-The second line only contains the parameters the method needs.}
+The second line only contains the arguments of the method call.}
 These situations cannot be figured out by just looking at the bytecode, therefore the line number table (\bytecoderef{4-3}) has to be consulted. 
 
-Beforehand we have to say that there is no \mr in \coderef{4-1} because the \mr would contain a method invocation itself. NullSpy does not support \mrs which are return objects of method invocations. Enabling the coverage of such situations is a topic of future work. Other \mrs NullSpy does not support are elements of collections since a collection can hold other collections.
+Beforehand we have to say that there is no \mr (in the terms we defined it) in \coderef{4-1} because the \mr would be a method invocation itself. NullSpy does not support \mrs which are return objects of method invocations. Enabling the coverage of such situations is a part of the future work. Other \mrs NullSpy does not support are elements of collections since a collection can hold other collections, \etc
 
-The line number \textit{31} is listed twice int the line number table (\bytecoderef{4-3}), this indicates that the method invocation is split into multiple lines in source code.
+The line number \textit{31} is listed twice int the line number table (\bytecoderef{4-3}). This indicates that the method invocation is split into multiple lines in source code.
 
 \chk{The line number table entries indicate the followings:
 \begin{itemize}
@@ -735,7 +735,7 @@ The line number \textit{31} is listed twice int the line number table (\bytecode
 \end{itemize}
 }
 
-\chk{To obtain the method invocation pc-interval we had to make further analyses. Only using the algorithm described in \subsecref{methodReceiver} we would only get <11,11> as the method invocation pc-interval. But the correct method invocation pc-interval in this example is <0,11>.}
+\chk{To obtain the method invocation pc-interval we had to make further analyses. By using the algorithm described in \subsecref{methodReceiver} we would get <11,11> as the method invocation pc-interval, which is incorrect. The correct method invocation pc-interval in this example is <0,11>.} \todo{Be sure the results are correct.}
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Alternating line number example.}, label={code:3-1}, firstnumber=127]
@@ -763,7 +763,7 @@ Line number table:
 	...
 \end{JVMIS}
 
-\chk{The second example we look at is the example shown in \coderef{3-1}. In this example we see that the method invocation is situated in the second line unlike the invocation in the previous example.} This example is interesting because the line numbers 127 and 128 are stored in an alternated way in the line number table shown in \bytecoderef{3-3}. The line number table indicates followings:
+\chk{More complicated situation as the one shown in the example \coderef{3-1} can happen. In this example method invocation is situated in the second line unlike the invocation in the previous example.} This is interesting because the line numbers 127 and 128 are stored in an alternated way in the line number table shown in \bytecoderef{3-3}. The line number table indicates followings:
 
 \begin{itemize}
 	\item line 3: the method invocation \code{getUndoActivity()}
@@ -772,9 +772,9 @@ Line number table:
 	\item line 6: the assignment to the variable \code{oldConnector}
 \end{itemize}
 
-\chk{First, the method invocation \code{getUndoActivity()} at line 128 is executed and then the execution order\lt{execution order ok? oder doch ein anderes wort?} jumps back to line 127 to perform the cast to \code{ChangeConnectionsHandle.UndoActivity}. After the cast, again we change to line 128 where the method \code{getOldConnector()} is invoked.}
+\chk{First, the method invocation \code{getUndoActivity()} at line 128 is executed and then the execution jumps back to line 127 to perform the cast to \code{ChangeConnectionsHandle.UndoActivity}. After the cast, again execution jumps to line 128 where the method \code{getOldConnector()} is invoked.}
 
-\chk{With the further analyses we obtain <47,54> as the invocation pc-interval. 
+\chk{With the default analyses we would obtain <?,?> as the invocation pc-interval, whereas the correct one is <47,54>. 
 Another interesting thing is that the start-pc of the invocation is mapped to line 128. So the invocation does not start with the smaller line number, \ie line 127 what normally would be expected.
 }
 
@@ -829,15 +829,16 @@ Line number table:
 	...
 \end{JVMIS}
 
-\chk{The interesting part of third example (\coderef{2-1}) is the presence of multiple corresponding line numbers (line number table shown in \bytecoderef{2-3}), \ie lines 3 and 12, lines 4 and 11 and lines 5 and 10. The first line number indicates the starting point of an expression and the latter represents the ending point of the expression. Again, we examine the line number table:}
+\chk{The third situation we encountered is presented in the example (\coderef{2-1}). In the line number table, there are several pairs of entries corresponding to the same source code line number (line number table shown in \bytecoderef{2-3}), \ie lines 3 and 12 both correspond to the source code line 149, lines 4 and 11 both correspond to the source code line number 150 and lines 5 and 10 both correspond to the source code line 151. 
+The first line of these pairs indicates the start-pc of an expression and the latter represents the end-pc of the expression. Again, we examine the line number table:}
 
 \begin{enumerate}
-	\item line 3: starting point of the for-loop
-	\item line 4: starting point of the method invocation \code{addItem(...)}
-	\item line 5: \code{new ChangeAttributeCommand(...)} starting point\\or parameter loading onto the stack
-	\item line 6-8: parameter loading onto the operand stack
-	\item line 9-10: actual object creation \code{new ChangeAttributeCommand(...)}
-	\item line 11: actual call to \code{addItem(...)}
+	\item line 3: start-pc of the for-loop
+	\item line 4: start-pc of the method invocation \code{addItem(...)}
+	\item line 5: \code{new ChangeAttributeCommand(...)} start-pc\\which is actually argument loading onto the stack
+	\item line 6-8: argument loading onto the operand stack
+	\item line 9-10: object creation \code{new ChangeAttributeCommand(...)}
+	\item line 11: call to \code{addItem(...)}
 	\item line 12: for-loop incrementation
 \end{enumerate}
 
@@ -873,10 +874,8 @@ Line number table:
 %[pc: 32, line: 23]
 %\end{JVMIS}
 
-By only using the algorithm of extracting the pc-interval of a \mr (described in \subsecref{methodReceiver}) we would get the wrong outermost pc-interval a the method invocation, when the invocation is split into multiple lines. To handle this mistake we implemented a supporting class called \code{MultipleLineManager}\footnote{\label{package2}In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.}. Its responsibility is to extract the outermost pc-interval of invocations in split line situations. 
-\chk{For complexity reasons we omit the exmplanation how we implemented the class \code{MultipleLineManager}.}
-
-\todo{leave this or not write about the multiple line stuff.}
+By using the algorithm of extracting the pc-interval of a \mr (described in \subsecref{methodReceiver}) we would get the wrong outermost pc-interval of the method invocation. To handle this mistake we implemented a supporting class called \code{MultipleLineManager}\footnote{\label{package2}In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.}. Its responsibility is to extract the outermost pc-interval of invocations in split line situations. 
+\chk{For complexity reasons we omit the implementation explanation.}
 
 %only get the pc-interval <47,>, but actually pc 18 also belongs to the interval. That the missing pc is missing will be detected in step 4\&5 when traversing back the ArrayList by the number of parameters. If it is not a static method invocation and there is not enough possible \mrs stored in that ArrayList to traverse back, the missing pc is added in retrospect.
 %
@@ -929,8 +928,8 @@ Due to this situation we had difficulties finding the right \textbf{start-pc} of
 
 The reason why we decided to use Javassist for our NullSpy project was that it allows us to instrument code at the source-level API.
 
-One big problem we encountered was the insertion of the code if a variable assignment is the code before a closing curly bracket \code{\}}. 
-We tried to insert code \chk{similar to the example as shown in \coderef{bytecodeModifier}} by specifying the exact line number where we want to enter in source code. 
+One big problem we encountered was the insertion of the code if a variable assignment is the last line of code before a closing curly bracket \code{\}}. 
+We tried to insert the code by specifying the exact line number which we want to instrument, \ie the line after the assignment. 
 Unfortunately Javassist first checks whether the specified line contains some code (standalone symbols and Java keywords excluded). 
 If there is no code at the specified line, Javassist computes the next line containing a code and inserts our code right before that line. 
 
@@ -975,11 +974,11 @@ There are more problems during the implementation of NullSpy but we mentioned th
 
 During the implementation of NullSpy we had to change the concept few times due to limitations or an overhead that could have grown immense.
 
-Our first idea of how NullSpy could track the \npes is to gather information about variable assignment, which is the case now, and also inject another test method right before each method invocations. In small projects this way could have worked fine but in larger projects which could contain hundreds of classes with a lot of method invocations the execution time would be strongly influenced.
+%Our first idea of how NullSpy could track the \npes is to gather information about variable assignment, which is the case now, and also inject another test method right before each method invocations. In small projects this way could have worked fine but in larger projects which could contain hundreds of classes with a lot of method invocations the execution time would be strongly influenced.
 
-To collect data about variables we have to instrument bytecode even if this affects the performance of a project. We already mentioned one limitation we encountered during the implementation phase which is describd in \subsecref{bytecodeAdaptationDifficulties}. The problem was that we could not use the source-level API of Javassist to insert code right before a closing curly bracket \code{\}} if a variable assignment is located before that bracket. Hence NullSpy instruments code on the bytecode-level.
+%To collect data about variables we have to instrument bytecode even if this affects the performance of a project. We already mentioned one limitation we encountered during the implementation phase which is describd in \subsecref{bytecodeAdaptationDifficulties}. The problem was that we could not use the source-level API of Javassist to insert code right before a closing curly bracket \code{\}} if a variable assignment is located before that bracket. Hence NullSpy instruments code on the bytecode-level.
 
-Another limitation of Javassist it the issue that it does not provide anything to extract information about \mrs. Javassist only provides the function to extract data about fields (\subsubsecref{field}). This again caused us other problems. About extracting information about local variables we got a fast solution \lt{schnelle lösung gefunden}(\subsubsecref{localVariable}). But Javassist does not support the developer to extract details about \mr. Nonetheless we came up with an algorithm for obtaining those wanted data (\subsecref{methodReceiver}).
+%Another limitation of Javassist it the issue that it does not provide anything to extract information about \mrs. Javassist only provides the function to extract data about fields (\subsubsecref{field}). This again caused us other problems. About extracting information about local variables we got a fast solution \lt{schnelle lösung gefunden}(\subsubsecref{localVariable}). But Javassist does not support the developer to extract details about \mr. Nonetheless we came up with an algorithm for obtaining those wanted data (\subsecref{methodReceiver}).
 
 %The last limitation we want to discuss here is that unfortunately NullSpy is not capable to track the root of \npes that are originated in the return value of a method call or in an element of a collection. 
 %Why those situations are not supported in NullSpy is because of the impossibility way to store them, e.g. imagine a nested ArrayList or a HashMap and a never ending return value of method invocations. So we lack something tangible to compare with each other, get a hit and read the location out of the hit (\secref{futureWork}).
@@ -1150,22 +1149,25 @@ public class Ideone {
 Now we have come so far to retrospect (step back and have a critical loot at) the entire project for summarizing what goals we have achieved so far and for proposing further aims that could be completed in the future. In a small section we also want to talk about the gained experience during the whole project.
 
 %===============================================================================
-\section{NullSpy}
+\section{Conclusion}
 \label{sec:nullSpy}
 
-Here we can state that we successfully managed to meet the main purpose we have set at the beginning of the project. NullSpy is now capable of tracking the \npes to its root and provide the user with more information about its origin without spending much time on finding it. The most important steps which lead to the success of NullSpy are listed below:
+\todo{label}
+Here we can state that we successfully managed to meet the main purpose we have set at the beginning of the project. NullSpy is now capable of tracking the \npes to its root and provide the user with more information about its origin without a significant overhead. The most important steps which lead to the success of NullSpy are listed below:
 
 \begin{enumerate}
-\item The extraction of information about the \mrs because they are candidates that could cause a \npe. To achieve this, we developed an algorithm described in \subsecref{methodReceiver}. The algorithm finds the \mr, statically extracts the needed information about the \mr to create its unique identifier and stores the details.
+\item The extraction of information about the \mrs because they are candidates that could cause a \npe. To achieve this, we developed an algorithm which finds the \mr, statically extracts the needed information about the \mr to create its unique identifier and stores the details.
 
-\item Again collecting data, but this time about variable assignments: local variables and fields. For this purpose we statically analyze the bytecode and instrument the bytecode. We use Javassist to scan bytecode for instructions that represent variable assignments (regexs: \textit{``astore.*''} and \textit{``put.*''}). Finding such instructions we extract information about those assignments and pass the collected information to the code we insert after each variable assignment. On run time we check whether the assigned variable is assigned null. If this is the case the statically obtained details about that variable is stored.
+\item Collecting data about variable assignments: local variables and fields. For this purpose we statically analyze and instrument the bytecode. We use Javassist to scan bytecode for instructions that represent variable assignments (regexs: \textit{``astore.*''} and \textit{``put.*''}). We extract information about those assignments and pass the collected information to the code we insert after each variable assignment. During run time we check whether the assignment value is null. If this is we store the information about this assignment.
 
-\item NullSpy handles the uncaught \npe. That is why we wrap up the \code{main()} method with a \cblock. In this \cblock we extract details of where the \npe occurred from the \npe stack trace. With this data and the identifier for \mrs and variable assignments we perform several comparisons (\subsecref{processFlow}) to find the location of the null assignment which is the goal of NullSpy. 
+\item NullSpy handles the uncaught \npe. That is why we wrap up the \code{main()} method with a \cblock. In this \cblock we extract details of where the \npe occurred from the \npe stack trace. With this data and the identifier for \mrs and variable assignments we perform several comparisons to find the location of the null assignment which is the goal of NullSpy. 
 \end{enumerate}
 %\item All the additional needed classes are added to the project after it is modified and stored in a folder the user has chosen. Being able to run the modified project of course a jar file is created. In our case JHotDraw already provides a \textit{build.xml} which we had to alternate a little bit.
 %\end{enumerate}
 
-During the implementation we encountered many difficulties (\secref{challenges}). For most of the problems we came across with we managed to find a solution. Those unsolved ones could be proposed as goals of future work.
+During the implementation we encountered many difficulties. For most of the problems we came across we managed to find a solution. Those unsolved ones remain as future work.
+
+\todo{Write about validation}
 
 %===============================================================================
 \section{Future Work}
@@ -1173,7 +1175,7 @@ During the implementation we encountered many difficulties (\secref{challenges})
 
 %-------------------------------------------------------------------------------
 \subsection{Support unsupported \mrs and variable assignments}
-As mentioned in \secref{limitations}, if the culprit that caused the \npe is an element of a collection or the return object of a method invocation, NullSpy cannot track the \npe to the null assignment of the culprit variable. How to track the null assignment in the situation mentioned could be a future aim.
+As mentioned in \secref{limitations}, if the culprit that caused the \npe is an element of a collection or the return object of a method invocation, NullSpy cannot track the null assignment of the culprit variable. We intend to improve this.
 
 %-------------------------------------------------------------------------------
 \subsection{Track \npe root for all projects}
@@ -1185,7 +1187,7 @@ For now NullSpy works on projects which have a the starting point, \ie the \code
 
 %-------------------------------------------------------------------------------
 \subsection{Plug-in for Eclipse}
-Last target for a possible future work is to transform NullSpy into an Eclipse compatible plug-in project. After integrated the NullSpy plug-in into Eclipse the null tracking can be started without any expenses on finding out how to use NullSpy on a project.
+Last target for a possible future work is to transform NullSpy into an Eclipse compatible plug-in project, which would allow a simpler way to start tracking null assignments.
 
 For now, we can only think of these future work that could improve NullSpy to give it more value.
 
@@ -1196,9 +1198,9 @@ For now, we can only think of these future work that could improve NullSpy to gi
 
 At the beginning, after reading the description of the bachelor project, I had no clue how to approach its goal at all, since this is my first big project on my own. But with help from two experienced research assistants I learned a lot, especially in the matter of programming with Javassist and bytecode understanding.
 
-NullSpy is based on the instrumentation of code, that means the core work of NullSpy is to modify bytecode (with Javassist). Being able to modify bytecode had to learn how bytecode is constructed and to get familiar with Javassist. We went through a good Javassist tutorial\footnote{\url{https://github.com/jboss-javassist/javassist/wiki/Tutorial-1}} to learn how Javassist is used to instrument code on mostly on source-code level but also a bit on bytecode-level.
+NullSpy is based on the instrumentation of code, that means the core work of NullSpy is to modify bytecode (with Javassist). To be able to modify bytecode, I had to learn how bytecode is constructed and to get familiar with Javassist. We went through a good Javassist tutorial\footnote{\url{https://github.com/jboss-javassist/javassist/wiki/Tutorial-1}} to learn how Javassist is used to instrument code mostly on source-code level but also a bit on bytecode-level.
 
-Due to the problem about how to extract information about \mrs, we spent a lot of time finding a way how this could be done. At the end we found the solution how this can be done. It was quite interesting to invent an algorithm that fulfills a more complex task.
+Due to the problem of extracting information about \mrs, we spent a lot of time finding a way how this could be done. It was quite interesting to invent an algorithm that fullfills a more complex task.
 
 During the implementation of NullSpy we had to debug many times. This was not as easy as it seemed. Sometimes it took hours to find the cause of a small bug. After fixing it another occurred. The reason why it sometimes took that long to debug is because of the involvement of the bytecode.
 
@@ -1208,7 +1210,7 @@ During the implementation of NullSpy we had to debug many times. This was not as
 
 %Debugging: It is not as easy as it seems. Sometimes it took hours to find the cause of a small bug, and after fixing it another occurs. The reason why it took that long to debug is because along with checking whether the logic of our code was right we also had to find the right bytecode position to ensure the implementation does what it is created for.
 
-Coding beautifully so that the code does not smell was another challenge due to my lack of experience. Sometimes I tended to create god classes instead of following the single responsibility principle. Therefore, we had to refactor the whole project multiple times, which also took some time. 
+Coding in a nice way so that the code does not smell was another challenge due to my lack of experience. Sometimes I tended to create god classes instead of following the single responsibility principle. Therefore, we had to refactor the whole project multiple times, which also took some time. 
 
 %So I learndBest before starting to code is to clearly thinking through what is needed, how the structure should look like and what kind of responsibility each class of the project should take for gaining time for other things.
 

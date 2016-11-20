@@ -696,6 +696,8 @@ However, we have encountered a persistent problem, namely getting the pc-interva
 Image image = Iconkit.instance().registerAndLoadImage(
 	(Component)view, imageName);
 \end{Java}
+%Class: org.jhotdraw.samples.minimap.MiniMapDesktop
+%Method: createRightComponent
 
 %\renewcommand\lstlistingname{Bytecode}
 %\begin{JVMIS}[caption={Bytecode to \coderef{4-1}.}, label={bytecode:4-2}, breaklines=true]
@@ -734,13 +736,15 @@ The line number table entries indicate the followings:
 	\item line 4: execution of the method \code{registerAndLoadImage(...)}
 \end{itemize}
 
-\chk{To obtain the method invocation pc-interval we had to make further analyses. By using the algorithm described in \subsecref{methodReceiver} we would get <11,11> as the method invocation pc-interval, which is incorrect. The correct method invocation pc-interval in this example is <0,11>.} \todo{Be sure the results are correct.}
+To obtain the method invocation pc-interval we had to make further analyses. By using the algorithm described in \subsecref{methodReceiver} we would get <0,0> as the method invocation pc-interval, which is incorrect. The correct method invocation pc-interval in this example is <0,11>.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Alternating line number example.}, label={code:3-1}, firstnumber=127]
 Connector oldConnector = ((ChangeConnectionHandle.UndoActivity)
 			getUndoActivity()).getOldConnector();
 \end{Java}
+%Class: org.jhotdraw.standard.ChangeConnectionHandle
+%Method: invokeEnd
 
 %\renewcommand\lstlistingname{Bytecode}
 %\begin{JVMIS}[caption={Bytecode to \coderef{3-1}.}, label={code:3-2}, breaklines=true]
@@ -773,9 +777,8 @@ More complicated situation as the one shown in the example \coderef{3-1} can hap
 
 First, the method invocation \code{getUndoActivity()} at line 128 is executed and then the execution jumps back to line 127 to perform the cast to \code{ChangeConnectionsHandle.UndoActivity}. After the cast, again execution jumps to line 128 where the method \code{getOldConnector()} is invoked.
 
-\chk{With the default analyses we would obtain \todo{<?,?>} as the invocation pc-interval, whereas the correct one is <47,54>. 
+With the default analyses we would obtain <47,48> as the invocation pc-interval, whereas the correct one is <47,54>. 
 Another interesting thing is that the start-pc of the invocation is mapped to line 128. So the invocation does not start with the smaller line number, \ie line 127 what normally would be expected.
-}
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Nested interval example.}, label={code:2-1}, firstnumber=149]
@@ -789,6 +792,8 @@ for (int i = 0; i < ColorMap.size(); i++)
 		)
 	);
 \end{Java}
+%Class: org.jhotdraw.applet.DrawApplet
+%Method: createColorChoice
 
 %\renewcommand\lstlistingname{Bytecode}
 %\begin{JVMIS}[caption={Bytecode to \coderef{2-1}.}, label={code:2-2}, breaklines=true]
@@ -873,7 +878,7 @@ The first line of these pairs indicates the start-pc of an expression and the la
 %[pc: 32, line: 23]
 %\end{JVMIS}
 
-By using the algorithm of extracting the pc-interval of a \mr (described in \subsecref{methodReceiver}) we would get the wrong outermost pc-interval of the method invocation. To handle this mistake we implemented a supporting class called \code{MultipleLineManager}\footnote{\label{package2}In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.}. Its responsibility is to extract the outermost pc-interval of invocations in split line situations. 
+By using the algorithm of extracting the pc-interval of a \mr (described in \subsecref{methodReceiver}) we would again get the wrong outermost pc-interval of the method invocation. To handle this mistake we implemented a supporting class called \code{MultipleLineManager}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.}. Its responsibility is to extract the outermost pc-interval of invocations in split line situations. 
 For complexity reasons we omit the implementation explanation.
 
 %only get the pc-interval <47,>, but actually pc 18 also belongs to the interval. That the missing pc is missing will be detected in step 4\&5 when traversing back the ArrayList by the number of parameters. If it is not a static method invocation and there is not enough possible \mrs stored in that ArrayList to traverse back, the missing pc is added in retrospect.
@@ -1067,11 +1072,11 @@ The runtime of the modified project takes 0.362734s longer than the original one
 %But this numbers have to be interpreted with caution because the overhead is only measured on JHotDraw.
 
 %===============================================================================
-\section{NullSpy demonstration on a real project}
+\section{NullSpy demonstration}
 \label{sec:demonstration}
 We want to demonstrate on a real project how the project NullSpy helps the user to find the real culprit that leads to a \npe. 
 %The example shown in \coderef{demonstration} will be the real world project NullSpy supports.
-Let us have a look at the example\footnote{\url{http://ideone.com/rIFgT5}} shown in \coderef{demonstration}. \todo{Reference it}
+Let us have a look at the example shown in \coderef{demonstration}.
 
 The \code{main()} method at line 6 invokes sequential three methods (\code{makeReader()}, \code{readNumbers()}, \code{closeReader}) and prints out the field \code{numbers}. In \code{makeReader()} method it tries to read a file named ``file.txt''. If the example does not find that file, it will execute the \cblock and assign null to the field \code{reader} at line 18.
 
@@ -1165,7 +1170,7 @@ Here we can state that we successfully managed to meet the main purpose we have 
 
 During the implementation we encountered many difficulties. For most of the problems we came across we managed to find a solution. Those unsolved ones remain as future work.
 
-\chk{After the implementation of NullSpy we validated it with help of the project JHotDraw. First we measured the time how long JHotDraw takes to execute all its tests without touching the bytecode. After that we instrumented the project and again measured the execution time. The result is a performance overhead of approximately 5\%. So NullSpy could help the developer finding the null assignment without a big impact on the performance.}
+After the implementation of NullSpy we validated it with help of the project JHotDraw. First we measured the time how long JHotDraw takes to execute all its tests without touching the bytecode. After that we instrumented the project and again measured the execution time. The result is a performance overhead of approximately 5\%. So NullSpy could help the developer finding the null assignment without a big impact on the performance.
 
 %===============================================================================
 \section{Future Work}
@@ -1210,42 +1215,52 @@ Coding in a nice way so that the code does not smell was another challenge due t
 % A N L E I T U N G  Z U  W I S S E N S C H A F T L I C H E N  A R B E I T E N
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
 \chapter {Anleitung zu wissenschaftlichen Arbeiten}
-NullSpy is a program which helps Java developers to find the root of \npes by providing an additional link next to the common stack trace. The key idea behind NullSpy is to help developers to save time fixing bugs which are caused by \npes. This approach tries to provide the service mentioned by keeping the overhead to a minimum. To demonstrate how NullSpy works, this chapter serves as a small tutorial that takes a small example source code as the testing project to show the feature of NullSpy.
+NullSpy is a program which helps Java developers to find the root of \npes by providing an additional link next to the common stack trace. The key idea behind NullSpy is to help developers to save time fixing bugs which are caused by \npes. This approach tries to provide the service mentioned by keeping the overhead to a minimum. To demonstrate how NullSpy works, this chapter serves as a small tutorial that takes the example shown in \coderef{demonstration} as the testing code to show the feature of NullSpy.
 
 %===============================================================================
 \section{Installation}
 \label{sec:installation}
 
 \begin{enumerate}
-	\item Download example source code from \url{http://ideone.com/rIFgT5}
-	\item Make sure to get the class file of that Java class, \eg import that class into eclipse and execute it
-	\item Checkout the project NullSpy from \ursl{https://github.com/litran8/nullpointer-javassist}
-	\tiem 
-\end{enumerate}}
-For this tutorial JHotDraw is needed. In order to download it, visit the following site and download ``JHotDraw6.0 beta 1'' (version we worked with during the implementation of NullSpy):\\
-\href{http://www.jhotdraw.org}{www.jhotdraw.org}\\
-Unpack the archive and store it to a location of your choice. To be able to run JHotDraw additional libraries are used, that are not included in JHotDraw itself. Following libraries are to be downloaded:\\
-``batik-all-1.7'': \href{http://www.java2s.com/Code/Jar/b/Downloadbatikall17jar.htm}{www.java2s.com/Code/Jar/b/Downloadbatikall17jar}\\
-``jdo'': \href{http://www.java2s.com/Code/Jar/j/Downloadjdojar.htm}{www.java2s.com/Code/Jar/j/Downloadjdojar}\\
-Again unpack those archives and store them in a lib folder in your JHodDraw project.
+	\item Take the example shown in \coderef{demonstration} and import it into eclipse.
+	\item Checkout the project NullSpy from \url{https://github.com/litran8/nullpointer-javassist} and import it into eclipse
+	\item Look for the class \code{MainProjectModifier}\footnote{\label{install}In package \emph{ch.unibe.scg.nullSpy.run}.} and run it with two parameters:
+	\begin{enumerate}
+		\item path to the bin folder of the example source code
+		\item path to where the modified project should be stored
+	\end{enumerate}
+	\item Look for the class \code{ExecutableJarCreator}\textsuperscript{\ref{install}} and run it with three parameters:
+	\begin{enumerate}
+		\item path to the folder containing the modified project
+		\item path to where the executable jar file should be stored
+		\item the name of the class containing the \code{main()} method
+	\end{enumerate}
+	\item Look for the class \code{ModifiedProjectLauncher}\textsuperscript{\ref{install}} and run it with two parameters:
+	\begin{enumerate}
+		\item path to the executable jar file
+		\item the name of the class containing the \code{main()} method
+	\end{enumerate}
+\end{enumerate}
 
-Running the tests of JHotdraw with the commando line the location of libraries ``hamcrest'' and ``junit'' are needed, which are normally also downloaded when the programming environment Eclipse\footnote{Can be downloaded here: \href{https://eclipse.org/downloads/}{www.eclipse.org/downloads}} is downloaded.
+If these steps are followed as explained, the result is similar to the stack trace shown in \stacktraceref{demonstrationStackTrace}.
+
+%For this tutorial JHotDraw is needed. In order to download it, visit the following site and download ``JHotDraw6.0 beta 1'' (version we worked with during the implementation of NullSpy):\\
+%\href{http://www.jhotdraw.org}{www.jhotdraw.org}\\
+%Unpack the archive and store it to a location of your choice. To be able to run JHotDraw additional libraries are used, that are not included in JHotDraw itself. Following libraries are to be downloaded:\\
+%``batik-all-1.7'': \href{http://www.java2s.com/Code/Jar/b/Downloadbatikall17jar.htm}{www.java2s.com/Code/Jar/b/Downloadbatikall17jar}\\
+%``jdo'': \href{http://www.java2s.com/Code/Jar/j/Downloadjdojar.htm}{www.java2s.com/Code/Jar/j/Downloadjdojar}\\
+%Again unpack those archives and store them in a lib folder in your JHodDraw project.
+%
+%Running the tests of JHotdraw with the commando line the location of libraries ``hamcrest'' and ``junit'' are needed, which are normally also downloaded when the programming environment Eclipse\footnote{Can be downloaded here: \href{https://eclipse.org/downloads/}{www.eclipse.org/downloads}} is downloaded.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                          Appendix bytecode combinations                      %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 \chapter{Bytecode combinations of \mrs}
 \label{cha:bytecodeCombinations}
 
-%Extracting candidate method receiver pc-intervals
-%The outermost interval <144,155> could contain other invocations, which could
-%have method receivers of their own. This is visible in our example, where the
-%getDesktop() invocation (pc 146) is embedded in our outermost interval. For
-%this reason, we explored all possible bytecode combinations of instructions that can
-%represent method receivers and developed a system for identifying such embedded call
-%sights. More about this system can be found in the Appendix (B).
+\todo{regex abou aload...}
 
 In the algorithm about finding the \mr pc-interval we have to split the outermost invocation pc-interval into candidate \mr pc-intervals. Here we discuss about how the extraction of all possible combinations of \mrs which are embedded in the outermost interval is done. 
 
@@ -1254,38 +1269,36 @@ Bear in mind that \textit{aload\_0} represents \textit{this} object if we are an
 The combinations for identifying the candidate \mr pc-intervals are listed below:  
 
 		\begin{itemize}
-		\item non-static field
-		\begin{enumerate}
-			\item aload\_0.getfield // access to any kind of field of \textit{this} object, or access to public field of argument/local variable \todo{update}
-			\item aload\_0.getfield.getfield.getfield // access to a public field
-			\item aload\_0.getfield.getfield.getfield.getfield // we support only until three consecutive \textit{getfield} instructions; we have not encountered any case with more than three instructions in row
-		\end{enumerate}
-
-		\item static field
+		\item \underline{non-static field}
 		\begin{itemize}
-			\item \checkmark getstatic.getfield
-			\item \checkmark getstatic.getfield.getfield... (public fields)
-			%\item $\times$ getstatic (ignore, because getinvoke)
-			%\item $\times$ getstatic.aload
-			%\item $\times$ getstatic.aload\_0
-			%\item $\times$ getstatic.new
-			%\item $\times$ getstatic.getstatic (!exist)
+			\item \textbf{(aload.* | getstatic).getfield}\\
+			If the instruction before \textit{getfield} is \textit{``aload.*''}, the combination refers to an access to a public or a private field of \textit{this} object, or access to public field of argument/local variable.\\
+			If the instruction before \textit{getfield} is \textit{getstatic}, the combination refers to an access to a field of a static field.
+			\item \textbf{(aload.* | getstatic).getfield.getfield}\\
+			Access to a public field declared in another class then the currently analyzed one.\\
+			We support only until two consecutive \textit{getfield} instructions; we have not encountered any case with more than two instructions in row.
 		\end{itemize}
-		
-		%\item object creation
-		%\begin{itemize} 							
-			%\item \checkmark new...(put.*/astore.*)
-		%\end{itemize}
-		
-		\item local variable
+
+		\item \underline{static field}
 		\begin{itemize}
-			\item \checkmark aload
-			\item \checkmark aload.getfield 							
-			\item \checkmark aload.getfield.getfield... (public fields)
-			%\item $\times$ aload.getstatic (aload = ref, getstatic = arg)
-			%\item $\times$ aload.aload\_0 (aload = ref, this.getfield etc = args
-			%\item $\times$ aload.aload (aload = ref, aload = arg)
-			%\item $\times$ aload.new (aload = ref, new = arg)
+			\item \textbf{getstatic}\\
+			Access to a static field of any class
+			%\item \textbf{getstatic.getfield}\\
+			%Access to a public field of the static field \lt{ask}
+			%\item \textbf{getstatic.getfield.getfield}\\
+			%Access to a public field declared in another class then the currently analyzed one.\\
+			%We support only until two consecutive \textit{getfield} instructions; we have not encountered any case with more than three instructions in row.
+		\end{itemize}
+				
+		\item \underline{local variable}
+		\begin{itemize}
+			\item \textbf{aload.*}\\
+			Access to a local variable of the currently analyzed method
+			%\item \textbf{aload.getfield}\\
+			%Access to a public field declared in another class then the currently analyzed one.
+			%\item \textbf{aload.getfield.getfield}\\
+			%Access to a public field declared in another class then the currently analyzed one.\\
+			%We support only until two consecutive \textit{getfield} instructions; we have not encountered any case with more than three instructions in row.
 		\end{itemize}
    \end{itemize}
 
@@ -1295,7 +1308,7 @@ When we iterate through the outermost invocation pc-interval and encounter the o
 
 We do the checking until the following opcode does not fit into the allowed pattern of the template. As long as the checked opcode fits into our template, we consider them as one possible \mr which is represented by these checked opcodes.
 
-If the following opcode after the first \textit{``aload.*"} is another \textit{``aload.*"} we can be sure that they are two separate \mr candidates because these \textit{``aload.*"}s represent two variables that does not have any relationship with each other.
+If the following opcode after the \textit{``aload.*"} is another \textit{``aload.*"}, we can be sure that they are two separate \mr candidates because these \textit{``aload.*"}s represent two variables that does not have any relationship with each other.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                          Appendix method receiver          	                 %
@@ -1304,7 +1317,7 @@ If the following opcode after the first \textit{``aload.*"} is another \textit{`
 \chapter{Method receivers}
 \label{cha:appReceivers}
 
-We explained that we extract \mr information to create its unique identifier for the several comparisons which have to be done to find out the location of the null assignment of the \mr. In the subsection \nm{which one?} where we describe the algorithm for the extraction of \mr pc-interval, we gave a hint of what kind of information we need to create this unique identifier. The complete list of what data we store about the \mr is listed next:
+We explained that we extract \mr information to create its unique identifier for the several comparisons which have to be done to find out the location of the null assignment of the \mr. In \subsecref{methodReceiver} where we describe the algorithm for the extraction of \mr pc-interval, we gave a hint of what kind of information we need to create this unique identifier. The complete list of what data we store about the \mr is listed next:
 
 \begin{itemize}
 	\item \mr counter (\mrs are indexed)
@@ -1327,7 +1340,7 @@ We explained that we extract \mr information to create its unique identifier for
 \chapter{Local variables assignments}
 \label{cha:appLocalVars}
 
-To find the location of the null assignment NullSpy has to perform several comparisons of the identifiers representing local variables or fields with the identifiers of \mrs. To create those identifiers of local variables we have to collect information thereof. We listed part of the information needed to create a identifier of a local variable in \todo{subsection...}. The full list contains following information:
+To find the location of the null assignment NullSpy has to perform several comparisons of the identifiers representing local variables or fields with the identifiers of \mrs. To create those identifiers of local variables we have to collect information thereof. We listed part of the information needed to create a identifier of a local variable in \subsubsecref{localVariable}. The full list contains following information:
 
 \begin{itemize}
 	\item source code line number of the local variable
@@ -1385,7 +1398,7 @@ Under \textit{``different''} we mean that there are different kinds of instructi
 
 %Depending on the \textit{``category''} a field belongs to, different kind of information is stored about it. Number one in \listref{fieldKeywords} indicates fields of the currently analyzed class and number two can be static fields either of the current analyzed class or others classes. What Information we need about these fields accessing is listed in \listref{variableInfo1}.
 
-In the \todo{section} we listed a part of the data which we actually extracted from field assignment bytecode to create the unique identifier for the field. 
+In \subsubsecref{field} we listed a part of the data which we actually extracted from field assignment bytecode to create the unique identifier for the field. 
 
 If the assignment is to a field of the currently analyzed class, we extract following information about it:   
 
@@ -1553,7 +1566,7 @@ Let us go through the code snippet \coderef{checkFieldMethodHeader} and explain 
 
 The instruction \textit{``addLdc''} from line 16 to 22 is used to add strings to the bytecode. For adding a boolean we use the integers \textit{``1''} and \textit{``0''} to represent the boolean value \textit{true} respectively \textit{false}. Hence, line 25 to 29 adds an integer to the bytecode sequence. 
 
-The object, in our case a field, is added to the bytecode sequence by using the method \code{addAload(...)} at line 31 and the method \code{addGetfield(...)} at lines 32 and 33. These lines adds the instruction set which loads a field onto the operand stack: \textit{``aload\_0'', ``getfield''}. NullSpy takes the field itself as a argument to evaluate its value in the check-method.
+The object, in our case a field, is added to the bytecode sequence by using the method \code{addAload(...)} at line 31 and the method \code{addGetfield(...)} at lines 32 and 33. These lines adds the instruction set which loads a field onto the operand stack: \textit{``aload\_0'', ``getfield''}. NullSpy takes the field itself as an argument to evaluate its value in the check-method.
 
 Important integers like the line number and pcs are added to the bytecode sequence from line 35 to 38. 
 
@@ -1571,7 +1584,7 @@ In this created check-method the variable is checked for its value. If the value
 \begin{center}
 ''Ich erkl\"are hiermit, dass ich diese Arbeit selbstst\"andig verfasst und  keine  anderen  als  die  angegebenen  Quellen  benutzt  habe.
 Alle Stellen, die w\"ortlich oder sinngem\"ass aus Quellen entnommen  wurden,  habe  ich  als  solche  gekennzeichnet.  Mir  ist  bekannt,  dass  andernfalls  der  Senat  gem\"ass  Artikel 36  Absatz 1 Buchstabe
-r  des  Gesetzes  vom  5. September 1996  \"uber  die  Universit\"at zum Entzug des auf  Grund dieser Arbeit verliehenen Titels berechtigt ist.“
+r  des  Gesetzes  vom  5. September 1996  \"uber  die  Universit\"at zum Entzug des auf  Grund dieser Arbeit verliehenen Titels berechtigt ist.''
 \end{center}
 \vfill
 \clearpage

@@ -10,7 +10,7 @@
 \noindent
 A previous study found out that \npe is the most frequently occurring and difficult to debug exception in Java projects. \todo{Nevena: In the introduction, when this is elaborated, make sure there are some references to support this claim.} It is difficult to debug because a developer is only provided with a stack trace to the line of code where the exception was thrown. This only gives insight into the effect of the fault but not into its cause.
 
-The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the \npe was actually set to null. We attempt to achieve this goal by instrumenting java source code, while striving for a minimal execution overhead.
+The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the \npe was actually set to null. We attempt to achieve this goal by instrumenting Java source code, while striving for a minimal execution overhead.
 
 By tracking the null assignments through static analysis and by instrumenting the bytecode we can achieve a more efficient debugging process after an occurrence of a \npe.
 \end{quotation}
@@ -107,7 +107,7 @@ Afterwards, when the method \code{open(...)} calls \code{setTool()}, the attempt
 	\label{stacktrace:stackTrace}
 \end{figure}
 
-In \stacktraceref{stackTrace} we can see that the stack trace points only to the line 24, where \npe occured, and it does not track to the location where the variable is assigned the null value. We call this location the root of an exception. That means the Java developer has to debug their way to the exception root.
+In \stacktraceref{stackTrace} we can see that the stack trace points only to the line 24, where \npe occured, and it does not track to the location where the variable is assigned the null value. We call this location the \textbf{root of an exception}. That means the Java developer has to debug their way to the exception root.
 
 At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developer the exact location of the null assignment next to the ordinary stack trace, as shown in \stacktraceref{stackTrace2}.
 
@@ -181,14 +181,17 @@ The green words in \bytecoderef{helloWorld} are the string representations of Ja
 On the left-side of these instructions we see the \textbf{program counter} (pc) which is a processor register that contains the address (location) of the instruction being executed at the current time. It is also called an \textbf{instruction pointer}.
 %We use these program counters, or pc-s also as an index in the bytecode. 
 
-The instructions from pc 0 to pc 4 (lines 2-4 in \bytecoderef{helloWorld}) represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textbf{pc-interval} to describe a set of instructions that represents a Java expression. This term will play an important role further in the thesis. We use the syntax \textbf{``<,>''} to represent an pc-interval, \eg just mentioned pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts, thus we name it \textbf{start-pc} and the latter one where it ends, hence the name \textbf{end-pc}, both inclusive. In the same example, the pc-interval of the local variable \code{result} is <4,4>.
+The instructions from pc 0 to pc 4 (lines 2-4 in \bytecoderef{helloWorld}) represents the source code at line 5 in \coderef{helloWorld}. Therefore we use the term \textbf{pc-interval} to describe a set of instructions that represents a Java expression. This term will play an important role further in the thesis. We use the syntax \textbf{``<,>''} to represent an pc-interval, \eg just mentioned pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts, thus we name it \textbf{start-pc} and the latter one where it ends, hence the name \textbf{end-pc}, both inclusive. 
+%In the same example, the pc-interval of the local variable \code{result} is <4,4>.
 
 If the opcode represents a variable, on its right side we can see the information about the name and type of the variable, \eg line 3. 
 In case of an invocation opcode, it shows the behavior/method name, the parameter types and the return type, \eg line 7. 
 
 Each method bytecode representation holds a \textbf{line number table} and a \textbf{local variable table} which are listed underneath the instructions of the method (lines 9-15 in \bytecoderef{helloWorld}). 
 
-The line number table\footnote{In the jargon of Javasist, this is also called the line number attribute.} maps source code line of the method with the pc which indicates the beginning of the bytecode to the corresponding source code line. The line number table in \bytecoderef{helloWorld} is represented between the lines 9 and 12: source code line 5 starts with the pc 0 (as shown on line 10), source code line 6 starts with the pc 5 (in line 11) \etc This mapping does not apply to cases where a statement is separated into multiple lines.
+The line number table 
+%\footnote{In the jargon of Javasist, this is also called the line number attribute.} 
+maps source code line of the method with the pc which indicates the beginning of the bytecode to the corresponding source code line. The line number table in \bytecoderef{helloWorld} is represented between the lines 9 and 12: source code line 5 starts with the pc 0 (as shown on line 10), source code line 6 starts with the pc 5 (in line 11) \etc This mapping does not apply to cases where a statement is separated into multiple lines.
 
 If we look back, to the \stacktraceref{stackTrace}, we see that the stack trace provides us with a part of the call-chain that led to the \npe. This includes the line numbers in the source code where the invocations happened. The information the line number table holds is used to recover the information about the actual point in the code where the null was assigned to a reference. 
 %In \secref{lowLevelOverview} we will discuss how this is done.
@@ -215,7 +218,7 @@ private void loadDrawing(String filename) {
 private void loadDrawing(java.lang.String filename);
 	0  new java.net.URL [98]
 	...
-	13  aload_2 [url]
+	12  astore_2 [url]
 	...
 	40  goto 94
 	...
@@ -226,7 +229,7 @@ Local variable table:
  (@\textbf{[pc: 13, pc: 40] local: url index: 2 type: java.net.URL}@)
  [pc: 18, pc: 40] local: stream index: 3 type: java.io.InputStream
  [pc: 28, pc: 40] local: reader index: 4 type: org.jhotdraw.util.StorableInput
- (@\textbf{[pc: 44, pc: 94] local: newTool index: 2 type: org.jhotdraw.framework.Tool}@)
+ (@\textbf{[pc: 44, pc: 94] local: e index: 2 type: java.io.IOException}@)
 \end{JVMIS}
 
 As mentioned before, the bytecode of each method also holds a local variable table which is an array of the information about local variables (lines 13-15 in \bytecoderef{helloWorld}). This table has the information about the \textit{this} reference (if the method is an instance method or a constructor), about method parameters and method local variables, respectively. Example of the \textit{this} reference representation can be seen in the line 14. Each line of this table represents one variable and contains the following:
@@ -248,8 +251,8 @@ The \tblock starts with pc 0 and ends with pc 40 and the variable \code{url} is 
 The local variable \code{url} is stored at the index 2 in the local variable table in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}, since the first two indexes occupy \textit{this} reference and the method parameter.
 As soon as the lifespan of a local variable ends, the slot can be reused by the next instantiated local variable. 
 So, onward the pc 40, slot 2 is free again. 
-The freed slot can be immediately used by the next declared variable, which is the variable \code{newTool} in our example. 
-Looking at line 15 in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode} we see that the variable \code{newTool} also has the slot number 2. This is why we can find local variable tables that contain multiple entries with the same local variable slot.
+The freed slot can be immediately used by the next declared variable, which is the variable \code{e} in our example. 
+Looking at line 15 in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode} we see that the variable \code{e} also has the slot number 2. This is why we can find local variable tables that contain multiple entries with the same local variable slot.
 
 %===============================================================================
 \section{Javassist}
@@ -404,7 +407,7 @@ JAD is in no way a dependency of NullSpy but it was a big help during the implem
 
 As explained in \charef{introduction}, this project is about providing the user with an additional link next to the common stack trace containing the location of a \textit{null} assignment to the variable that caused the \npe. We use the term \textbf{link} to address the line which includes the information where the variable that caused the \npe was assigned null, and which we add to the common stack trace.
 
-In this chapter we give an overview of how we implemented NullSpy. We will also address the challenges (\secref{challenges}) we encountered during the implementation as well as the limitations of the tool (\secref{limitations}).
+In this chapter we give an overview of how we implemented NullSpy. We will also address the challenges (\secref{challenges}) we encountered during the implementation as well as the limitations of NullSpy (\secref{limitations}).
 
 %===============================================================================
 \section{High Level Overview}
@@ -466,7 +469,7 @@ These identifiers are used later to track the assignments to the aforementioned 
 
 The second step is to instrument the assignments. For every non-primitive variable assignment we collect information about the variable, needed to create its unique identifier. After the assignment we insert code which represents a call to the \textbf{run-time supporter} package with the variable's identifier. The run-time supporter package checks at run-time whether the variable is assigned null. If this is the case we store the information about this variable.
 
-At the end of the bytecode modification part we wrap the \code{main()} method into a \tcblock. This \tcblock extract from the \npe stack trace the information about the location where the exception happened (class name, method name, line number). This is the only information we can get from a stack trace. This information is passed on to the run-time supporter package which compares it with the stored identifiers about the \mrs. If there is a match regarding the comparison, NullSpy uses this identifier to reveal the information stored about the assignments to this variable. If there is an entry about the null assignment of that variable, we extract from it the line number of the assignment and create the additional link that reveals the location of the null assignment. This link is then added to the common \npe stack trace.
+At the end of the bytecode modification part we wrap the \code{main()} method into a \tcblock. The \cblock extracts from the \npe stack trace the information about the location where the exception happened (class name, method name, line number). This is the only information we can get from a stack trace. This information is passed on to the run-time supporter package which compares it with the stored identifiers about the \mrs. If there is a match regarding the comparison, NullSpy uses this identifier to reveal the information stored about the assignments to this variable. If there is an entry about the null assignment of that variable, we extract from it the line number of the assignment and create the additional link that reveals the location of the null assignment. This link is then added to the common \npe stack trace.
 
 %\brs{everything in this subsection after this point makes no sense to me. ``As soon as a \npe is thrown'' how do we know when it's thrown? ``sequentially compare data'' what does this even mean?}
 %
@@ -524,14 +527,14 @@ Let us suppose that we are interested in the \mr \code{activePanel} of the metho
 Its bytecode is presented in \bytecoderef{methodReceiverAlgDemoBytecode}.
 
 To get data about \mrs we iterate through the bytecode looking for the instructions which represent a method invocation.
-To do this, NullSpy looks for the opcodes which matches the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation. There are exactly five invocation bytecode instructions in Java: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}.
+To do this, NullSpy looks for the opcodes which match the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation. There are exactly five invocation bytecode instructions in Java: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. \lt{inovkedynamic weglassen und einfach sagen, dass Java nur 4 invoke opcodes hat?}
 
 For each method invocation we want to find the method receiver. 
 In our example bytecode instruction which matches the invocation of the method \code{add(...)} is at the line 6 in \bytecoderef{methodReceiverAlgDemoBytecode}.
 Since bytecode lists method receiver and all the method parameters before the \textit{``invoke.*"} instruction, the pc of this \textit{``invoke.*''} opcode will represent the \textbf{end-pc} of the method invocation pc-interval. In our example, the end-pc of the method invocation \code{add(...)} is 155.
 
 \textbf{Finding the start-pc}\\ 
-The \textbf{start-pc} of the method invocation pc-interval is the pc at which begins the bytecode which represents the source code line, containing the invocation. Finding the start-pc is done by using the line number table of the method. We compare the \textbf{end-pc} with the entries of the line number table and take the last entry which has the smaller pc than the \textbf{end-pc}. The line number table of the example bytecode is shown in \bytecoderef{mrBytecodeExampleLineNumberTable}. 
+The \textbf{start-pc} of the method invocation pc-interval is the pc at which begins the bytecode which represents the source code line containing the invocation. Finding the start-pc is done by using the line number table of the method. We compare the \textbf{end-pc} with the entries of the line number table and take the last entry which has the smaller pc than the \textbf{end-pc}. The line number table of the example bytecode is shown in \bytecoderef{mrBytecodeExampleLineNumberTable}. 
 The \textbf{start-pc} in our example is 144.
 
 \renewcommand\lstlistingname{Bytecode}
@@ -626,7 +629,7 @@ Local variable table:
 	...
 \end{JVMIS}
     
-Let us assume that we have a local variable assignment where its \textit{``astore\_2''} opcode is located at pc 45 (\bytecoderef{localVarAssignment}). In this example we can extract slot 2 from the opcode \textit{astore\_2}. After extracting the slot (index: 2) we iterate through the local variable table and find the first entry which contains that slot (line 4 in \bytecoderef{localVarTableDuplicatedSlot}). If the pc of the assignment is not included in the local variable lifespan of the entry (pc 45 $\notin$ [pc: 13, pc: 40], line 4), the next entry with the same slot (pc 45 $\in$ [pc: 44, pc: 94], line 7) will be examined. Checking the entries with the same slot goes on until both criteria slot and pc fits. Once those criteria are met we can be positive about having the right local variable table entry to extract the information needed to create a unique identifier for the variable. We now extract from local variable table the information we need to create a unique identifier for a variable. A part of the extracted information is listed below:
+Let us assume that we have a local variable assignment where its \textit{``astore\_2''} opcode is located at pc 45 (\bytecoderef{localVarAssignment}). In this example we can extract slot 2 from the opcode \textit{astore\_2}. After extracting the slot (index: 2) we iterate through the local variable table and find the first entry which contains that slot (line 4 in \bytecoderef{localVarTableDuplicatedSlot}). If the pc of the assignment is not included in the local variable lifespan of the entry (pc 45 $\notin$ [pc: 13, pc: 40], line 4), the next entry with the same slot (pc 45 $\in$ [pc: 44, pc: 94], line 7) will be examined. Checking the entries with the same slot goes on until both criteria slot and pc fit. Once those criteria are met we can be positive about having the right local variable table entry to extract the information needed to create a unique identifier for the variable. We now extract from local variable table the information we need to create a unique identifier for a variable. A part of the extracted information is listed below:
 \begin{itemize}
 	\item source code line number of the assignment
 	\item name of the class and method signature containing the local variable
@@ -650,7 +653,7 @@ The exact list of the information we extract can be found in the Appendix \ref{c
         [pc: 94, line: 68]
 \end{JVMIS}
 
-On the other hand, by using the pc of the assignment (45) and line number table (shown in \bytecoderef{lineNrTable}) we obtain the source code line number of the assignment. As we can see in the table, the local variable assignment starts at source code line 64.
+On the other hand, by using the pc of the assignment (45) and line number table (shown in \bytecoderef{lineNrTable}) we obtain the source code line number of the assignment. As we can see in the line number  table, the local variable assignment starts at source code line 64.
 
 \subsubsection{Instance and Class/Static variable (Field)}
 \label{subsubsec:field}
@@ -675,7 +678,7 @@ Each time we encounter a variable assignment we first extract the data about the
 
 The explanation of the way we do it can be found in the Appendix \ref{cha:appInstrumentation}.
 
-Once we have gone through the bytecode of all the class files, the modified class files are stored in the destination directory as mentioned in \secref{highLevelOverview}. After the instrumentation we add out supplementary supporter classes to the project. The most important ones are \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}} which tests whether a variable is null and \code{NullDisplayer}\textsuperscript{\ref{package1}} which matches data and prints the location of a null assignment when a \npe is thrown.
+Once we have gone through the bytecode of all the class files, the modified class files are stored in the destination directory as mentioned in \secref{highLevelOverview}. After the instrumentation we add our supplementary supporter classes to the project. The most important ones are \code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}} which tests whether a variable is null and \code{NullDisplayer}\textsuperscript{\ref{package1}} which matches data and prints the location of a null assignment when a \npe is thrown.
 
 %===============================================================================
 \section{Challenges}
@@ -1197,11 +1200,11 @@ For now, we can only think of these future work that could improve NullSpy to gi
 
 At the beginning, after reading the description of the bachelor project, I had no clue how to approach its goal at all, since this is my first big project on my own. But with help from two experienced research assistants I learned a lot, especially in the matter of programming with Javassist and bytecode understanding.
 
-NullSpy is based on the instrumentation of code, that means the core work of NullSpy is to modify bytecode (with Javassist). To be able to modify bytecode, I had to learn how bytecode is constructed and to get familiar with Javassist. We went through a good Javassist tutorial\footnote{\url{https://github.com/jboss-javassist/javassist/wiki/Tutorial-1}} to learn how Javassist is used to instrument code mostly on source-code level but also a bit on bytecode-level.
+NullSpy is based on the instrumentation of code, that means the core work of NullSpy is to modify bytecode (with Javassist). To be able to modify bytecode, I had to learn how bytecode is constructed and to get familiar with Javassist. I went through a good Javassist tutorial\footnote{\url{https://github.com/jboss-javassist/javassist/wiki/Tutorial-1}} to learn how Javassist is used to instrument code mostly on source-code level but also a bit on bytecode-level.
 
-Due to the problem of extracting information about \mrs, we spent a lot of time finding a way how this could be done. It was quite interesting to invent an algorithm that fullfills a more complex task.
+Due to the problem of extracting information about \mrs, I spent a lot of time finding a way how this could be done. It was quite interesting to invent an algorithm that fullfills a more complex task.
 
-During the implementation of NullSpy we had to debug many times. This was not as easy as it seemed. Sometimes it took hours to find the cause of a small bug. After fixing it another occurred. The reason why it sometimes took that long to debug is because of the involvement of the bytecode.
+During the implementation of NullSpy I had to debug many times. This was not as easy as it seemed. Sometimes it took hours to find the cause of a small bug. After fixing it another occurred. The reason why it sometimes took that long to debug is because of the involvement of the bytecode.
 
 Coding in a nice way so that the code does not smell was another challenge due to my lack of experience. Sometimes I tended to create god classes instead of following the single responsibility principle. Therefore, I had to refactor the whole project multiple times, which also took some time. 
 

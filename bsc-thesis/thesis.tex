@@ -8,7 +8,7 @@
 \chapter*{\centering Abstract}
 \begin{quotation}
 \noindent
-A previous study found \del{out} that \npe is the most frequently occurring \del{and difficult to debug }exception in Java projects. \todo{Nevena: In the introduction, when this is elaborated, make sure there are some references to support this claim.} \ins{Also, }It is difficult to debug because a developer is only provided with a stack trace to the line of code where the exception was thrown. This only gives insight into the effect of the fault but not into its cause.
+A previous study found \del{out} that \npe is the most frequently occurring \del{and difficult to debug }exception in Java projects. \ins{Also, }It is difficult to debug because a developer is only provided with a stack trace to the line of code where the exception was thrown. This only gives insight into the effect of the fault but not into its cause.
 
 The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the \npe was actually set to null. We attempt to achieve this goal by instrumenting Java source code, while striving for a minimal execution overhead.
 
@@ -29,7 +29,7 @@ By tracking the null assignments through static analysis and by instrumenting th
 \chapter{Introduction}
 \label{ch:introduction}
 
-\Npe is a commonly occurring \rte in object-oriented languages. \todo{Add some references}\lt{falls noch zeit übrig bleibt, werde ich noch mehr danach suchen. bis jetzt noch nichts gefunden.}\brs{remove the todo, we clearly do not have a reference for this}In most OOP languages there is a special \textbf{null} value that is assigned to references in order to indicate that the reference does not refer to an object. A \npe is caused by invoking a method or accessing a field through a null value reference, \ie a reference with the null value.
+\Npe is a commonly occurring \rte in object-oriented languages. In most OOP languages there is a special \textbf{null} value that is assigned to references in order to indicate that the reference does not refer to an object. A \npe is caused by invoking a method or accessing a field through a null value reference, \ie a reference with the null value.
 
 Previous research has found that 35\% of conditional checks in Java projects are null checks. This reduces the readability of source code and has a negative impact on performance~\cite{Osma16a}. It is also considered the number one error Java programmers make\footnote{\url{http://www.webcitation.org/6lNPzbIyy}}.
 
@@ -527,7 +527,7 @@ Let us suppose that we are interested in the \mr \code{activePanel} of the metho
 Its bytecode is presented in \bytecoderef{methodReceiverAlgDemoBytecode}.
 
 To get data about \mrs we iterate through the bytecode looking for the instructions which represent a method invocation.
-To do this, NullSpy looks for the opcodes which match the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation. There are exactly five invocation bytecode instructions in Java: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. \lt{inovkedynamic weglassen und einfach sagen, dass Java nur 4 invoke opcodes hat?}
+To do this, NullSpy looks for the opcodes which match the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation. There are exactly five invocation bytecode instructions in Java: \textit{invokedynamic}, \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}. \lt{inovkedynamic weglassen und einfach sagen, dass Java nur 4 invoke opcodes hat?} \nm{Leave invokedynamic}
 
 For each method invocation we want to find the method receiver. 
 In our example bytecode instruction which matches the invocation of the method \code{add(...)} is at the line 6 in \bytecoderef{methodReceiverAlgDemoBytecode}.
@@ -966,7 +966,6 @@ if (...) {
 
 Due to this problem we need to work on the bytecode-level. 
 %This way we first have to build up the bytecode sequence and then enter it before a specific pc.
-\nm{I vote to remove this part of the appendix completely. Boris, your opinion?} \brs{Leave it}
 How we build the bytecode sequence insert is explained in Appendix \ref{cha:appInstrumentation}.
 
 \del{There are more problems during the implementation of NullSpy but we mentioned the most troublesome ones in this subsection.}
@@ -1194,7 +1193,7 @@ Last target for a possible future work is to transform NullSpy into an Eclipse c
 %===============================================================================
 \section{Personal Experience}
 
-\lt{mit ich oder wir? weglassen?}
+\lt{mit ich oder wir? weglassen?} \nm{ich}
 
 At the beginning, after reading the description of the bachelor project, I had no clue how to approach its goal at all, since this is my first big project on my own. But with help from two experienced research assistants I learned a lot, especially in the matter of programming with Javassist and bytecode understanding.
 
@@ -1481,7 +1480,6 @@ If we detect an assignment to a member field we additionally have to store the i
 \chapter{Bytecode instrumentation}
 \label{cha:appInstrumentation}
 
-\nm{I vote for removing this. Boris?}
 The aim of NullSpy is to find the location of the null assignment of the variable which caused the \npe. We achieve this goal by instrumenting bytecode with the help of the bytecode-level API of Javassist.
 
 After each non-primitive variable assignment we insert bytecode into the original one. 

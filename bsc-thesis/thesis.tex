@@ -8,7 +8,7 @@
 \chapter*{\centering Abstract}
 \begin{quotation}
 \noindent
-A previous study found \del{out} that \npe is the most frequently occurring \del{and difficult to debug }exception in Java projects. \todo{Nevena: In the introduction, when this is elaborated, make sure there are some references to support this claim.} \ins{Also, }It is difficult to debug because a developer is only provided with a stack trace to the line of code where the exception was thrown. This only gives insight into the effect of the fault but not into its cause.
+A previous study found that \npe is the most frequently occurring exception in Java projects. Also, it is difficult to debug because a developer is only provided with a stack trace to the line of code where the exception was thrown. This only gives insight into the effect of the fault but not into its cause.
 
 The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the \npe was actually set to null. We attempt to achieve this goal by instrumenting Java source code, while striving for a minimal execution overhead.
 
@@ -29,7 +29,7 @@ By tracking the null assignments through static analysis and by instrumenting th
 \chapter{Introduction}
 \label{ch:introduction}
 
-\Npe is a commonly occurring \rte in object-oriented languages. \todo{Add some references}\lt{falls noch zeit übrig bleibt, werde ich noch mehr danach suchen. bis jetzt noch nichts gefunden.}\brs{remove the todo, we clearly do not have a reference for this}In most OOP languages there is a special \textbf{null} value that is assigned to references in order to indicate that the reference does not refer to an object. A \npe is caused by invoking a method or accessing a field through a null value reference, \ie a reference with the null value.
+\Npe is a commonly occurring \rte in object-oriented languages. In most OOP languages there is a special \textbf{null} value that is assigned to references in order to indicate that the reference does not refer to an object. A \npe is caused by invoking a method or accessing a field through a null value reference, \ie a reference with the null value.
 
 Previous research has found that 35\% of conditional checks in Java projects are null checks. This reduces the readability of source code and has a negative impact on performance~\cite{Osma16a}. It is also considered the number one error Java programmers make\footnote{\url{http://www.webcitation.org/6lNPzbIyy}}.
 
@@ -54,7 +54,7 @@ public void drop(...) {
 }
 \end{Java}
 
-Assume that in the example shown in \coderef{npeExampleMethodReceiver}\footnote{\label{codeTaken1}Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value as the result of assigning the return value of the method \code{DNDHelper.processReceivedData(...)} to the variable. This means that the same variable \code{ff} is null at line 7 and when a method is invoked on this object a \npe is thrown. Because the \npe occurred in the \tblock the following \cblock will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was thrown but not to the real culprit which is the assignment at line 5.
+Assume that in the example shown in \coderef{npeExampleMethodReceiver}\footnote{Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} the variable \code{ff} at line 5 is assigned the null value as the result of assigning the return value of the method \code{DNDHelper.processReceivedData(...)} to the variable. This means that the same variable \code{ff} is null at line 7 and when a method is invoked on this object a \npe is thrown. Because the \npe occurred in the \tblock the following \cblock will handle the exception by printing the stack trace. The stack trace takes the developer to line 7 where the exception was thrown but not to the real culprit which is the assignment at line 5.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={\Npe example (II). The null assignment takes place at line 14 and the \npe is thrown in line 24.}, label={code:npeExampleFieldAccess}]
@@ -88,7 +88,7 @@ public class DrawApplication {
 }
 \end{Java}
 
-A more complicated way a \npe can be triggered is when it involves variables with larger scopes such as class members. \coderef{npeExampleFieldAccess}\textsuperscript{\ref{codeTaken1}}\brs{footnote not on the same page, duplicate the footnote} shows such a situation. This code snippet defines the class named \code{DrawApplication} which has the field \code{fManager} (declared at line 3). This class contains four relevant methods: \code{open(...)}, \code{createIconkit()}, \code{getIconkitManager()} and \code{setTool(...)}.
+A more complicated way a \npe can be triggered is when it involves variables with larger scopes such as class members. \coderef{npeExampleFieldAccess}\footnote{Code snippet is a modified version of code taken from JHotDraw project: \url{http://www.jhotdraw.org/}} shows such a situation. This code snippet defines the class named \code{DrawApplication} which has the field \code{fManager} (declared at line 3). This class contains four relevant methods: \code{open(...)}, \code{createIconkit()}, \code{getIconkitManager()} and \code{setTool(...)}.
 
 The \code{open(...)} method invokes the methods \code{createIconkit()} at line 7 and \code{setTool(...)} at line 9. By calling \code{createIconkit()} at line 7 the field \code{fManager} is assigned null. The field is assigned null by performing the method \code{getIconkitManager()} at line 14, which just returns the null value at line 19.
 
@@ -232,7 +232,7 @@ Local variable table:
  (@\textbf{[pc: 44, pc: 94] local: e index: 2 type: java.io.IOException}@)
 \end{JVMIS}
 
-As mentioned before, the bytecode of each method also holds a local variable table which is a\chg{n array of the}{list of } information about local variables (lines 13-15 in \bytecoderef{helloWorld}). This table has the information about the \textit{this} reference (if the method is an instance method or a constructor), about method parameters and method local variables, respectively. Example of the \textit{this} reference representation can be seen in the line 14. Each line of this table represents one variable and contains the following:
+As mentioned before, the bytecode of each method also holds a local variable table which is alist of  information about local variables (lines 13-15 in \bytecoderef{helloWorld}). This table has the information about the \textit{this} reference (if the method is an instance method or a constructor), about method parameters and method local variables, respectively. Example of the \textit{this} reference representation can be seen in the line 14. Each line of this table represents one variable and contains the following:
 
 \begin{enumerate}
 	\item the pc-s which represent the lexical scope of the variable, \ie the pc-s in between the square brackets 	
@@ -241,7 +241,7 @@ As mentioned before, the bytecode of each method also holds a local variable tab
 	\item the type of the variable.
 \end{enumerate}
 
-In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is \chg{class}{the} \code{HelloWorld} \ins{class}. The indexes of the the local variable table are important because we use them to get the right local variable we are interested in.
+In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is the \code{HelloWorld} class. The indexes of the the local variable table are important because we use them to get the right local variable we are interested in.
 
 Let us now look at a more complicated example of the local variable table. Consider the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}.
 This method consists of a \tcblock. 
@@ -250,7 +250,7 @@ The \tblock starts with pc 0 and ends with pc 40 and the variable \code{url} is 
 
 The local variable \code{url} is stored at the index 2 in the local variable table in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}, since the first two indexes occupy \textit{this} reference and the method parameter.
 As soon as the lifespan of a local variable ends, the slot can be reused by the next instantiated local variable. 
-So, \chg{onward the}{after} pc 40, slot 2 is free again. 
+So, after pc 40, slot 2 is free again. 
 The freed slot can be immediately used by the next declared variable, which is the variable \code{e} in our example. 
 Looking at line 15 in \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode} we see that the variable \code{e} also has the slot number 2. This is why we can find local variable tables that contain multiple entries with the same local variable slot.
 

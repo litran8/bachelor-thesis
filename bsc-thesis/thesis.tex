@@ -1263,10 +1263,10 @@ If these steps are followed as explained, the result is similar to the stack tra
 
 \todo{regex abou aload...}
 
-In the algorithm about finding the \mr pc-interval we have to split the outermost invocation pc-interval into candidate \mr pc-intervals. Here we discuss about how the extraction of all possible combinations of \mrs which are embedded in the outermost interval is done. 
+In the algorithm \chg{about finding}{which identifies} the \mr pc-interval we have to split the outermost invocation pc-interval into candidate \mr pc-intervals. Here we discuss \del{about }how the extraction of all possible combinations of \mrs which are embedded in the outermost interval is done. 
 
 We developed a system that checks whether the combinations of specific opcodes are valid. 
-Bear in mind that \textit{aload\_0} represents \textit{this} object if we are analyzing non-static method, or first argument or declared local variable of the method, if we are analyzing a static method.
+Bear in mind that \textit{aload\_0} represents \textit{this} \del{object }if we are analyzing non-static method, or first argument or declared local variable of the method, if we are analyzing a static method.
 The combinations for identifying the candidate \mr pc-intervals are listed below:  
 
 		\begin{itemize}
@@ -1331,7 +1331,7 @@ We explained that we extract \mr information to create its unique identifier for
 	\item variable name
 	\item statically declared variable type
 	\item name of the class declaring the variable, if the variable is a field, else empty string
-	\item attribute index, if the variable is a local variable, else empty string
+	\item attribute index, if the variable is a local variable\del{, else empty string}
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

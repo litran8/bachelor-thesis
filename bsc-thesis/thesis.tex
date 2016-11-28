@@ -10,7 +10,7 @@
 \noindent
 A previous study found that \npe is the most frequently occurring exception in Java projects. Also, it is difficult to debug because a developer is only provided with a stack trace to the line of code where the exception was thrown. This only gives insight into the effect of the fault but not into its cause.
 
-The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the \npe was actually set to null. We attempt to achieve this goal by instrumenting Java source code, while striving for a minimal execution overhead.
+The aim of the project is to provide the developer with an additional stack trace of where the variable that caused the \npe was actually set to null. We attempt to achieve this goal by instrumenting Java source code while striving for a minimal execution overhead.
 
 By tracking the null assignments through static analysis and by instrumenting the bytecode we can achieve a more efficient debugging process after an occurrence of a \npe.
 \end{quotation}
@@ -109,7 +109,7 @@ Afterwards, when the method \code{open(...)} calls \code{setTool()}, the attempt
 
 In \stacktraceref{stackTrace} we can see that the stack trace points only to the line 24, where \npe occured, and it does not track to the location where the variable is assigned the null value. We call this location the \textbf{root of an exception}. That means the Java developer has to debug their way to the exception root.
 
-At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developer the exact location of the null assignment next to the ordinary stack trace, as shown in \stacktraceref{stackTrace2}.
+At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. The intention behind NullSpy is to, once an unhandled \npe has occurred, present the developer the exact location of the null assignment next to the ordinary stack trace as shown in \stacktraceref{stackTrace2}.
 
 \begin{figure}[H]
 \renewcommand\figurename{Stack trace}
@@ -232,7 +232,7 @@ Local variable table:
  (@\textbf{[pc: 44, pc: 94] local: e index: 2 type: java.io.IOException}@)
 \end{JVMIS}
 
-As mentioned before, the bytecode of each method also holds a local variable table which is alist of  information about local variables (lines 13-15 in \bytecoderef{helloWorld}). This table has the information about the \textit{this} reference (if the method is an instance method or a constructor), about method parameters and method local variables, respectively. Example of the \textit{this} reference representation can be seen in the line 14. Each line of this table represents one variable and contains the following:
+As mentioned before, the bytecode of each method also holds a local variable table which is a list of  information about local variables (lines 13-15 in \bytecoderef{helloWorld}). This table has the information about the \textit{this} reference (if the method is an instance method or a constructor), about method parameters and method local variables, respectively. Example of the \textit{this} reference representation can be seen in the line 14. Each line of this table represents one variable and contains the following:
 
 \begin{enumerate}
 	\item the pc-s which represent the lexical scope of the variable, \ie the pc-s in between the square brackets 	
@@ -984,7 +984,7 @@ In situations where an element of a collection causes a \npe, we did not develop
 %We cannot identify that element if the collection it belongs to is then again stored in another collection \etc. 
 Hence, we cannot identify collection elements.
 
-To be able to track null assignment of \mrs we have to statically analyze bytecode and obtain information about that variable. We are not able to statically extract information about an object that is the return value of a method call. \del{What value the method invocation returns can only be validated at run time.}\brs{not sure this is true, it could be done by introducing temporary variables, we just did not want to do it}\lt{einfach letzen satz löschen?}
+To be able to track null assignment of \mrs we have to statically analyze bytecode and obtain information about that variable. We are not able to statically extract information about an object that is the return value of a method call. For this issue we also have a rough idea of how to deal with it. But again, the engagement would be beyond the scope of this thesis.  
 
 %Our first idea of how NullSpy could track the \npes is to gather information about variable assignment, which is the case now, and also inject another test method right before each method invocations. In small projects this way could have worked fine but in larger projects which could contain hundreds of classes with a lot of method invocations the execution time would be strongly influenced.
 
@@ -1078,7 +1078,7 @@ Let us have a look at the example shown in \coderef{demonstration}.
 
 The \code{main()} method at line 6 invokes three methods (\code{makeReader()}, \code{readNumbers()}, \code{closeReader}) and prints out the field \code{numbers}. In \code{makeReader()} method it tries to read a file named ``file.txt''. If the example does not find that file, it will execute the \cblock and assign null to the field \code{reader} at line 18.
 
-The call to \code{readNumbers()} at line 8 is not important for our demonstration, that is why we skip it.
+The call to \code{readNumbers()} at line 8 is not important for our demonstration; that is why we skip it.
 
 The \npe is triggered when the method \code{closeReader()} is called. There is an attempt at line 39 to close the reader. But because the field \code{reader} is null, the method call \code{close()} causes a \npe. Since only the \textit{IOException} is caught with the \cblock, the \npe goes up the call hierarchy until the \code{main()} method. As discussed in \subsecref{processFlow}, in the \cblock of \code{main()} we extract information from the \npe stack trace, multiple comparisons are performed and finally the link to the null assignment and the \npe stack trace are displayed. The resulting stack trace is presented in \stacktraceref{demonstrationStackTrace}.
 
@@ -1191,7 +1191,7 @@ Last target for a possible future work is to transform NullSpy into an Eclipse c
 
 At the beginning, after reading the description of the bachelor project, I had no clue how to approach its goal at all, since this is my first big project on my own. But with help from two experienced research assistants I learned a lot, especially in the matter of programming with Javassist and bytecode understanding.
 
-NullSpy is based on the instrumentation of code, that means the core work of NullSpy is to modify bytecode (with Javassist). To be able to modify bytecode, I had to learn how bytecode is constructed and to get familiar with Javassist. I went through a good Javassist tutorial\footnote{\url{https://github.com/jboss-javassist/javassist/wiki/Tutorial-1}} to learn how Javassist is used to instrument code mostly on source-code-level but also a bit on bytecode-level.
+NullSpy is based on the instrumentation of code. This means the core work of NullSpy is to modify bytecode (with Javassist). To be able to modify bytecode, I had to learn how bytecode is constructed and to get familiar with Javassist. I went through a good Javassist tutorial\footnote{\url{https://github.com/jboss-javassist/javassist/wiki/Tutorial-1}} to learn how Javassist is used to instrument code mostly on source-code-level but also a bit on bytecode-level.
 
 Due to the problem of extracting information about \mrs, I spent a lot of time finding a way how this could be done. It was quite interesting to invent an algorithm that fulfills a more complex task.
 
@@ -1253,8 +1253,6 @@ If these steps are followed as explained, the result is similar to the stack tra
 
 \chapter{Bytecode combinations of \mrs}
 \label{cha:bytecodeCombinations}
-
-\todo{regex abou aload...}
 
 In the algorithm which identifies the \mr pc-interval we have to split the outermost invocation pc-interval into candidate \mr pc-intervals. Here we discuss how the extraction of all possible combinations of \mrs which are embedded in the outermost interval is done. 
 

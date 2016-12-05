@@ -263,7 +263,7 @@ As mentioned before, the bytecode of each method also holds a local variable tab
 	\item the type of the variable.
 \end{enumerate}
 
-In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is the \code{HelloWorld} class. The indexes of the the local variable table are important because we use them to get the right local variable we are interested in.
+In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is the \code{HelloWorld} class. The indexes of the local variable table are important because we use them to get the right local variable we are interested in.
 
 Let us now look at a more complicated example of the local variable table. Consider the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}.
 This method consists of a \tcblock. 
@@ -905,7 +905,7 @@ We compared the time it takes to execute both original and the instrumented vers
 \section{Execution Time Difference}
 \label{sec:execTimeDiff}
 
-JHotDraw already provides an Ant buildfile \textit{build.xml} that packs the project into an executable jar file. We modified the buildfile so that it also creates a jar file out of the class files instrumented by NullSpy. The steps to create an executable jar of the modified project are followings: load project, modify project, store modified project, create jar file of the original project and one of the modified one. We then run the tests included in each jar file thirty times, recording the execution time. At the end we calculate the average time for the original and the modified project. The the execution times are listed in \tabref{executionTime} and the average times are shown in \tabref{averageTime}.
+JHotDraw already provides an Ant buildfile \textit{build.xml} that packs the project into an executable jar file. We modified the buildfile so that it also creates a jar file out of the class files instrumented by NullSpy. The steps to create an executable jar of the modified project are followings: load project, modify project, store modified project, create jar file of the original project and one of the modified one. We then run the tests included in each jar file thirty times, recording the execution time. At the end we calculate the average time for the original and the modified project. The execution times are listed in \tabref{executionTime} and the average times are shown in \tabref{averageTime}.
 
 \begin{table}[H]
 \centering

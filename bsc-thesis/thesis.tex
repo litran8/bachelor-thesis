@@ -126,7 +126,7 @@ In \stacktraceref{stackTrace} we can see that the stack trace points only to the
 That means the Java developer has to debug their way to the exception root.
 
 At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. 
-NullSpy presents the developer the exact location of the null assignment, after an unhandled \npe has occurred. \stacktraceref{stackTrace2} shows an example of the output.
+NullSpy presents the developer the exact location of the null assignment after an unhandled \npe has occurred. \stacktraceref{stackTrace2} shows an example of the output.
 
 \begin{figure}[H]
 \renewcommand\figurename{Stack trace}
@@ -142,10 +142,10 @@ NullSpy presents the developer the exact location of the null assignment, after 
 	\label{stacktrace:stackTrace2}
 \end{figure}
 
-\chk{There are other tools which can help developers debug and find the root cause of a bug. Most notably the Back-in-time debuggers~\cite{Lien08b}. The main differences between NullSpy and Back-in-time debuggers are:}
+\ins{There are other tools which can help developers debug and find the root cause of a bug. Most notably the Back-in-time debuggers~\cite{Lien08b}. The main differences between NullSpy and Back-in-time debuggers are:}
 
 \begin{enumerate}
-	\item \chk{NullSpy targets a particular problem, namely the \npe, while back-in-time debugging is more general.}
+	\item \ins{NullSpy targets a particular problem, namely the \npe, while back-in-time debugging is more general.}
 	\item \ins{Back-in-time debugging might require the developer to step back many times before finding the root of the exception while NullSpy finds it directly.}
 \end{enumerate}
 
@@ -309,12 +309,12 @@ cc.writeFile();
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\linewidth]{javassistModules}
+\includegraphics[width=0.8\linewidth]{uml}
 \caption{Javassist modules.}
   \label{fig:javassistModules}
 \end{figure}
 
-\figref{javassistModules}\footnote{Figure taken from \href{https://blog.newrelic.com/2014/09/29/diving-bytecode-manipulation-creating-audit-log-asm-javassist/}{blog.newrelic.com}.} gives an overview of how the main part of bytecode manipulation with Javassist is built up. The \textit{ClassPool} is simply a container of multiple \textit{CtClasses}. As described before \textit{CtClass} represents a class file on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors/methods, fields, method invocations, local variables \etc But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of a method body, at the end or at a specific line. 
+\figref{javassistModules} gives an overview of how the main part of bytecode manipulation with Javassist is built up. The \textit{ClassPool} is simply a container of multiple \textit{CtClasses}. As described before \textit{CtClass} represents a class file on which modifications are done. Like typical classes, it can hold compile-time fields, constants or methods. Javassist is capable of adding or modifying classes, behaviors/methods, fields, method invocations, local variables \etc But in our case we mainly address the manipulation of behaviors. It is possible to insert additional source code at the beginning of a method body, at the end or at a specific line. 
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={Initial code.}, label={code:initialCode}][H]
@@ -479,9 +479,9 @@ Loading is done by traversing through all the subfolders of the folder whose loc
 
 In this section we will focus on the bytecode modification. \figref{modificationModules} shows that the modification part of NullSpy contains three different modules. Each class file of the loaded project will be run through the first two modules. After the instrumentation process (module one and two) is done, we add the last module to the modified project.
 
-The module \textit{``\Mr extractor''} extracts data from bytecode. 
+\ins{The module \textit{``Bytecode data extractor''} extracts data from bytecode. 
 The second module \textit{``Instrumentation''} inserts bytecode into the original code. 
-Lastly, the module \textit{``Run-time supporter''} adds the package that contains the bytecode (methods) which the previously inserted bytecode refers to.
+Lastly, the module \textit{``Run-time supporter''} adds the package that implements the functionality to which the previously inserted bytecode refers to.}
 
 \begin{figure}[H]
 \centering
@@ -1003,9 +1003,9 @@ The relevant example used for the demonstration is shown in \coderef{demonstrati
 
 The \code{main()} method at line 6 invokes three methods (\code{makeReader()}, \code{readNumbers()}, \code{closeReader}) and prints out the field \code{numbers}. In the \code{makeReader()} method it tries to read a file named ``file.txt''. If the example does not find that file, it will execute the \cblock and assign null to the field \code{reader} at line 18.
 
-\chg{The call to \code{readNumbers()} at line 8 is not important for our demonstration; that is why we skip it in our analysis.}{The call to \code{readNumbers()} at line 8 reads the numbers from the file ``file.txt'' at line 26 and stores them into an \code{ArrayList} at line 27. The list is then returned at line 29. If the variable \code{reader} is assigned null before, the read action at line 26 will trigger a \npe. In our example this is the case. The \npe goes up the call hierarchy until the \code{main()} method.}
+The call to \code{readNumbers()} at line 8 is not important for our demonstration\ins{ since the \npe triggered at line 27 is handled by the catch statement at line 31. NullSpy presents the developer the exact location of the null assignment only for an unhandled \npe.} That is why we skip it in our analysis.
 
-\del{The \npe is triggered when the method \code{closeReader()} is called. There is an attempt at line 39 to close the reader. But because the field \code{reader} is null, the method call \code{close()} causes a \npe. Since only the \textit{IOException} is caught with the \cblock, the \npe goes up the call hierarchy until the \code{main()} method.} As discussed in \subsecref{processFlow}, in the \cblock of \code{main()} we extract information from the \npe stack trace, multiple comparisons are performed and finally the link to the null assignment and the \npe stack trace are displayed. The resulting stack trace is presented in \stacktraceref{demonstrationStackTrace}. Hence, we can see how the origin of the \npe can be indicated by NullSpy even when it is far away from the actual occurrence of the \npe.
+The \npe is triggered when the method \code{closeReader()} is called. There is an attempt at line 39 to close the reader. But because the field \code{reader} is null, the method call \code{close()} causes a \npe. Since only the \textit{IOException} is caught with the \cblock, the \npe goes up the call hierarchy until the \code{main()} method. As discussed in \subsecref{processFlow}, in the \cblock of \code{main()} we extract information from the \npe stack trace, multiple comparisons are performed and finally the link to the null assignment and the common \npe stack trace are displayed. The resulting stack trace is presented in \stacktraceref{demonstrationStackTrace}. Hence, we can see how the origin of the \npe can be indicated by NullSpy even when it is far away from the actual occurrence of the \npe.
 
 \begin{Java}[caption={NullSpy demonstration example.}, label={code:demonstration}]
 public class Ideone {
@@ -1013,7 +1013,7 @@ public class Ideone {
 	public static List<Integer> numbers;
 	public static BufferedReader reader;
 
-	public static void main(String[] args) throws NumberFormatException, IOException {
+	public static void main(String[] args) {
 		makeReader();
 		readNumbers();
 		closeReader();
@@ -1029,16 +1029,21 @@ public class Ideone {
 		}
 	}
 
-	// NPE triggered here!
-	private static List<Integer> readNumbers() throws NumberFormatException, IOException {
-		List<Integer> numbers = new ArrayList<Integer>();
-		String text = null;
-		while ((text = reader.readLine()) != null) {
-			numbers.add(Integer.parseInt(text));
+	// Not really important.
+	private static List<Integer> readNumbers() {
+		try {
+			List<Integer> numbers = new ArrayList<Integer>();
+			String text = null;
+			while ((text = reader.readLine()) != null) {
+				numbers.add(Integer.parseInt(text));
+			}
+			return numbers;
+		} catch (Exception e) {
+				return new ArrayList<Integer>();
 		}
-		return numbers;
 	}
 	
+	// NPE triggered here!
 	private static void closeReader() {
 		try {
 			reader.close();
@@ -1055,8 +1060,8 @@ public class Ideone {
 		\color{cadmiumred}
 		Field this.reader at line 18 is null: (\textcolor{blue}{Ideone.java: 18})\\
 		Exception in thread "main" \textcolor{blue}{java.lang.NullPointerException}\\
-		\tab at Ideone.closeReader(\textcolor{blue}{Ideone.java:26})\\
-		\tab at Ideone.main(\textcolor{blue}{Ideone.java:8})
+		\tab at Ideone.closeReader(\textcolor{blue}{Ideone.java:39})\\
+		\tab at Ideone.main(\textcolor{blue}{Ideone.java:9})
 	\end{boxedminipage}
 	\caption{Stack trace of the demonstration example \coderef{demonstration}.}
 	\label{stacktrace:demonstrationStackTrace}

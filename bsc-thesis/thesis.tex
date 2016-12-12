@@ -214,7 +214,7 @@ The instructions from pc 0 to pc 4 (lines 2-4 in \bytecoderef{helloWorld}) repre
 If the opcode represents a variable, on its right side we can see the information about the name and type of the variable as shown in line 3. 
 In case of an invocation opcode, it shows the behavior/method name, the parameter types and the return type as seen in line 7. 
 
-Each method bytecode representation holds a \textbf{line number table} and a \textbf{local variable table} which are listed underneath the instructions of the method (lines 9-15 in \bytecoderef{helloWorld}). 
+Each method bytecode representation holds a \textit{\textbf{line number table}} and a \textit{\textbf{local variable table}} which are listed underneath the instructions of the method (lines 9-15 in \bytecoderef{helloWorld}). 
 
 The line number table maps the source code line of the method to the pc that indicates the beginning of the bytecode to the corresponding source code line. The line number table in \bytecoderef{helloWorld} is represented between the lines 9 and 12: source code line 5 starts with the pc 0 (as shown on line 10), source code line 6 starts with the pc 5 (in line 11) \etc This mapping does not apply to cases where a statement is separated into multiple lines.
 
@@ -1074,7 +1074,7 @@ public class Ideone {
 \chapter {Conclusion and Future Work}
 \label{ch:conclusionFutureWork}
 
-In this chapter we reflect on the process of implementing and the results of the project. We summarize what goals we have achieved so far and propose further work.
+In this chapter we reflect on the implementation process and the results of the project. We summarize what goals we have achieved so far and propose further work.
 
 %===============================================================================
 
@@ -1088,12 +1088,12 @@ In short, we successfully managed to meet the main goal we have set at the begin
 
 \item Collecting data about variable assignments: local variables and fields. For this purpose we statically analyze and instrument the bytecode. We use Javassist to scan bytecode for instructions that represent variable assignments (regexes: \textit{``astore.*''} and \textit{``put.*''}). We extract information about those assignments and pass the collected information to the code we insert after each variable assignment. During run time we check whether the assignment value is null. If it is the case, we store the information about this assignment.
 
-\item NullSpy handles the uncaught \npe. We wrap up the \code{main()} method with a \cblock. In this \cblock we extract details of where the \npe occurred from the \npe stack trace. With this data and the identifier for \mrs and variable assignments we perform several comparisons to find the location of the null assignment. 
+\item NullSpy handles the uncaught \npe. We wrap up the \code{main()} method with a \cblock. In this \cblock we extract details of where the \npe occurred from the exception stack trace. With this data and the identifier for \mrs and variable assignments we perform several comparisons to find the location of the null assignment. 
 \end{enumerate}
 
 During the implementation we encountered many difficulties. For most of the problems we came across we managed to find a solution. Those unsolved ones remain as future work.
 
-After the implementation of NullSpy we validated it with help of the project JHotDraw. First we measured the time how long JHotDraw takes to execute all its tests without modifying the bytecode. After that we instrumented the project and again measured the execution time. The result is a performance overhead of approximately 5\%. So NullSpy could help the developer find the null assignment without a big impact on performance. \ins{While 5\% may be too much for some time-critical applications, we believe that for most common Java applications such as JHotDraw, this overhead is justifiable by the improved ability to debug \npes.}
+After the implementation of NullSpy we used the project JHotDraw to validate the implementation. First we measured the time how long JHotDraw takes to execute all its tests without modifying the bytecode. After that we instrumented the project and again measured the execution time. The result is a performance overhead of approximately 5\%. So NullSpy could help the developer find the null assignment without a big impact on performance. \ins{While 5\% may be too much for some time-critical applications, we believe that for most common Java applications such as JHotDraw, this overhead is justifiable by the improved ability to debug \npes.}
 
 %===============================================================================
 
@@ -1113,7 +1113,7 @@ For now NullSpy works only on projects that have a clear starting point in the \
 %-------------------------------------------------------------------------------
 
 \subsection{Plug-in for Eclipse}
-The last target for possible future work is to transform NullSpy into an Eclipse plug-in project, which would allow a simpler way to start tracking null assignments.
+Another possible future work is to transform NullSpy into an Eclipse plug-in project, which would allow a simpler way to start tracking null assignments.
 
 %===============================================================================
 
@@ -1214,9 +1214,9 @@ The combinations for identifying the candidate \mr pc-intervals are listed below
 
 \ins{To illustrate how this list is used we go through the synthetic bytecode example shown in }\bytecoderef{appMrBytecodeCombiBytecode}. \ins{This bytecode represents the source code shown in }\coderef{appMrBytecodeCombi}.
 
-\ins{The outermost pc-interval of the method invocation \code{move(...)} is <26,33>. When we iterate through the outermost invocation pc-interval we encounter the opcode \textit{``aload.*''} at line 1. We check what comes after this opcode. Again, there is the opcode \textit{``aload.*''} at line 2. With that we look at the list of the possible \mr bytecode combinations and search for \textit{aload.*} followed by \textit{aload*}. This expression does not fit into our template which indicates that those two opcodes do not have any relationship with each other. So we can be sure that they are two separate \mr candidates. After that we check the opcode at line 3 and see if the opcodes from lines 2 and 3 fit into our template. For the opcode at line 4 it is the same situation.}
+\ins{The outermost pc-interval of the method invocation \code{move(...)} is <26,33>. When we iterate through the outermost invocation pc-interval we encounter the opcode \textit{``aload.*''} at line 1. We check what comes after this opcode. Again, there is the opcode \textit{``aload.*''} at line 2. With that we look at the list of the possible \mr bytecode combinations and search for \textit{``aload.*''} followed by \textit{``aload.*''}. This expression does not fit into our template which indicates that those two opcodes do not have any relationship with each other. So we can be sure that they are two separate \mr candidates. After that we check the opcode at line 3 and see if the opcodes from lines 2 and 3 fit into our template. For the opcode at line 4 it is the same situation.}
 
-\ins{But when we check the opcode \textit{``getfield''} at line 5 we see that the opcodes \textit{aload.*} followed by \textit{getfield} fits into our template. With that we know that the combination of the opcode at line 4 and the one at line 5 represents one \mr candidate.}
+\ins{But when we check the opcode \textit{``getfield''} at line 5 we see that the opcodes \textit{``aload.*''} followed by \textit{``getfield''} fits into our template. With that we know that the combination of the opcodes at line 4 and line 5 represents one \mr candidate.}
 
 \ins{After this process, the outermost pc-interval is split into \{<26,26>,<27,27>,<28,28>,<29,30>\}.}
 
@@ -1249,7 +1249,7 @@ figure.move(x, y, forwardDirection);
 We explained that we extract \mr information to create its unique identifier for the several comparisons which have to be done to find out the location of the null assignment of the \mr. In \subsecref{methodReceiver} where we describe the algorithm for the extraction of \mr pc-interval, we gave a hint of what kind of information we need to create this unique identifier. The complete list of what data we store about the \mr is listed next:
 
 \begin{itemize}
-	\item \mr counter (\mrs are counted)
+	\item \mr id (simple counter which increments on every occurrence)
 	\item source code line number of the \mr
 	\item name of the class containing the method invocation
 	\item name of the method which contains the invocation

@@ -530,7 +530,7 @@ public class DrawApplication {
 		(@\textbf{fToolButton.myIcon}@).toString();	// field access
 		
 		JPanel activePanel = new JPanel();		
-		(@\textbf{activePanel}@).add((Component)getDesktop(),BorderLayout.CENTER);	// local variable as a method receiver
+		(@\textbf{activePanel}@).add((Component)getDesktop(),BorderLayout.CENTER);	// local variable as a target variable
 		...
 	}
 }
@@ -546,18 +546,18 @@ public class DrawApplication {
 155  invokevirtual javax.swing.JPanel.add(java.awt.Component, java.lang.Object) : void [254]
 \end{JVMIS}
 
-\subsubsection{Finding the invocation opcode/end-pc}
+\subsubsection{Finding the Invocation Opcode/End-pc}
 Let us suppose that we are interested in the \mr \code{activePanel} of the method invocation \code{add(...)} at line 11 in the example \coderef{methodReceiverAlgDemoCode}.
 Its bytecode is presented in \bytecoderef{methodReceiverAlgDemoBytecode}.
 
 To get data about \mrs we iterate through the bytecode looking for the instructions that represent a method invocation.
 To do this, NullSpy looks for the opcodes that match the regex \textit{``invoke.*''}. Each of these opcodes represents one method invocation. There are four invocation bytecode instructions in Java bytecode: \textit{invokeinterface}, \textit{invokespecial}, \textit{invokestatic}, \textit{invokevirtual}.
 
-For each invocation we want to find the method receiver. 
+For each invocation we want to find the \mr. 
 In our example the bytecode instruction that matches the invocation of the method \code{add(...)} is at line 6 in \bytecoderef{methodReceiverAlgDemoBytecode}.
-Since the bytecode lists the method receiver and all the method parameters before the \textit{``invoke.*"} instruction, the pc of this \textit{``invoke.*''} opcode will represent the \textbf{end-pc} of the method invocation pc-interval. In our example, the end-pc of the method invocation \code{add(...)} is 155.
+Since the bytecode lists the \mr and all the method parameters before the \textit{``invoke.*"} instruction, the pc of this \textit{``invoke.*''} opcode will represent the \textbf{end-pc} of the method invocation pc-interval. In our example, the end-pc of the method invocation \code{add(...)} is 155.
 
-\subsubsection{Finding the start-pc}
+\subsubsection{Finding the Start-pc}
 The \textbf{start-pc} of the method invocation pc-interval is the pc at which the bytecode representing the source code line containing the invocation begins. The start-pc is found by using the line number table of the method. We compare the \textbf{end-pc} with the entries of the line number table and take the last entry that has a smaller pc than the \textbf{end-pc}. The line number table of the example bytecode is shown in \bytecoderef{mrBytecodeExampleLineNumberTable}. 
 The \textbf{start-pc} in our example is 144.
 
@@ -573,7 +573,7 @@ Line numbers:
 
 We define the \textit{\textbf{outermost pc-interval}} as the interval starting with the \textbf{start-pc} and ending with the \textbf{end-pc}. We know that the \mr is located in this interval. In our example, this is <144,155>.
 
-\subsubsection{Extracting candidate \mr pc-intervals}
+\subsubsection{Extracting Candidate \MR Pc-intervals}
 The outermost pc-interval <144,155> could contain other invocations, which could have \mrs of their own. This is visible in our example, where the \code{getDesktop()} invocation (pc 146) is embedded in our outermost pc-interval. For this reason, we explored all possible bytecode combinations of instructions that can represent \mrs and developed a system for identifying such embedded call sites. More about this system can be found in the Appendix (\ref{sec:bytecodeCombinations}). This system allows us to split the outermost pc-interval into candidate \mr pc-intervals. In our example, the outermost pc-interval is divided into \{<144,144>,<145,149>,<152,152>\}. The candidate pc-intervals represent:
 
 \begin{enumerate}
@@ -582,7 +582,7 @@ The outermost pc-interval <144,155> could contain other invocations, which could
 	\item <152,152>: second parameter \code{BorderLayout.CENTER}
 \end{enumerate}
 
-\subsubsection{Finding the actual \mr}
+\subsubsection{Finding the Actual \MR}
 The set of candidate pc-intervals ends with the arguments of the method.
 Javassist allows us to obtain the number of parameters of a method invocation by analyzing the method signature. 
 Thus, if the method expects $N$ arguments, we can ignore the last $N$ candidate pc-intervals. The one before them is the actual \mr pc-interval. 
@@ -605,7 +605,7 @@ Local variable table:
 
 The following shows a part of the extracted information needed to create the unique identifier for a \mr:
 \begin{itemize}
-	\item source code line number of the method receiver
+	\item source code line number of the \mr
 	\item name of the class and signature of the method containing the method invocation
 	\item full variable name
 	\item statically declared variable type
@@ -1240,7 +1240,7 @@ figure.move(x, y, forwardDirection);
 \end{Java}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                          Appendix Method Receiver          	                 %
+%                          Appendix Target Variable          	                 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{\MRs}
@@ -1250,7 +1250,7 @@ We explained that we extract \mr information to create its unique identifier for
 
 \begin{itemize}
 	\item \mr counter (\mrs are counted)
-	\item source code line number of the method receiver
+	\item source code line number of the \mr
 	\item name of the class containing the method invocation
 	\item name of the method which contains the invocation
 	\item parameter types and return type of the method which contains the invocation

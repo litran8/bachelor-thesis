@@ -122,7 +122,7 @@ Afterwards, when the method \code{open(...)} calls \code{setTool()}, the attempt
 \end{figure}
 
 In \stacktraceref{stackTrace} we can see that the stack trace points only to the line 24, where \npe occured, and it does not track to the location where the variable is assigned the null value~\cite{Zell05a}. We call this location the \textbf{root of an exception}. 
-\chk{Even the execution stack holds basically no information about the cause of the exception which is found by a recent research which analyzed bug symptoms for various programs~\cite{Libl05a}.} 
+\ins{The execution stack holds basically no information about the cause of the exception}~\cite{Libl05a}.
 That means the Java developer has to debug their way to the exception root.
 
 At this point we introduce our project named \textit{\textbf{NullSpy}} which supports the developers in situations discussed previously. The main goal of NullSpy is to take a step towards minimizing the time spent debugging \npes. 
@@ -142,14 +142,14 @@ NullSpy presents the developer the exact location of the null assignment, after 
 	\label{stacktrace:stackTrace2}
 \end{figure}
 
-\chk{There are other tools which can help developers to debug and to find the root cause of a bug. One of them to mention is the Back-in-time debugger~\cite{Lien08b}. The differences between NullSpy and Back-in-time debugger are:}
+\chk{There are other tools which can help developers debug and find the root cause of a bug. Most notably the Back-in-time debuggers~\cite{Lien08b}. The main differences between NullSpy and Back-in-time debuggers are:}
 
 \begin{enumerate}
-	\item \chk{NullSpy targets a particular problem, namely the \npe, while back-in-time debugging is more general}
-	\item \chk{Back-in-time debugging might require the developer to step back many times before finding the root of the exception while NullSpy finds it directly}
+	\item \chk{NullSpy targets a particular problem, namely the \npe, while back-in-time debugging is more general.}
+	\item \ins{Back-in-time debugging might require the developer to step back many times before finding the root of the exception while NullSpy finds it directly.}
 \end{enumerate}
 
-\chk{Also the Object Flow Analysis could help to find the root cause of a \npe by tracking the object flow~\cite{Lien08d}. The main difference here to NullSpy is that NullSpy tracks the null assignments instead of the object flow.}
+\ins{Another approach to which could help find the root cause of a \npe is the Object Flow Analysis \ie tracking the object flow}~\cite{Lien08d}\ins{. The main difference here to NullSpy is that NullSpy tracks the null assignments instead of the object flow.}
 
 This thesis explains how NullSpy traces the root of a \npe. It also discusses the challenges, limitations and performance impact of this approach.
 
@@ -209,7 +209,7 @@ The green words in \bytecoderef{helloWorld} are the string representations of Ja
 
 On the left-side of these instructions we see the \textit{\textbf{program counter}} (pc) which is a processor register that contains the address (location) of the instruction being executed at the current time. It is also called an \textbf{instruction pointer}.
 
-The instructions from pc 0 to pc 4 (lines 2-4 in \bytecoderef{helloWorld}) represent the source code at line 5 in \coderef{helloWorld}. Therefore, we use the term \textit{\textbf{pc-interval}} to describe a set of instructions that represents a single Java expression. This term will play an important role in later sections. We use the syntax \textbf{<,>} to represent an pc-interval, \eg the mentioned pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts, thus we name it \textit{\textbf{start-pc}} and the latter one where it ends, hence the name \textit{\textbf{end-pc}}, both inclusive. 
+The instructions from pc 0 to pc 4 (lines 2-4 in \bytecoderef{helloWorld}) represent the source code at line 5 in \coderef{helloWorld}. Therefore, we use the term \textit{\textbf{pc-interval}} to describe a set of instructions that represents a single Java expression. This term will play an important role in later sections. We use the syntax \textbf{``<x,y>''} to represent an pc-interval, \eg the mentioned pc-interval <0,4> represents the source code at line 5 in \coderef{helloWorld}. The first number indicates where the pc-interval starts, thus we name it \textit{\textbf{start-pc}} and the latter one where it ends, hence the name \textit{\textbf{end-pc}}, both inclusive. 
 
 If the opcode represents a variable, on its right side we can see the information about the name and type of the variable as shown in line 3. 
 In case of an invocation opcode, it shows the behavior/method name, the parameter types and the return type as seen in line 7. 
@@ -265,7 +265,7 @@ As mentioned before, the bytecode of each method also holds a local variable tab
 	\item the type of the variable.
 \end{enumerate}
 
-In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is the \code{HelloWorld} class. \chk{The variable \code{result} has the lexical scope [pc: 5, pc: 13] because it is created from pc 0 to pc 4 and is accessible after it is created, so from pc 5 onwards until the method ends at pc 13.}The indexes of the local variable table are important because we use them to get the right local variable we are interested in.
+In our example, \textit{this} reference has the lexical scope of the whole method, thus pc starts at 0 and ends with 13. \textit{This} reference is the first one in the table, hence it is indexed with 0, and its type is the \code{HelloWorld} class. \ins{The variable \code{result} has the lexical scope [pc: 5, pc: 13] because it is created from pc 0 to pc 4 and is accessible after it is created, so from pc 5 onwards until the method ends at pc 13.}The indexes of the local variable table are important because we use them to get the right local variable we are interested in.
 
 Let us now look at a more complicated example of the local variable table. Consider the source code example \coderef{localVarTableDuplicatedSlot1SourceCode} which contains a method \code{void loadDrawing(String filename)}. The bytecode of this example is shown in the \bytecoderef{bytecodeOfLocalVarTableDuplicatedSlot1SourceCode}.
 This method consists of a \tcblock. 
@@ -353,10 +353,10 @@ public class BytecodeModifier {
 
 We first obtain a \textit{CtClass} object \code{cc} (\coderef{bytecodeModifier} line 4) which represents the class to be modified. At line 6 we get the \textit{CtMethod} object \code{behavior} which represents the method we want to modify (in our case, method \code{main()}). We modify the method by adding the source code \code{System.out.println(``This is the inserted code.'');} at the beginning of the method. Because we want to insert code at the beginning of the method we invoke the method \code{insertBefore()} at line 7. If we wanted to enter extra code at the end of the method we could have called the analogue method \code{insertAfter()}. Both methods \code{insertBefore()} and \code{insertAfter()} expect an argument of type String, which Javassist then compiles, and adds into the bytecode at the specified location (in our situation at the beginning of the \code{main()} method).
 
-If the modified bytecode (\bytecoderef{modifiedBytecode}) were to be decompiled, its source code representation \chk{would be as shown in} \coderef{modifiedCodeDecompiled}. At line 2 of this code, we can see the changes, \ie the inserted line of code. However, the actual result is the inserted bytecode represented by the pc-interval <0,5> in the modified bytecode (\bytecoderef{modifiedBytecode}).
+If the modified bytecode (\bytecoderef{modifiedBytecode}) were to be decompiled, its source code representation would be as \coderef{modifiedCodeDecompiled}. At line 2 of this code, we can see the changes, \ie the inserted line of code. However, the actual result is the inserted bytecode represented by the pc-interval <0,5> in the modified bytecode (\bytecoderef{modifiedBytecode}).
 
 \renewcommand\lstlistingname{Bytecode}
-\begin{JVMIS}[caption={Modified bytecode. The modification is visible from line 0 to 4.}, label={bytecode:modifiedBytecode}, numbers=left, breaklines=true][H]
+\begin{JVMIS}[caption={Modified bytecode. The modification is visible from line 2 to 4.}, label={bytecode:modifiedBytecode}, numbers=left, breaklines=true][H]
 public static void main(java.lang.String[]);
   0: getstatic     #16 	// Field java/lang/System.out:Ljava/io/PrintStream;
   3: ldc           #35	// String This is the inserted code.
@@ -381,8 +381,7 @@ public static void main(String args[]) {
 
 Java Decompier (JAD)\footnote{\url{https://sourceforge.net/projects/jadclipse/}} is a decompiler and an Eclipse plugin for the Java programming language. A decompiler is a program that takes an executable file as input, and attempts to create a high level, compatible source file. If the source file is compiled again, it will produce an executable program that behaves the same way as the original one. It is often used for software reverse engineering.
 
-\chk{As Jad illustration we decompile the bytecode shown in \bytecoderef{initialBytecode} of the source code example \coderef{initialCode} and indicate the differences between the decompiled and the original version of the source code.
-The result of the decompilation is shown in \coderef{decompiledBytecode}.}
+\ins{As a JAD illustration we decompile the bytecode shown in }\bytecoderef{initialBytecode} \ins{of the source code example }\coderef{initialCode}\ins{ and indicate the differences between the decompiled and the original version of the source code. The result of the decompilation is shown in} \coderef{decompiledBytecode}.
 
 \renewcommand\lstlistingname{Code}
 \begin{Java}[caption={The result of the decompiled bytecode shown in \bytecoderef{initialBytecode}.}, label={code:decompiledBytecode}]
@@ -398,7 +397,7 @@ public class HelloWorld {
 }
 \end{Java}
 
-\chk{Jad imported the class \code{java.io.PrintStream} at line 1 and generated a default constructor at line 5. As already mentioned, we see that the decompiled version of the class \code{HelloWorld} behaves the same way as the original version, even the decompiled source code does not look identically as the original one.}
+\ins{JAD imported the class \code{java.io.PrintStream} at line 1 and generated a default constructor at line 5. As already mentioned, we see that the decompiled version of the class \code{HelloWorld} behaves the same way as the original version, even the decompiled source code does not look identically as the original one.}
 
 %The example \bytecoderef{jad} is decompiled by JAD and the result is the source code shown in \coderef{decompiledBytecode}.
 %
@@ -442,7 +441,7 @@ Without JAD one would have to manually look through and compare the resulting by
 \chapter{NullSpy: The Null Pointer Tracking Tool
 }
 
-This project is about providing the user with an additional piece of information next to the common stack trace containing the location of a \textit{null} assignment to the variable that caused the \npe. We use the term \textit{\textbf{link}} to describe the additional stack trace line which points to the source code line where the variable that caused the \npe was assigned null.
+This project is about providing the user with an additional piece of information next to the common stack trace containing the location of a \textit{null} assignment to the variable that caused the \npe. We use the term \textit{\textbf{link}} \ins{to describe the additional stack trace line which points to the source code line where the variable that caused the \npe was assigned null.}
 
 In this chapter we give an overview of how we implemented NullSpy. We will also address the challenges (\secref{challenges}) we encountered during the implementation, as well as the limitations of NullSpy (\secref{limitations}).
 
@@ -450,7 +449,7 @@ In this chapter we give an overview of how we implemented NullSpy. We will also 
 \section{High Level Overview}
 \label{sec:highLevelOverview}
 
-\chk{The general approach of NullSpy is to statically analyze a project in which a \npe occurs and instrument the bytecode. NullSpy statically analyzes the project to extract every data from bytecode about variables, \ie the name of the variable, the source code line number where it is located \etc We instrument the code to get the value stored in those variables.} 
+\ins{The general approach of NullSpy is to statically analyze a project in which a \npe occurs and instrument the bytecode. NullSpy statically analyzes the project to extract data from bytecode about variables, \ie the name of the variable, the source code line number where it is located \etc We instrument the code to get the value stored in those variables at run time.} 
 
 NullSpy is a console application that takes two arguments. The first argument to NullSpy is the local path to the folder containing the compiled class files of the original project and the second one is the path to the folder in which the user wants to store the modified class files.
 
@@ -491,23 +490,22 @@ Lastly, the module \textit{``Run-time supporter''} adds the package that contain
   \label{fig:modificationModules}
 \end{figure}
 
-We will look at these modules in more detail and explain what each one does.
+We will look at these modules in more detail.
 
 %-------------------------------------------------------------------------------
-\subsection{Process Flow\chk{ - NullSpy Process Overview}}
+\subsection{NullSpy Process Overview}
 \label{subsec:processFlow}
 In this overview of the entire process we explain the reason why we have to extract data from bytecode and what it is used for. Details are discussed in the following subsections.
 
 From the stack trace of a \npe, we can obtain three kinds of information: the class name, method name and the line number of where the \npe happened. The aim of NullSpy is to reveal the location of the null assignment to the variable which caused the \npe. To achieve this goal we need to extract information from the bytecode about \textbf{\mrs} and \textbf{null assignments}.
 
-The first step in the modification part is to statically gather information about the \mrs \chk{ and the variable assignments}. We use the term \textit{\textbf{\mr}} to refer to variables on which methods are invoked, or whose fields are accessed.
+The first step in the modification part is to statically gather information about the \mrs \ins{ and the variable assignments}. We use the term \textit{\textbf{\mr}} to refer to variables on which methods are invoked, or whose fields are accessed.
 These variables are candidates for triggering a \npe.
 For each \mr we extract the information needed to create its unique identifier (details about this are explained in \subsecref{methodReceiver}). 
 These identifiers are used later on to track the assignments to the aforementioned variable, and to find the null assignment entry for this variable, if any.
-\chk{For every non-primitive variable assignment we also perform static analysis to collect information about the variable. The information again is needed to create its unique identifier.}
+\ins{For every non-primitive variable assignment we also perform static analysis to collect information about the variable. The information again is needed to create its unique identifier.}
 
-The second step is to instrument the assignments. \del{For every non-primitive variable assignment
-we collect information about the variable, needed to create its unique identifier.} After the assignment we insert code which represents a call to the \textbf{run-time supporter} package with the variable's identifier. The run-time supporter package checks at run-time whether the variable is assigned null. If this is the case we store the information about this variable.
+The second step is to instrument the assignments. After the assignment we insert code which represents a call to the \textbf{run-time supporter} package with the variable's identifier. The run-time supporter package checks at run-time whether the variable is assigned null. If this is the case we store the information about this variable.
 
 At the end of the bytecode modification part we wrap the \code{main()} method into a \tcblock. The \cblock extracts from the \npe stack trace the information about the location where the exception happened (class name, method name, line number). This is the only information we can get from the stack trace. This information is passed on to the run-time supporter package which compares it with the stored identifiers about the \mrs. If there is a match, NullSpy uses this identifier to reveal the information stored about the assignments to this variable. If there is an entry about the null assignment of that variable, we extract from it the line number of the assignment and create the additional link that reveals the location of the null assignment. This link is then added to the common \npe stack trace.
 
@@ -590,7 +588,7 @@ Javassist allows us to obtain the number of parameters of a method invocation by
 Thus, if the method expects $N$ arguments, we can ignore the last $N$ candidate pc-intervals. The one before them is the actual \mr pc-interval. 
 In our example, since the method takes two arguments, the actual \mr pc-interval is <144,144>.
 
-If the \mr is actually the return value from another method invocation, it is not apparent where exactly the \mr is situated in bytecode. More about the challenges we encountered can be found in \subsecref{methodReceiverDifficulties}.
+If the \mr is actually the return value from another method invocation, it is not apparent where exactly the \mr is situated in bytecode. More about the challenges we encountered \ins{and why we cannot directly assume that the first \mr candidate is the one we are actually looking for }can be found in \subsecref{methodReceiverDifficulties}.
 
 In case of the simple stand-alone \textit{invokestatic} instruction we do have a \mr but NullSpy ignores these instructions because static method invocations are called on classes which can never be null. But if the static method call is a parameter of another method call, NullSpy still treats it as a \mr candidate. As for the other \textit{invoke} instructions, they are treated normally as explained.
 
@@ -654,7 +652,7 @@ Local variable table:
 \end{JVMIS}
    
 We solve the problem of reused slots by looking at the lifespan in the variable table.	
-Let us assume that we have a local variable assignment where its \textit{``astore\_2''} opcode is located at pc 45 (\bytecoderef{localVarAssignment}). In this example we can extract slot 2 from the opcode \textit{astore\_2}. After extracting the slot (index: 2) we iterate through the local variable table and find the first entry that contains that slot (line 4 in \bytecoderef{localVarTableDuplicatedSlot}). If the pc of the assignment is not included in the local variable lifespan of the entry (pc 45 $\notin$ [pc: 13, pc: 40], line 4), the next entry with the same slot (pc 45 $\in$ [pc: 44, pc: 94], line 7) will be examined. Checking the entries with the same slot goes on until both the slot and pc criteria fit. Once those criteria are met we can be positive about having the right local variable table entry. We now extract from local variable table the information we need to create a unique identifier for a variable. \chk{The unique identifiers are used for the comparisons explained in \subsecref{processFlow}.} A part of the extracted information is listed below:
+Let us assume that we have a local variable assignment where its \textit{``astore\_2''} opcode is located at pc 45 (\bytecoderef{localVarAssignment}). In this example we can extract slot 2 from the opcode \textit{astore\_2}. After extracting the slot (index: 2) we iterate through the local variable table and find the first entry that contains that slot (line 4 in \bytecoderef{localVarTableDuplicatedSlot}). If the pc of the assignment is not included in the local variable lifespan of the entry (pc 45 $\notin$ [pc: 13, pc: 40], line 4), the next entry with the same slot (pc 45 $\in$ [pc: 44, pc: 94], line 7) will be examined. Checking the entries with the same slot goes on until both the slot and pc criteria fit. Once those criteria are met we can be positive about having the right local variable table entry. We now extract from local variable table the information we need to create a unique identifier for a variable. \ins{The unique identifiers are used for the comparisons explained in} \subsecref{processFlow}. A part of the extracted information is listed below:
 
 \begin{itemize}
 	\item source code line number of the assignment
@@ -752,7 +750,7 @@ These situations cannot be resolved by just looking at the bytecode, therefore t
 
 Please note that there is no \mr (in the terms we defined it) in \coderef{4-1} because the \mr would be a method invocation itself. NullSpy does not support \mrs which are return objects of method invocations. Enabling the coverage of such situations is a part of the future work. Other \mrs NullSpy does not support are elements of collections since a collection can hold other collections, \etc
 
-The line number \textit{31} is listed twice int the line number table (\bytecoderef{4-3}). This indicates that the method invocation is split into multiple lines in source code.
+The line number \textit{31} is listed twice in the line number table (\bytecoderef{4-3}). This indicates that the method invocation is split into multiple lines in source code.
 
 The line number table entries in \bytecoderef{4-3} indicate the followings:
 \begin{itemize}
@@ -841,9 +839,9 @@ The first line of these pairs indicates the start-pc of an expression and the la
 \end{enumerate}
 
 By using the algorithm of extracting the pc-interval of a \mr (described in \subsecref{methodReceiver}) we would again get the wrong outermost pc-interval of the method invocation. To handle this mistake we implemented a supporting class called \code{MultipleLineManager}\footnote{In package \emph{ch.unibe.scg.nullSpy.instrumentator.controller.methodInvocation}.}. Its responsibility is to extract the outermost pc-interval of invocations in split line situations.
-\chk{For complexity reasons we only explain the key idea behind this system. For each invocation we look for the end-pc. With that we go back and forth the line number table of the method including the invocation and check whether there is another entry with the same source code line number as the end-pc matches. In examples like the one shown in \coderef{3-1} we also have to pay attention that the end- and start-pc of the outermost pc-interval do not have to match the same source code line number.}
+\ins{For complexity reasons we only explain the key idea behind this system. For each invocation we look for the end-pc. With that we go back and forth through the line number table of the method including the invocation and check whether there is another entry with the same source code line number as the end-pc. In examples like the one shown in }\coderef{3-1}\ins{ we also have to pay attention that the end- and start-pc of the outermost pc-interval do not have to match the same source code line number.}
 
-\chk{Another difficulty with the split invocations is that even with the system of getting the outermost pc-interval we sometimes still get a smaller one than the one representing the invocation. This happens because we cannot get more information out of the line number table. For this reason we have to take the number of arguments the invocation expects for help to complete the outermost pc-interval. If the outermost pc-interval only includes $N$ arguments instead of $N+1$ we have to add another candidate pc-interval to the outermost pc-interval with the system explained in \ref{sec:bytecodeCombinations}.}
+\ins{Another difficulty with the invocations split into multiple lines is that even with the system of getting the outermost pc-interval we sometimes still get a smaller one than the one representing the invocation. This happens because we cannot get more information out of the line number table. For this reason we have to take the number of arguments the invocation expects for help complete the outermost pc-interval.}
 
 %-------------------------------------------------------------------------------
 
@@ -904,16 +902,19 @@ How we build the bytecode sequence insert is explained in Appendix \ref{sec:appI
 
 During the implementation of NullSpy we had to change the concept a few times due to limitations of Javassist or too much computational overhead resulting in serious performance degradation.
 
-NullSpy is not capable of tracking null assignment in two circumstances: if the culprit of a \npe is caused by
+NullSpy is not capable of tracking null assignment in \ins{three} circumstances: if the culprit of a \npe is caused by
 \begin{itemize}
 	\item an element of a collection and
-	\item an object that is a return value of a method invocation.
+	\item an object that is a return value of a method invocation and
+	\item \ins{when the \npe is triggered in a multithreaded environment.}
 \end{itemize}
 
 In situations where an element of a collection causes a \npe, we did not develop a way to refer to that element. We have a rough idea of how to store this information, but it would involve effort that is beyond the scope of this thesis.
 Hence, we cannot identify collection elements.
 
-To be able to track null assignment of \mrs we have to statically analyze bytecode and obtain information about that variable. We are not able to statically extract information about an object that is the return value of a method call. For this issue we also have a rough idea of how to deal with it. But again, the effort required would be beyond the scope of this thesis.  
+To be able to track null assignment of \mrs we have to statically analyze bytecode and obtain information about that variable. We are not able to statically extract information about an object that is the return value of a method call. For this issue we also have a rough idea of how to deal with it. But again, the effort required would be beyond the scope of this thesis.
+
+\ins{Another situation NullSpy does not support yet is when a \npe is triggered in another thread than the one including the \code{main()} method, the \npe cannot go up the call hierarchy until the \code{main()} method since each thread has its own stack. Because the \npe does not reach the \code{main()} method our inserted \cblock of the \code{main()} method cannot be reached. Thus the \npe cannot handled by NullSpy. The usage of multiple threads is another problem that is not handled in the scope of this work.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                  Validation                                  %
@@ -990,7 +991,7 @@ JHotDraw already provides an Ant buildfile \textit{build.xml} that packs the pro
 	\label{tab:averageTime}
 \end{table}
 
-The runtime of the modified project takes rounded 0.363s longer than the original one, this means that after instrumenting the code, the project results in approximately \textbf{5\%} overhead. We claim this overhead is acceptable for the advantages NullSpy offers.
+The run time of the modified project takes rounded 0.363s longer than the original one. Thus after instrumenting the code, the project results in approximately \textbf{5\%} performance overhead. We claim this overhead is acceptable for the advantages NullSpy offers.
 
 %===============================================================================
 
@@ -1000,7 +1001,7 @@ The runtime of the modified project takes rounded 0.363s longer than the origina
 We want to demonstrate how NullSpy helps the user find the real culprit that leads to a \npe. 
 The relevant example used for the demonstration is shown in \coderef{demonstration}.
 
-The \code{main()} method at line 6 invokes three methods (\code{makeReader()}, \code{readNumbers()}, \code{closeReader}) and prints out the field \code{numbers}. In \code{makeReader()} method it tries to read a file named ``file.txt''. If the example does not find that file, it will execute the \cblock and assign null to the field \code{reader} at line 18.
+The \code{main()} method at line 6 invokes three methods (\code{makeReader()}, \code{readNumbers()}, \code{closeReader}) and prints out the field \code{numbers}. In the \code{makeReader()} method it tries to read a file named ``file.txt''. If the example does not find that file, it will execute the \cblock and assign null to the field \code{reader} at line 18.
 
 \chg{The call to \code{readNumbers()} at line 8 is not important for our demonstration; that is why we skip it in our analysis.}{The call to \code{readNumbers()} at line 8 reads the numbers from the file ``file.txt'' at line 26 and stores them into an \code{ArrayList} at line 27. The list is then returned at line 29. If the variable \code{reader} is assigned null before, the read action at line 26 will trigger a \npe. In our example this is the case. The \npe goes up the call hierarchy until the \code{main()} method.}
 
@@ -1087,7 +1088,7 @@ In short, we successfully managed to meet the main goal we have set at the begin
 
 During the implementation we encountered many difficulties. For most of the problems we came across we managed to find a solution. Those unsolved ones remain as future work.
 
-After the implementation of NullSpy we validated it with help of the project JHotDraw. First we measured the time how long JHotDraw takes to execute all its tests without modifying the bytecode. After that we instrumented the project and again measured the execution time. The result is a performance overhead of approximately 5\%. So NullSpy could help the developer find the null assignment without a big impact on performance. \chk{While 5\% may be too much for some time-critical applications, we believe that for most common Java applications such as JHotDraw, this overhead is justifiable by the improved ability to debug \npes.}
+After the implementation of NullSpy we validated it with help of the project JHotDraw. First we measured the time how long JHotDraw takes to execute all its tests without modifying the bytecode. After that we instrumented the project and again measured the execution time. The result is a performance overhead of approximately 5\%. So NullSpy could help the developer find the null assignment without a big impact on performance. \ins{While 5\% may be too much for some time-critical applications, we believe that for most common Java applications such as JHotDraw, this overhead is justifiable by the improved ability to debug \npes.}
 
 %===============================================================================
 
@@ -1179,7 +1180,7 @@ If these steps are followed as explained, the result is similar to the stack tra
 In the algorithm that identifies the \mr pc-interval we have to split the outermost invocation pc-interval into candidate \mr pc-intervals. Here we discuss how the extraction of all possible combinations of \mrs that are embedded in the outermost pc-interval are extracted. 
 
 We developed a system that checks whether the combinations of specific opcodes are valid. 
-\chk{Bear in mind that \textit{aload\_0} represents \textit{this} if we are analyzing a non-static method. If we are analyzing a static method the opcode \textit{aload\_0} refers to the first argument of the method, if there are any, or to the first declared local variable of the method.}
+\ins{Bear in mind that \textit{aload\_0} represents \textit{this} if we are analyzing a non-static method. If we are analyzing a static method the opcode \textit{aload\_0} refers to the first argument of the method, if there are any, or to the first declared local variable of the method.}
 The combinations for identifying the candidate \mr pc-intervals are listed below:  
 
 		\begin{itemize}
@@ -1206,17 +1207,17 @@ The combinations for identifying the candidate \mr pc-intervals are listed below
 		\end{itemize}
    \end{itemize}
 
-\chk{To illustrate how this list is used we go through the synthetic bytecode example shown in \bytecoderef{appMrBytecodeCombiBytecode}. This bytecode represents the source code shown in \coderef{appMrBytecodeCombi}.}
+\ins{To illustrate how this list is used we go through the synthetic bytecode example shown in }\bytecoderef{appMrBytecodeCombiBytecode}. \ins{This bytecode represents the source code shown in }\coderef{appMrBytecodeCombi}.
 
-\chk{The outermost pc-interval of the method invocation \code{move(...)} is <26,33>. When we iterate through the outermost invocation pc-interval we encounter the opcode \textit{``aload.*''} at line 1. We check what comes after this opcode. Again, there is the opcode \textit{``aload.*''} at line 2. With that we look at the list and search for \textit{(aload.*).(aload*)}. This expression does not fit into our template which indicates that those two opcodes do not have any relationship with each other. So we can be sure that they are two separate \mr candidates. After that we check the opcode at line 3 and see if the ``concatenation'' of the opcodes from lines 2 and 3 fits into our template. For the opcode at line 4 it is the same situation.}
+\ins{The outermost pc-interval of the method invocation \code{move(...)} is <26,33>. When we iterate through the outermost invocation pc-interval we encounter the opcode \textit{``aload.*''} at line 1. We check what comes after this opcode. Again, there is the opcode \textit{``aload.*''} at line 2. With that we look at the list of the possible \mr bytecode combinations and search for \textit{aload.*} followed by \textit{aload*}. This expression does not fit into our template which indicates that those two opcodes do not have any relationship with each other. So we can be sure that they are two separate \mr candidates. After that we check the opcode at line 3 and see if the opcodes from lines 2 and 3 fit into our template. For the opcode at line 4 it is the same situation.}
 
-\chk{But when we check the opcode \textit{``getfield''} at line 5 we see that the ``concatenation'' \textit{(aload.*).getfield} fits into our template. With that we know that the combination of the opcode at line 4 and the one at line 5 represents one \mr candidate.}
+\ins{But when we check the opcode \textit{``getfield''} at line 5 we see that the opcodes \textit{aload.*} followed by \textit{getfield} fits into our template. With that we know that the combination of the opcode at line 4 and the one at line 5 represents one \mr candidate.}
 
-\chk{After this process, the outermost pc-interval is split into \{<26,26>,<27,27>,<28,28>,<29,30>\}.}
+\ins{After this process, the outermost pc-interval is split into \{<26,26>,<27,27>,<28,28>,<29,30>\}.}
 
-\chk{We do this checkings until the following opcode does not fit into the allowed pattern of the template. As long as the checked opcode fits into our template, we consider them as one possible \mr.}
+\ins{We continue this process until the following opcode does not fit into the allowed pattern of the template. As long as the checked opcode fits into our template, we consider them as one possible \mr.}
 
-\chk{For other non-primitive types (\eg Strings, variable creation) we do it in a similar way. If there is an embedded method invocation, we take the outermost pc-interval of that as a \mr candidate of the external method invocation. The end-pc of a embedded method invocation always comes before the external one in the bytecode sequence. So we will have already figured out the outermost pc-interval of the embedded method invocation before we examine the external one.}
+\ins{For other non-primitive types (\eg Strings) and inlined variable creation we do a similar process. If there is an embedded method invocation, we take the outermost pc-interval of that as a \mr candidate of the external method invocation. The end-pc of the embedded method invocation always comes before the external one in the bytecode sequence. So we will have already figured out the outermost pc-interval of the embedded method invocation before we examine the external one.}
 
 \renewcommand\lstlistingname{Bytecode}
 \begin{JVMIS}[numbers=left, caption={Synthetic bytecode example to illustrate the system to split the outermost invocation pc-interval into candidate \mr pc-intervals.}, label={bytecode:appMrBytecodeCombiBytecode}, breaklines=true]
@@ -1358,14 +1359,24 @@ If we detect an assignment to a member field we additionally have to store the i
 The aim of NullSpy is to find the location of the null assignment of the variable which caused the \npe. We achieve this goal by instrumenting bytecode with the help of the bytecode-level API of Javassist.
 
 After each non-primitive variable assignment we insert bytecode that represents a method invocation. The invoked method is part of the class named\linebreak\code{VariableTester}\footnote{\label{package1}In package \emph{ch.scg.nullSpy.runtimeSupporter}. This package is added to the modified project when the bytecode modification is done.}. 
-Depending on the variable (local variable or field) being analyzed at the moment, different bytecode is constructed \chk{that represents a method call which takes different number of arguments. The reason for that is because we need less information about local variables than fields to uniquely identify them. So we pass less arguments to the method call inserted after a local variable assignment than the one inserted after a field assignment.}
+Depending on the variable (local variable or field) being analyzed at the moment, \ins{a different method is invoked.}
 
-\chk{This inserted method checks whether the value of the variable received as an argument is null. If the value is null, NullSpy stores the information about that variable which is also passed as argument to this method.}
+\ins{If we take the source code snippet }\coderef{appDemonstration}\ins{ which is the source code at line 16 from the demonstration example }\coderef{demonstration}{ and decompile the instrumented version of this snippet, it looks the way as shown in }\coderef{appInstrumentedDemonstrationDecompiled}.
+
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={Source code at line 16 of the NullSpy demonstration example shown in \coderef{demonstration}.}, label={code:appDemonstration}, firstnumber=16]
+reader = new BufferedReader(new FileReader(new File("file.txt")));
+\end{Java}
+
+\renewcommand\lstlistingname{Code}
+\begin{Java}[caption={Decompiled instrumented version of \coderef{appDemonstration}.}, label={code:appInstrumentedDemonstrationDecompiled}, firstnumber=16]
+reader = new BufferedReader(new FileReader(new File("file.txt"))); VariableTester.testDirectField("Ideone", "makeReader", "()V", "field", "reader", "Ljava/io/BufferedReader;", "Ideone", 1, reader, 25, 0, 23, 26);
+\end{Java}
 
 We mentioned that Javassist provides the way to modify bytecode either with the source- or bytecode-level API. Due to a limitation of Javassist we modify the class files at bytecode-level by constructing a bytecode sequence and including it into the file. How we build this sequence is shown in \coderef{bytecodeCreation}.
 
 \renewcommand\lstlistingname{Code}
-\begin{Java}[caption={This bytecode is inserted after each assignment to a field of the currently analyzed class. It represents the \chk{bytecode added after a field assignment.}}, label={code:bytecodeCreation}, firstnumber=1]
+\begin{Java}[caption={This bytecode is inserted after each assignment to a field of the currently analyzed class. It represents the \ins{bytecode added after a field assignment.}}, label={code:bytecodeCreation}, firstnumber=1]
 private byte[] getInsertCodeByteArray(Variable var) {
 	Bytecode bytecode = new Bytecode(cp);
 	
@@ -1441,7 +1452,7 @@ public static void testDirectField(
 
 This method takes seven java.lang.String objects, one integer, one Object and four integers as arguments. The code snippet \coderef{bytecodeCreation} reproduces these arguments. 
 
-The instruction \textit{``addLdc''} from line 16 to 22 is used to add strings to the bytecode. For adding a boolean we use the integers \textit{``1''} and \textit{``0''} to represent the boolean value \textit{true} respectively \textit{false}. Hence, line 25 to 29 adds an integer to the bytecode sequence. 
+The instruction \textit{``addLdc''} from line 16 to 22 is used to add strings to the bytecode. For adding a boolean we use the integers \textit{``1''} and \textit{``0''} to represent the boolean value \textit{true} and \textit{false} respectively, \ins{as used in Java bytecode}. Hence, line 25 to 29 adds an integer to the bytecode sequence. 
 
 The object, in our case a field, is added to the bytecode sequence by using the method \code{addAload(...)} at line 31 and the method \code{addGetfield(...)} at lines 32 and 33. These lines add the instruction set which loads a field onto the operand stack: \textit{``aload\_0'', ``getfield''}. NullSpy takes the field itself as an argument to evaluate its value in the check-method.
 
@@ -1451,17 +1462,7 @@ Finally all classes of the arguments the check-method takes are prepared from li
 
 With the classes \textit{CodeAttribute} and \textit{CodeIterator} from the Javassist API we can enter our bytecode sequence into existing ones. CodeAttribute represents the bytecode of a behavior and with CodeIterator we can iterate through that bytecode. We obtain a CodeIterator object from the CodeAttribute. So we first move the CodeIterator to the position in the bytecode with \code{codeIterator.move(pc)} where we want to enter our bytecode and then enter our sequence with a call to \code{codeIterator.insert(ourByteCode)}.
 
-\chk{If we take the source code snippet \coderef{appDemonstration} which is the source code at line 16 from the demonstration example \coderef{demonstration} and decompile the instrumented version of this snippet, it looks the way as shown in \coderef{appInstrumentedDemonstrationDecompiled}.}
 
-\renewcommand\lstlistingname{Code}
-\begin{Java}[caption={Source code at line 16 of the NullSpy demonstration example shown in \coderef{demonstration}.}, label={code:appDemonstration}, firstnumber=16]
-reader = new BufferedReader(new FileReader(new File("file.txt")));
-\end{Java}
-
-\renewcommand\lstlistingname{Code}
-\begin{Java}[caption={Decompiled instrumented version of \coderef{appDemonstration}.}, label={code:appInstrumentedDemonstrationDecompiled}, firstnumber=16]
-reader = new BufferedReader(new FileReader(new File("file.txt"))); VariableTester.testDirectField("Ideone", "makeReader", "()V", "field", "reader", "Ljava/io/BufferedReader;", "Ideone", 1, reader, 25, 0, 23, 26);
-\end{Java}
 
 \end{appendices}
 
